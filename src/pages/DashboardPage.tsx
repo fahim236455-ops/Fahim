@@ -60,6 +60,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
   // Active modal state
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
+  // Dismissed popup notice state
+  const [dismissedNotice, setDismissedNotice] = useState(false);
+
   // Social services info state (Gmail, Facebook, Instagram)
   const [socialInfo, setSocialInfo] = useState<{
     gmail?: { rate: number; active: boolean; title: string };
@@ -109,14 +112,46 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
     }
   };
 
+  const brandName = settings?.brandName || 'Earnora';
+  const announcementText = settings?.announcement || 'Welcome to Earnora. Refer your friends to earn more! Complete tasks daily to get instant bKash/Nagad payout!';
+  const telegramLink = settings?.telegramChannelUrl || settings?.supportTelegram || 'https://t.me/fahimpaybd';
+  const youtubeLink = settings?.heroVideoUrl || 'https://youtube.com';
+
   return (
     <div className="max-w-md mx-auto px-3.5 py-3 space-y-3.5 pb-24 font-['Hind_Siliguri',sans-serif]">
+      {/* Dynamic Popup Notice Modal (when configured from Admin Panel) */}
+      {settings?.popupNotice?.enabled && !dismissedNotice && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-slate-900 border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full text-white shadow-2xl relative space-y-4 animate-in zoom-in-95">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center mx-auto shadow-inner">
+              <Sparkles className="w-6 h-6" />
+            </div>
+
+            <div className="text-center space-y-1.5">
+              <h3 className="text-base font-bold text-amber-300">
+                {settings.popupNotice.title || 'গুরুত্বপূর্ণ নোটিশ'}
+              </h3>
+              <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-line">
+                {settings.popupNotice.message || 'সকল ইউজারদের অবগতির জন্য জানানো যাচ্ছে যে কাজ সঠিকভাবে সম্পন্ন করুন।'}
+              </p>
+            </div>
+
+            <button
+              onClick={() => setDismissedNotice(true)}
+              className="w-full bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-bold text-xs py-2.5 rounded-xl shadow-md active:scale-98 transition-all cursor-pointer"
+            >
+              ঠিক আছে, বুঝেছি
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 1. TOP NOTICE / MARQUEE TICKER */}
       <div className="bg-slate-900/90 rounded-full px-3.5 py-2 border border-slate-800 shadow-md flex items-center gap-2.5 overflow-hidden">
         <Volume2 className="w-4 h-4 text-amber-400 shrink-0 animate-pulse" />
         <div className="overflow-hidden whitespace-nowrap flex-1">
           <div className="inline-block animate-marquee text-xs font-semibold text-slate-300">
-            Welcome to Earnora. Refer your friends to earn more! Complete tasks daily to get instant bKash/Nagad payout!
+            {announcementText}
           </div>
         </div>
       </div>
@@ -132,7 +167,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
           <div className="space-y-1.5 max-w-[62%]">
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="bg-amber-400 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs uppercase tracking-wide">
-                Earnora
+                {brandName}
               </span>
               <span className="text-[9px] text-amber-200/80 font-medium hidden sm:inline">
                 Trusted Digital Platform
@@ -164,7 +199,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
           <div className="relative shrink-0">
             <div className="w-24 bg-slate-950 border-2 border-amber-500/40 rounded-xl p-1.5 shadow-2xl rotate-2 hover:rotate-0 transition-transform">
               <div className="bg-slate-900 border border-slate-800 rounded-lg p-1.5 text-center text-white">
-                <span className="text-[8px] block font-bold text-amber-400">Earnora</span>
+                <span className="text-[8px] block font-bold text-amber-400">{brandName}</span>
                 <span className="text-[7px] text-slate-400 block">Your Balance</span>
                 <span className="text-[11px] font-black block text-amber-300">৳ {(user?.balance ?? 482.5).toFixed(2)}</span>
                 <div className="mt-1 bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-bold text-[7px] py-0.5 rounded shadow-xs">
@@ -229,7 +264,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
       {/* 4. SOCIAL PILL BUTTONS (Telegram & YouTube) */}
       <div className="grid grid-cols-2 gap-2.5">
         <a
-          href={settings?.telegramChannel || 'https://t.me/fahimpaybd'}
+          href={telegramLink}
           target="_blank"
           rel="noopener noreferrer"
           className="bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-800 hover:border-sky-500/40 rounded-2xl py-2 px-3 flex items-center justify-center gap-2 text-xs font-bold shadow-md active:scale-98 transition-all"
@@ -239,7 +274,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         </a>
 
         <a
-          href="https://youtube.com"
+          href={youtubeLink}
           target="_blank"
           rel="noopener noreferrer"
           className="bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-800 hover:border-red-500/40 rounded-2xl py-2 px-3 flex items-center justify-center gap-2 text-xs font-bold shadow-md active:scale-98 transition-all"

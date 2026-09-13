@@ -32,12 +32,12 @@ export const SystemClosedPage: React.FC<SystemClosedPageProps> = ({ onNavigate }
 
         {/* Headline */}
         <h2 className="text-xl font-bold text-[#1e293b] mb-2 tracking-tight">
-          সিস্টেমটি বন্ধ আছে
+          {settings?.maintenanceMode?.enabled ? 'রক্ষণাবেক্ষণ চলছে (Maintenance Mode)' : 'সিস্টেমটি বন্ধ আছে'}
         </h2>
 
         {/* Subtitle */}
         <p className="text-xs sm:text-[13px] text-[#64748b] leading-relaxed mb-6 max-w-[250px]">
-          সিস্টেমটি বর্তমানে সাময়িকভাবে স্থগিত করা হয়েছে। আমরা দ্রুতই ফিরে আসবো।
+          {settings?.maintenanceMode?.message || 'সিস্টেমটি বর্তমানে সাময়িকভাবে স্থগিত করা হয়েছে। আমরা দ্রুতই ফিরে আসবো।'}
         </p>
 
         {/* Go to Dashboard Button */}
