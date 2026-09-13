@@ -4989,22 +4989,39 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
               </div>
 
               {/* Modal Footer */}
-              <div className="p-3 bg-slate-950 border-t border-slate-800 flex items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowRoleModal(false)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition-colors"
-                >
-                  বাতিল
-                </button>
-                <button
-                  type="submit"
-                  disabled={savingRole}
-                  className="px-5 py-2 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-bold rounded-xl text-xs transition-transform active:scale-95 shadow-md flex items-center gap-1.5"
-                >
-                  <ShieldCheck className="w-4 h-4" />
-                  <span>{savingRole ? 'সংরক্ষণ হচ্ছে...' : 'পারমিশন সেভ করুন'}</span>
-                </button>
+              <div className="p-3 bg-slate-950 border-t border-slate-800 flex items-center justify-between gap-2 flex-wrap">
+                {selectedUserForRole.roles?.includes('admin') &&
+                  selectedUserForRole.email.toLowerCase() !== 'fahim236455@gmail.com' && (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        await handleRevokeAdminAccess(selectedUserForRole.id, selectedUserForRole.email);
+                        setShowRoleModal(false);
+                      }}
+                      className="px-3 py-2 bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                      <span>অ্যাডমিন পদ থেকে সরিয়ে দিন</span>
+                    </button>
+                  )}
+
+                <div className="flex items-center gap-2 ml-auto">
+                  <button
+                    type="button"
+                    onClick={() => setShowRoleModal(false)}
+                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition-colors"
+                  >
+                    বাতিল
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={savingRole}
+                    className="px-5 py-2 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-slate-950 font-bold rounded-xl text-xs transition-transform active:scale-95 shadow-md flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>{savingRole ? 'সংরক্ষণ হচ্ছে...' : 'পারমিশন সেভ করুন'}</span>
+                  </button>
+                </div>
               </div>
             </form>
           </div>
