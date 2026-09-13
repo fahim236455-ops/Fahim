@@ -52,16 +52,44 @@ export interface UserProfile {
   updatedAt: string;
 }
 
+export interface SiteFaqItem {
+  id: string;
+  question: string;
+  answer: string;
+}
+
 export interface SiteSettings {
   brandName: string;
   referralReward: number;
   minWithdrawal: number;
+  maxWithdrawal?: number;
   withdrawalFeePercent: number;
   withdrawalMethods: string[];
+  bkashNumber?: string;
+  nagadNumber?: string;
+  rocketNumber?: string;
   supportPhone: string;
   supportWhatsapp: string;
   supportTelegram: string;
+  supportEmail?: string;
   announcement: string;
+  signupBonus?: number;
+  dailyCheckinReward?: number;
+  popupNotice?: {
+    enabled: boolean;
+    title: string;
+    message: string;
+  };
+  maintenanceMode?: {
+    enabled: boolean;
+    message: string;
+  };
+  heroTitle?: string;
+  heroSubtitle?: string;
+  heroVideoUrl?: string;
+  telegramChannelUrl?: string;
+  telegramGroupUrl?: string;
+  faqs?: SiteFaqItem[];
   updatedAt: string;
 }
 

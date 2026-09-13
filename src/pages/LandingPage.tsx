@@ -84,7 +84,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
-  const brandName = settings?.brandName || 'SMALL GIG WORK';
+  const brandName = settings?.brandName || 'Earnora';
 
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
@@ -94,7 +94,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
     }
   };
 
-  const faqs = [
+  const defaultFaqs = [
     {
       q: 'এখানে কাজ করতে কি কোনো অভিজ্ঞতা লাগে?',
       a: 'না, এখানে কাজ করার জন্য কোনো পূর্ব অভিজ্ঞতার প্রয়োজন নেই। প্রতিটি কাজের জন্য আমাদের সাইটে সহজ গাইডলাইন দেওয়া আছে, যা দেখে যেকেউ খুব সহজে ঘরে বসেই কাজ করতে পারবে।',
@@ -108,6 +108,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
       a: 'হ্যাঁ! আপনি আপনার ইউনিক রেফারেল লিংক দিয়ে বন্ধুদের ইনভাইট করলে তাদের কাজের উপর নির্ধারিত বোনাস এবং লাইফটাইম এফিলিয়েট কমিশন সরাসরি আপনার অ্যাকাউন্টে যুক্ত হবে।',
     },
   ];
+
+  const faqs = (settings?.faqs && settings.faqs.length > 0)
+    ? settings.faqs.map((f) => ({ q: f.question, a: f.answer }))
+    : defaultFaqs;
+
+  const heroHeadline = settings?.heroTitle || 'Earn Smarter With A Trusted Digital Platform';
+  const heroDescription = settings?.heroSubtitle || 'একটি আধুনিক ও নির্ভরযোগ্য ডিজিটাল প্ল্যাটফর্ম যেখানে আপনি সহজে টাস্ক সম্পন্ন করে, রেফারেল প্রোগ্রামে অংশগ্রহণ করে এবং বিভিন্ন অনলাইন কার্যক্রমের মাধ্যমে অতিরিক্ত আয়ের সুযোগ পেতে পারেন। নিরাপদ লেনদেন, দ্রুত পেমেন্ট এবং স্বচ্ছ সিস্টেম আমাদের সেবার প্রধান বৈশিষ্ট্য।';
 
   return (
     <div className="min-h-screen bg-white text-slate-800 font-['Hind_Siliguri',sans-serif] selection:bg-sky-500 selection:text-white overflow-x-hidden">
@@ -271,11 +278,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                 variants={fadeInUp}
                 className="text-4xl sm:text-5xl lg:text-[56px] font-black text-slate-900 tracking-tight leading-[1.15]"
               >
-                Earn Smarter <br />
-                With <br />
-                <span className="text-sky-500 inline-block">
-                  A Trusted Digital <br />Platform
-                </span>
+                {heroHeadline}
               </motion.h1>
 
               {/* Description in Bengali */}
@@ -283,9 +286,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                 variants={fadeInUp}
                 className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-xl font-normal"
               >
-                একটি আধুনিক ও নির্ভরযোগ্য ডিজিটাল প্ল্যাটফর্ম যেখানে আপনি সহজে টাস্ক সম্পন্ন করে,
-                রেফারেল প্রোগ্রামে অংশগ্রহণ করে এবং বিভিন্ন অনলাইন কার্যক্রমের মাধ্যমে অতিরিক্ত আয়ের সুযোগ
-                পেতে পারেন। নিরাপদ লেনদেন, দ্রুত পেমেন্ট এবং স্বচ্ছ সিস্টেম আমাদের সেবার প্রধান বৈশিষ্ট্য।
+                {heroDescription}
               </motion.p>
 
               {/* CTA Buttons */}

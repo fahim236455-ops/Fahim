@@ -51,6 +51,15 @@ import {
   Cloud,
   Database,
   UploadCloud,
+  KeyRound,
+  HelpCircle,
+  Globe,
+  Sliders,
+  Layers,
+  Bell,
+  AlertTriangle,
+  CreditCard,
+  Gift,
 } from 'lucide-react';
 
 interface AdminPanelPageProps {
@@ -257,6 +266,17 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
 
   // Selected screenshot lightbox modal state
   const [selectedScreenshotUrl, setSelectedScreenshotUrl] = useState<string | null>(null);
+
+  // Settings Sub-tab & Configuration states
+  const [settingsSubTab, setSettingsSubTab] = useState<'general' | 'support' | 'payments' | 'rewards' | 'landing' | 'security' | 'cloud'>('general');
+  const [adminPasswordForm, setAdminPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: '',
+  });
+  const [adminPasswordLoading, setAdminPasswordLoading] = useState(false);
+  const [newFaqForm, setNewFaqForm] = useState({ question: '', answer: '' });
+  const [editingFaqIndex, setEditingFaqIndex] = useState<number | null>(null);
 
   // Quick WhatsApp & Telegram support modal states
   const [quickSupportModalOpen, setQuickSupportModalOpen] = useState(false);
@@ -1092,8 +1112,8 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
   };
 
   // Save Site Settings
-  const handleSaveSettings = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSaveSettings = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!settingsForm) return;
     try {
       const res = await fetchApi<{ message: string }>('/admin/settings', {
@@ -1106,6 +1126,68 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
     } catch (err: any) {
       showToast(err.message || 'সেটিংস আপডেট ব্যর্থ হয়েছে।', 'error');
     }
+  };
+
+  // Change Super Admin Password
+  const handleChangeAdminPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!adminPasswordForm.newPassword || adminPasswordForm.newPassword.length < 6) {
+      showToast('নতুন পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।', 'error');
+      return;
+    }
+    if (adminPasswordForm.newPassword !== adminPasswordForm.confirmNewPassword) {
+      showToast('নতুন পাসওয়ার্ড এবং কনফার্ম পাসওয়ার্ড মিলছে না।', 'error');
+      return;
+    }
+
+    try {
+      setAdminPasswordLoading(true);
+      const res = await fetchApi<{ message: string }>('/admin/change-password', {
+        method: 'POST',
+        body: JSON.stringify(adminPasswordForm),
+      });
+      showToast(res.message || 'অ্যাডমিন পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে!', 'success');
+      setAdminPasswordForm({ currentPassword: '', newPassword: '', confirmNewPassword: '' });
+    } catch (err: any) {
+      showToast(err.message || 'পাসওয়ার্ড পরিবর্তন ব্যর্থ হয়েছে।', 'error');
+    } finally {
+      setAdminPasswordLoading(false);
+    }
+  };
+
+  // Add FAQ Item
+  const handleAddFaq = () => {
+    if (!newFaqForm.question.trim() || !newFaqForm.answer.trim()) {
+      showToast('প্রশ্ন এবং উত্তর উভয়ই লিখুন।', 'error');
+      return;
+    }
+    if (!settingsForm) return;
+
+    const currentFaqs = settingsForm.faqs || [];
+    const newFaqItem = {
+      id: `faq_${Date.now()}`,
+      question: newFaqForm.question.trim(),
+      answer: newFaqForm.answer.trim(),
+    };
+
+    setSettingsForm({
+      ...settingsForm,
+      faqs: [...currentFaqs, newFaqItem],
+    });
+    setNewFaqForm({ question: '', answer: '' });
+    showToast('নতুন FAQ যুক্ত হয়েছে! সংরক্ষণ করতে নিচে "সেটিংস সংরক্ষণ করুন" চাপুন।', 'info');
+  };
+
+  // Delete FAQ Item
+  const handleDeleteFaq = (index: number) => {
+    if (!settingsForm) return;
+    const currentFaqs = [...(settingsForm.faqs || [])];
+    currentFaqs.splice(index, 1);
+    setSettingsForm({
+      ...settingsForm,
+      faqs: currentFaqs,
+    });
+    showToast('FAQ টি মুছে ফেলা হয়েছে! সংরক্ষণ করতে নিচে "সেটিংস সংরক্ষণ করুন" চাপুন।', 'info');
   };
 
   // Cloud Database Actions (Firebase Firestore)
@@ -4298,271 +4380,852 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
         })()}
 
         {/* ========================================================= */}
-        {/* 7. SETTINGS TAB */}
+        {/* 7. FULL DYNAMIC SETTINGS CONTROL CENTER */}
         {/* ========================================================= */}
         {activeTab === 'settings' && settingsForm && (
-          <form
-            onSubmit={handleSaveSettings}
-            className="bg-slate-800 rounded-2xl p-5 border border-slate-700 space-y-4 text-xs max-w-xl shadow-xs"
-          >
-            <h2 className="text-sm font-bold text-white pb-2 border-b border-slate-700">
-              প্ল্যাটফর্ম গ্লোবাল সেটিংস কনফিগারেশন
-            </h2>
+          <div className="space-y-6 text-xs max-w-5xl">
+            {/* Top Sub-Navigation Pills for Settings */}
+            <div className="bg-slate-900/90 border border-slate-800 p-2 rounded-2xl flex items-center gap-1.5 overflow-x-auto shadow-md scrollbar-none">
+              <button
+                type="button"
+                onClick={() => setSettingsSubTab('general')}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
+                  settingsSubTab === 'general'
+                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+              >
+                <Sliders className="w-3.5 h-3.5" />
+                <span>সাধারণ ও ব্র্যান্ডিং</span>
+              </button>
 
-            <div className="space-y-1">
-              <label className="text-slate-300 font-bold block">প্ল্যাটফর্মের নাম (Brand Name):</label>
-              <input
-                type="text"
-                required
-                value={settingsForm.brandName}
-                onChange={(e) => setSettingsForm({ ...settingsForm, brandName: e.target.value })}
-                className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white"
-              />
+              <button
+                type="button"
+                onClick={() => setSettingsSubTab('support')}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
+                  settingsSubTab === 'support'
+                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+              >
+                <Phone className="w-3.5 h-3.5" />
+                <span>সাপোর্ট ও সোশ্যাল লিংক</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSettingsSubTab('payments')}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
+                  settingsSubTab === 'payments'
+                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+              >
+                <CreditCard className="w-3.5 h-3.5" />
+                <span>পেমেন্ট নম্বর ও উইথড্র লিমিট</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSettingsSubTab('rewards')}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
+                  settingsSubTab === 'rewards'
+                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+              >
+                <Gift className="w-3.5 h-3.5" />
+                <span>বোনাস ও কমিশন রেট</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSettingsSubTab('landing')}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
+                  settingsSubTab === 'landing'
+                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span>ল্যান্ডিং পেজ ও FAQ কাস্টমাইজ</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSettingsSubTab('security')}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
+                  settingsSubTab === 'security'
+                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+              >
+                <KeyRound className="w-3.5 h-3.5" />
+                <span>অ্যাডমিন পাসওয়ার্ড পরিবর্তন</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSettingsSubTab('cloud')}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
+                  settingsSubTab === 'cloud'
+                    ? 'bg-indigo-500 text-white shadow-md shadow-indigo-500/20'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+              >
+                <Cloud className="w-3.5 h-3.5" />
+                <span>ক্লাউড ফায়ারস্টোর ডেটাবেস</span>
+              </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1">
-                <label className="text-slate-300 font-bold block">প্রতি রেফারেল বোনাস (টাকা):</label>
-                <input
-                  type="number"
-                  required
-                  min="0"
-                  value={settingsForm.referralReward}
-                  onChange={(e) =>
-                    setSettingsForm({
-                      ...settingsForm,
-                      referralReward: parseFloat(e.target.value) || 0,
-                    })
-                  }
-                  className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-slate-300 font-bold block">সর্বনিম্ন উইথড্র সীমা (টাকা):</label>
-                <input
-                  type="number"
-                  required
-                  min="50"
-                  value={settingsForm.minWithdrawal}
-                  onChange={(e) =>
-                    setSettingsForm({
-                      ...settingsForm,
-                      minWithdrawal: parseFloat(e.target.value) || 0,
-                    })
-                  }
-                  className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-slate-300 font-bold block">উইথড্রয়াল প্রসেসিং ফি (%):</label>
-              <input
-                type="number"
-                required
-                min="0"
-                max="50"
-                step="0.5"
-                value={settingsForm.withdrawalFeePercent}
-                onChange={(e) =>
-                  setSettingsForm({
-                    ...settingsForm,
-                    withdrawalFeePercent: parseFloat(e.target.value) || 0,
-                  })
-                }
-                className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-slate-300 font-bold block">হোম স্ক্রিনের ঘোষণা নোটিশ (Announcement Marquee):</label>
-              <textarea
-                rows={3}
-                value={settingsForm.announcement}
-                onChange={(e) => setSettingsForm({ ...settingsForm, announcement: e.target.value })}
-                className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white leading-relaxed"
-              />
-            </div>
-
-            {/* Dedicated WhatsApp & Telegram Support Configuration Box */}
-            <div className="bg-slate-900/90 border-2 border-amber-500/50 rounded-2xl p-4 sm:p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-700/80 pb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
-                    <Phone className="w-4 h-4" />
-                  </div>
+            {/* Sub-tab 1: General & Brand */}
+            {settingsSubTab === 'general' && (
+              <form onSubmit={handleSaveSettings} className="bg-slate-800 rounded-2xl p-6 border border-slate-700 space-y-5 shadow-sm">
+                <div className="flex items-center justify-between border-b border-slate-700 pb-3">
                   <div>
-                    <h3 className="font-bold text-white text-xs sm:text-sm">
-                      সাপোর্ট যোগাযোগ সেটিংস (WhatsApp ও Telegram পরিবর্তন)
-                    </h3>
-                    <p className="text-[10px] sm:text-[11px] text-slate-400">
-                      এখানে যে নম্বর ও লিংক দেবেন তা ব্যবহারকারীদের সাপোর্ট পেজ ও অ্যাপের সর্বত্র স্বয়ংক্রিয়ভাবে দেখাবে
+                    <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                      <Sliders className="w-4 h-4 text-amber-400" />
+                      <span>সাধারণ তথ্য ও নোটিশ সেটিংস</span>
+                    </h2>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      প্ল্যাটফর্মের নাম, হোম স্ক্রিনের মার্কি অ্যানাউন্সমেন্ট এবং পপ-আপ অ্যালার্ট নিয়ন্ত্রণ করুন
                     </p>
                   </div>
                 </div>
-              </div>
 
-              {/* WhatsApp Field with Live Test Link */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-slate-200 font-bold text-xs flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                    <span>হোয়াটসঅ্যাপ হেল্পলাইন নম্বর (WhatsApp Number):</span>
-                  </label>
-                  {settingsForm.supportWhatsapp && (
-                    <a
-                      href={formatWhatsAppLink(settingsForm.supportWhatsapp)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[11px] text-emerald-400 hover:text-emerald-300 flex items-center gap-1 font-medium bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800"
-                    >
-                      <span>টেস্ট করুন (WhatsApp খুলুন)</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  )}
+                <div className="space-y-1.5">
+                  <label className="text-slate-200 font-bold block">প্ল্যাটফর্মের অফিসিয়াল ব্র্যান্ড নাম (Brand Name):</label>
+                  <input
+                    type="text"
+                    required
+                    value={settingsForm.brandName}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, brandName: e.target.value })}
+                    placeholder="Earnora"
+                    className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-semibold text-xs focus:ring-1 focus:ring-amber-500"
+                  />
+                  <p className="text-[10px] text-slate-400">পুরো ওয়েবসাইট, ড্যাশবোর্ড, টাইটেল ও কপিরাইটে এই নামটি দেখাবে।</p>
                 </div>
-                <input
-                  type="text"
-                  value={settingsForm.supportWhatsapp}
-                  onChange={(e) =>
-                    setSettingsForm({ ...settingsForm, supportWhatsapp: e.target.value })
-                  }
-                  placeholder="যেমন: +880 1700-000000 বা 01712345678"
-                  className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-xs focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
-                />
-                <p className="text-[10px] text-slate-400">
-                  নোট: নম্বরটি যেভাবে ইচ্ছা লিখুন (017... বা +88017...), ব্যবহারকারী ক্লিক করলেই সরাসরি হোয়াটসঅ্যাপ চ্যাট ওপেন হবে।
-                </p>
-              </div>
 
-              {/* Telegram Field with Live Test Link */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-slate-200 font-bold text-xs flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-sky-400" />
-                    <span>অফিসিয়াল টেলিগ্রাম চ্যানেল / সাপোর্ট লিংক (Telegram Link):</span>
-                  </label>
-                  {settingsForm.supportTelegram && (
-                    <a
-                      href={formatTelegramLink(settingsForm.supportTelegram)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[11px] text-sky-400 hover:text-sky-300 flex items-center gap-1 font-medium bg-sky-950/60 px-2 py-0.5 rounded border border-sky-800"
-                    >
-                      <span>টেস্ট করুন (Telegram খুলুন)</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  )}
+                <div className="space-y-1.5">
+                  <label className="text-slate-200 font-bold block">হোম স্ক্রিনের স্ক্রোলিং নোটিশ (Announcement Marquee):</label>
+                  <textarea
+                    rows={3}
+                    value={settingsForm.announcement}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, announcement: e.target.value })}
+                    placeholder="📢 স্বাগতম! প্রতিটি টাস্ক সম্পূর্ণ করে এবং বন্ধুদের রেফার করে নিশ্চিত আয় করুন..."
+                    className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs leading-relaxed focus:ring-1 focus:ring-amber-500"
+                  />
                 </div>
-                <input
-                  type="text"
-                  value={settingsForm.supportTelegram}
-                  onChange={(e) =>
-                    setSettingsForm({ ...settingsForm, supportTelegram: e.target.value })
-                  }
-                  placeholder="যেমন: @fahimpaybd_official বা https://t.me/fahimpaybd_official"
-                  className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-xs focus:ring-1 focus:ring-sky-500 focus:border-sky-500"
-                />
-                <p className="text-[10px] text-slate-400">
-                  নোট: ইউজারনেম (@fahimpaybd) অথবা পুরো টেলিগ্রাম লিংক দিলে ব্যবহারকারী সরাসরি টেলিগ্রামে পৌঁছাবে।
-                </p>
-              </div>
 
-              {/* Mobile Phone Hotline Field */}
-              <div className="space-y-1.5">
-                <label className="text-slate-200 font-bold text-xs flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-amber-400" />
-                  <span>জরুরি মোবাইল হটলাইন নম্বর (Phone Helpline):</span>
-                </label>
-                <input
-                  type="text"
-                  value={settingsForm.supportPhone || ''}
-                  onChange={(e) =>
-                    setSettingsForm({ ...settingsForm, supportPhone: e.target.value })
-                  }
-                  placeholder="+880 1700-000000"
-                  className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-xs focus:ring-1 focus:ring-amber-500 focus:border-amber-500"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs py-3 rounded-xl shadow-md transition-transform active:scale-98"
-            >
-              সেটিংস সংরক্ষণ করুন
-            </button>
-
-            {/* Cloud Database Protection & Persistence Box */}
-            <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/40 border-2 border-indigo-500/40 rounded-2xl p-4 sm:p-5 space-y-4 shadow-lg">
-              <div className="flex items-center justify-between border-b border-slate-700/80 pb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center border border-indigo-500/30">
-                    <Cloud className="w-5 h-5" />
-                  </div>
-                  <div>
+                {/* Pop-up Alert Modal Settings */}
+                <div className="bg-slate-900/80 border border-slate-700 rounded-xl p-4 space-y-3">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-white text-xs sm:text-sm">
-                        ক্লাউড ডেটাবেস সুরক্ষা ও পারসিস্টেন্স (Firebase Firestore)
-                      </h3>
-                      <span className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] px-2 py-0.5 rounded-full font-bold">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        সংযুক্ত ও সুরক্ষিত
-                      </span>
+                      <Bell className="w-4 h-4 text-amber-400" />
+                      <div>
+                        <span className="font-bold text-white block">লগইন পপ-আপ নোটিশ (Popup Alert Notice)</span>
+                        <span className="text-[10px] text-slate-400">ইউজার অ্যাপ ওপেন করলে এই নোটিশটি পপ-আপ হিসেবে ভাসবে</span>
+                      </div>
                     </div>
-                    <p className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5">
-                      সার্ভার রিস্টার্ট বা কোড আপডেট হলেও নতুন ইউজার ও লেনদেন কখনো মুছে যাবে না
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setSettingsForm({
+                          ...settingsForm,
+                          popupNotice: {
+                            enabled: !settingsForm.popupNotice?.enabled,
+                            title: settingsForm.popupNotice?.title || 'জরুরি বিজ্ঞপ্তি',
+                            message: settingsForm.popupNotice?.message || '',
+                          },
+                        })
+                      }
+                      className={`px-3 py-1 rounded-full text-[11px] font-bold transition-all ${
+                        settingsForm.popupNotice?.enabled
+                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                          : 'bg-slate-800 text-slate-400 border border-slate-700'
+                      }`}
+                    >
+                      {settingsForm.popupNotice?.enabled ? 'সক্রিয় (ON)' : 'নিষ্ক্রিয় (OFF)'}
+                    </button>
+                  </div>
+
+                  {settingsForm.popupNotice?.enabled && (
+                    <div className="space-y-2 pt-2 border-t border-slate-800">
+                      <div>
+                        <label className="text-slate-300 font-medium block text-[11px] mb-1">পপ-আপ শিরোনাম (Title):</label>
+                        <input
+                          type="text"
+                          value={settingsForm.popupNotice?.title || ''}
+                          onChange={(e) =>
+                            setSettingsForm({
+                              ...settingsForm,
+                              popupNotice: {
+                                enabled: true,
+                                title: e.target.value,
+                                message: settingsForm.popupNotice?.message || '',
+                              },
+                            })
+                          }
+                          placeholder="যেমন: আজকের বিশেষ অফার বা আপডেট"
+                          className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-slate-300 font-medium block text-[11px] mb-1">পপ-আপ বার্তা (Message):</label>
+                        <textarea
+                          rows={2}
+                          value={settingsForm.popupNotice?.message || ''}
+                          onChange={(e) =>
+                            setSettingsForm({
+                              ...settingsForm,
+                              popupNotice: {
+                                enabled: true,
+                                title: settingsForm.popupNotice?.title || '',
+                                message: e.target.value,
+                              },
+                            })
+                          }
+                          placeholder="বিজ্ঞপ্তির বিস্তারিত বিবরণ লিখুন..."
+                          className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white text-xs"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Maintenance Mode Toggle */}
+                <div className="bg-slate-900/80 border border-slate-700 rounded-xl p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-rose-400" />
+                      <div>
+                        <span className="font-bold text-white block">সিস্টেম মেইনটেন্যান্স মোড (Maintenance Mode)</span>
+                        <span className="text-[10px] text-slate-400">জরুরি আপডেটের সময় সাধারণ ইউজারদের জন্য সাইট সাময়িক স্থগিত রাখতে</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setSettingsForm({
+                          ...settingsForm,
+                          maintenanceMode: {
+                            enabled: !settingsForm.maintenanceMode?.enabled,
+                            message: settingsForm.maintenanceMode?.message || 'সিস্টেম আপগ্রেডের কাজ চলছে, কিছুক্ষণ পর আবার চেষ্টা করুন।',
+                          },
+                        })
+                      }
+                      className={`px-3 py-1 rounded-full text-[11px] font-bold transition-all ${
+                        settingsForm.maintenanceMode?.enabled
+                          ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                          : 'bg-slate-800 text-slate-400 border border-slate-700'
+                      }`}
+                    >
+                      {settingsForm.maintenanceMode?.enabled ? 'মেইনটেন্যান্স চালু' : 'স্বাভাবিক চালু'}
+                    </button>
+                  </div>
+
+                  {settingsForm.maintenanceMode?.enabled && (
+                    <div className="pt-2 border-t border-slate-800">
+                      <label className="text-slate-300 font-medium block text-[11px] mb-1">মেইনটেন্যান্স বার্তা:</label>
+                      <input
+                        type="text"
+                        value={settingsForm.maintenanceMode?.message || ''}
+                        onChange={(e) =>
+                          setSettingsForm({
+                            ...settingsForm,
+                            maintenanceMode: {
+                              enabled: true,
+                              message: e.target.value,
+                            },
+                          })
+                        }
+                        placeholder="সিস্টেম আপগ্রেডের কাজ চলছে..."
+                        className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white text-xs"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs py-3 rounded-xl shadow-md transition-transform active:scale-98"
+                >
+                  সাধারণ সেটিংস সংরক্ষণ করুন
+                </button>
+              </form>
+            )}
+
+            {/* Sub-tab 2: Support & Social Channels */}
+            {settingsSubTab === 'support' && (
+              <form onSubmit={handleSaveSettings} className="bg-slate-800 rounded-2xl p-6 border border-slate-700 space-y-5 shadow-sm">
+                <div className="flex items-center justify-between border-b border-slate-700 pb-3">
+                  <div>
+                    <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-emerald-400" />
+                      <span>সাপোর্ট হেল্পলাইন ও সোশ্যাল চ্যানেল লিংক</span>
+                    </h2>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      ব্যবহারকারী যখন WhatsApp বা Telegram সাপোর্টে ক্লিক করবে তখন সরাসরি এই লিঙ্কগুলোতে পৌঁছাবে
                     </p>
                   </div>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-1">
-                  <span className="text-slate-400 text-[11px] flex items-center gap-1.5">
-                    <Database className="w-3.5 h-3.5 text-indigo-400" />
-                    বর্তমান রেজিস্টার্ড ইউজার:
-                  </span>
-                  <p className="text-white font-bold text-sm">
-                    {cloudSyncInfo?.localUsersCount !== undefined ? cloudSyncInfo.localUsersCount : users.length} জন
-                  </p>
+                <div className="space-y-4">
+                  {/* WhatsApp Helpline */}
+                  <div className="space-y-1.5 bg-slate-900/80 p-3.5 rounded-xl border border-slate-700/80">
+                    <div className="flex items-center justify-between">
+                      <label className="text-slate-200 font-bold text-xs flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                        <span>হোয়াটসঅ্যাপ হেল্পলাইন নম্বর (WhatsApp Number):</span>
+                      </label>
+                      {settingsForm.supportWhatsapp && (
+                        <a
+                          href={formatWhatsAppLink(settingsForm.supportWhatsapp)}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[11px] text-emerald-400 hover:text-emerald-300 flex items-center gap-1 font-medium bg-emerald-950/60 px-2.5 py-0.5 rounded border border-emerald-800"
+                        >
+                          <span>টেস্ট করুন</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      value={settingsForm.supportWhatsapp}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, supportWhatsapp: e.target.value })}
+                      placeholder="+880 1700-000000 বা 01712345678"
+                      className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-xs focus:ring-1 focus:ring-emerald-500"
+                    />
+                    <p className="text-[10px] text-slate-400">যে ফরম্যাটেই লিখুন না কেন, ইউজার সরাসরি আপনার হোয়াটসঅ্যাপ চ্যাটে চলে যাবে।</p>
+                  </div>
+
+                  {/* Telegram Channel / Support Link */}
+                  <div className="space-y-1.5 bg-slate-900/80 p-3.5 rounded-xl border border-slate-700/80">
+                    <div className="flex items-center justify-between">
+                      <label className="text-slate-200 font-bold text-xs flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-sky-400" />
+                        <span>অফিসিয়াল টেলিগ্রাম সাপোর্ট লিংক (Telegram Link):</span>
+                      </label>
+                      {settingsForm.supportTelegram && (
+                        <a
+                          href={formatTelegramLink(settingsForm.supportTelegram)}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[11px] text-sky-400 hover:text-sky-300 flex items-center gap-1 font-medium bg-sky-950/60 px-2.5 py-0.5 rounded border border-sky-800"
+                        >
+                          <span>টেস্ট করুন</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      value={settingsForm.supportTelegram}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, supportTelegram: e.target.value })}
+                      placeholder="@earnora_official বা https://t.me/earnora_official"
+                      className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-xs focus:ring-1 focus:ring-sky-500"
+                    />
+                  </div>
+
+                  {/* Telegram Community Group Link */}
+                  <div className="space-y-1.5 bg-slate-900/80 p-3.5 rounded-xl border border-slate-700/80">
+                    <label className="text-slate-200 font-bold text-xs flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-indigo-400" />
+                      <span>টেলিগ্রাম ডিসকাশন / পেমেন্ট প্রুফ গ্রুপ (Telegram Group Link):</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={settingsForm.telegramGroupUrl || ''}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, telegramGroupUrl: e.target.value })}
+                      placeholder="https://t.me/earnora_community"
+                      className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-xs focus:ring-1 focus:ring-indigo-500"
+                    />
+                  </div>
+
+                  {/* Mobile Phone Helpline */}
+                  <div className="space-y-1.5 bg-slate-900/80 p-3.5 rounded-xl border border-slate-700/80">
+                    <label className="text-slate-200 font-bold text-xs flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                      <span>জরুরি মোবাইল হটলাইন নম্বর (Phone Helpline):</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={settingsForm.supportPhone || ''}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, supportPhone: e.target.value })}
+                      placeholder="+880 1700-000000"
+                      className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-xs focus:ring-1 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  {/* Support Email */}
+                  <div className="space-y-1.5 bg-slate-900/80 p-3.5 rounded-xl border border-slate-700/80">
+                    <label className="text-slate-200 font-bold text-xs flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-violet-400" />
+                      <span>অফিসিয়াল ইমেইল সাপোর্ট (Support Email):</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={settingsForm.supportEmail || ''}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, supportEmail: e.target.value })}
+                      placeholder="support@earnora.com"
+                      className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-xs focus:ring-1 focus:ring-violet-500"
+                    />
+                  </div>
                 </div>
 
-                <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-1">
-                  <span className="text-slate-400 text-[11px] flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-amber-400" />
-                    সর্বশেষ ক্লাউড সিঙ্ক:
-                  </span>
-                  <p className="text-white font-mono text-[11px] truncate">
-                    {cloudSyncInfo?.lastSync ? new Date(cloudSyncInfo.lastSync).toLocaleString('bn-BD') : 'সার্বক্ষণিক অটো-সিঙ্ক সক্রিয়'}
-                  </p>
+                <button
+                  type="submit"
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs py-3 rounded-xl shadow-md transition-transform active:scale-98"
+                >
+                  সাপোর্ট সেটিংস সংরক্ষণ করুন
+                </button>
+              </form>
+            )}
+
+            {/* Sub-tab 3: Payment Numbers & Withdrawal Limits */}
+            {settingsSubTab === 'payments' && (
+              <form onSubmit={handleSaveSettings} className="bg-slate-800 rounded-2xl p-6 border border-slate-700 space-y-5 shadow-sm">
+                <div className="flex items-center justify-between border-b border-slate-700 pb-3">
+                  <div>
+                    <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                      <CreditCard className="w-4 h-4 text-emerald-400" />
+                      <span>পেমেন্ট মেথড ও উইথড্রয়াল লিমিট কনফিগারেশন</span>
+                    </h2>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      বিকাশ, নগদ ও রকেট একাউন্ট নম্বর এবং ইউজারদের টাকা তোলার সীমা নির্ধারণ করুন
+                    </p>
+                  </div>
+                </div>
+
+                {/* Gateway Numbers */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="space-y-1.5 bg-slate-900/80 p-3.5 rounded-xl border border-pink-500/30">
+                    <label className="text-pink-400 font-bold block text-xs">বিকাশ নম্বর (bKash Number):</label>
+                    <input
+                      type="text"
+                      value={settingsForm.bkashNumber || ''}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, bkashNumber: e.target.value })}
+                      placeholder="017xxxxxxxx (Personal/Agent)"
+                      className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white font-mono text-xs"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5 bg-slate-900/80 p-3.5 rounded-xl border border-amber-500/30">
+                    <label className="text-amber-400 font-bold block text-xs">নগদ নম্বর (Nagad Number):</label>
+                    <input
+                      type="text"
+                      value={settingsForm.nagadNumber || ''}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, nagadNumber: e.target.value })}
+                      placeholder="018xxxxxxxx (Personal/Agent)"
+                      className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white font-mono text-xs"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5 bg-slate-900/80 p-3.5 rounded-xl border border-purple-500/30">
+                    <label className="text-purple-400 font-bold block text-xs">রকেট নম্বর (Rocket Number):</label>
+                    <input
+                      type="text"
+                      value={settingsForm.rocketNumber || ''}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, rocketNumber: e.target.value })}
+                      placeholder="019xxxxxxxx (Personal/Agent)"
+                      className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white font-mono text-xs"
+                    />
+                  </div>
+                </div>
+
+                {/* Limits & Fees */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="text-slate-300 font-bold block">সর্বনিম্ন উইথড্র সীমা (টাকা):</label>
+                    <input
+                      type="number"
+                      required
+                      min="10"
+                      value={settingsForm.minWithdrawal}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, minWithdrawal: parseFloat(e.target.value) || 0 })}
+                      className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono text-xs"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-slate-300 font-bold block">সর্বোচ্চ এককালীন উইথড্র (টাকা):</label>
+                    <input
+                      type="number"
+                      required
+                      min="100"
+                      value={settingsForm.maxWithdrawal || 50000}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, maxWithdrawal: parseFloat(e.target.value) || 50000 })}
+                      className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono text-xs"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-slate-300 font-bold block">উইথড্রয়াল প্রসেসিং ফি (%):</label>
+                    <input
+                      type="number"
+                      required
+                      min="0"
+                      max="50"
+                      step="0.5"
+                      value={settingsForm.withdrawalFeePercent}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, withdrawalFeePercent: parseFloat(e.target.value) || 0 })}
+                      className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono text-xs"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs py-3 rounded-xl shadow-md transition-transform active:scale-98"
+                >
+                  পেমেন্ট সেটিংস সংরক্ষণ করুন
+                </button>
+              </form>
+            )}
+
+            {/* Sub-tab 4: Rewards & Bonuses */}
+            {settingsSubTab === 'rewards' && (
+              <form onSubmit={handleSaveSettings} className="bg-slate-800 rounded-2xl p-6 border border-slate-700 space-y-5 shadow-sm">
+                <div className="flex items-center justify-between border-b border-slate-700 pb-3">
+                  <div>
+                    <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                      <Gift className="w-4 h-4 text-amber-400" />
+                      <span>বোনাস ও রেফারেল ইনকাম সেটিংস</span>
+                    </h2>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      নতুন ইউজারদের রেজিস্ট্রেশন ওয়েলকাম বোনাস, রেফারেল রিওয়ার্ড ও দৈনিক লগইন বোনাস নির্ধারণ করুন
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="space-y-1.5 bg-slate-900/80 p-4 rounded-xl border border-slate-700">
+                    <label className="text-emerald-400 font-bold block text-xs">রেজিস্ট্রেশন সাইনআপ বোনাস (টাকা):</label>
+                    <input
+                      type="number"
+                      required
+                      min="0"
+                      value={settingsForm.signupBonus ?? 10}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, signupBonus: parseFloat(e.target.value) || 0 })}
+                      className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-xs"
+                    />
+                    <p className="text-[10px] text-slate-400">নতুন অ্যাকাউন্ট খোলার সাথে সাথে ব্যালেন্সে যোগ হবে।</p>
+                  </div>
+
+                  <div className="space-y-1.5 bg-slate-900/80 p-4 rounded-xl border border-slate-700">
+                    <label className="text-amber-400 font-bold block text-xs">প্রতি রেফারেল বোনাস (টাকা):</label>
+                    <input
+                      type="number"
+                      required
+                      min="0"
+                      value={settingsForm.referralReward}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, referralReward: parseFloat(e.target.value) || 0 })}
+                      className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-xs"
+                    />
+                    <p className="text-[10px] text-slate-400">রেফার করা বন্ধু কাজ শুরু করলে রেফারকারী এই বোনাস পাবেন।</p>
+                  </div>
+
+                  <div className="space-y-1.5 bg-slate-900/80 p-4 rounded-xl border border-slate-700">
+                    <label className="text-sky-400 font-bold block text-xs">দৈনিক চেক-ইন বোনাস (টাকা):</label>
+                    <input
+                      type="number"
+                      required
+                      min="0"
+                      value={settingsForm.dailyCheckinReward ?? 1}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, dailyCheckinReward: parseFloat(e.target.value) || 0 })}
+                      className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-xs"
+                    />
+                    <p className="text-[10px] text-slate-400">প্রতিদিন অ্যাপে লগইন করে দাবি করতে পারবে।</p>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs py-3 rounded-xl shadow-md transition-transform active:scale-98"
+                >
+                  বোনাস ও রিওয়ার্ড সেটিংস সংরক্ষণ করুন
+                </button>
+              </form>
+            )}
+
+            {/* Sub-tab 5: Landing Page & FAQ Customization */}
+            {settingsSubTab === 'landing' && (
+              <div className="space-y-6">
+                <form onSubmit={handleSaveSettings} className="bg-slate-800 rounded-2xl p-6 border border-slate-700 space-y-5 shadow-sm">
+                  <div className="flex items-center justify-between border-b border-slate-700 pb-3">
+                    <div>
+                      <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-sky-400" />
+                        <span>ল্যান্ডিং পেজ টেক্সট ও ভিডিও কনফিগারেশন</span>
+                      </h2>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        হোম পেজের প্রধান শিরোনাম, বর্ণনা এবং ইউটিউব টিউটোরিয়াল ভিডিও পরিবর্তন করুন
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-1.5">
+                      <label className="text-slate-300 font-bold block">ল্যান্ডিং পেজ প্রধান শিরোনাম (Hero Title):</label>
+                      <input
+                        type="text"
+                        value={settingsForm.heroTitle || ''}
+                        onChange={(e) => setSettingsForm({ ...settingsForm, heroTitle: e.target.value })}
+                        placeholder="Earn Smarter With A Trusted Digital Platform"
+                        className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-slate-300 font-bold block">ল্যান্ডিং পেজ বর্ণনা (Hero Description):</label>
+                      <textarea
+                        rows={3}
+                        value={settingsForm.heroSubtitle || ''}
+                        onChange={(e) => setSettingsForm({ ...settingsForm, heroSubtitle: e.target.value })}
+                        placeholder="একটি আধুনিক ও নির্ভরযোগ্য ডিজিটাল প্ল্যাটফর্ম যেখানে আপনি সহজে টাস্ক সম্পন্ন করে আয় করতে পারবেন..."
+                        className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs leading-relaxed"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-slate-300 font-bold block">ইউটিউব টিউটোরিয়াল ভিডিও লিংক (YouTube Video URL):</label>
+                      <input
+                        type="text"
+                        value={settingsForm.heroVideoUrl || ''}
+                        onChange={(e) => setSettingsForm({ ...settingsForm, heroVideoUrl: e.target.value })}
+                        placeholder="https://www.youtube.com/watch?v=..."
+                        className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs py-3 rounded-xl shadow-md transition-transform active:scale-98"
+                  >
+                    ল্যান্ডিং পেজ সেটিংস সংরক্ষণ করুন
+                  </button>
+                </form>
+
+                {/* FAQ Management Section */}
+                <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 space-y-5 shadow-sm">
+                  <div className="flex items-center justify-between border-b border-slate-700 pb-3">
+                    <div>
+                      <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                        <HelpCircle className="w-4 h-4 text-emerald-400" />
+                        <span>সাধারণ জিজ্ঞাসা (FAQ প্রশ্ন-উত্তর ম্যানেজার)</span>
+                      </h3>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        ওয়েবসাইটে প্রদর্শন করার জন্য নতুন প্রশ্ন ও উত্তর যুক্ত বা মুছে ফেলুন
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Add New FAQ Form */}
+                  <div className="bg-slate-900/90 p-4 rounded-xl border border-slate-700/80 space-y-3">
+                    <h4 className="font-bold text-amber-400 text-xs flex items-center gap-1.5">
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>নতুন FAQ যুক্ত করুন:</span>
+                    </h4>
+                    <input
+                      type="text"
+                      value={newFaqForm.question}
+                      onChange={(e) => setNewFaqForm({ ...newFaqForm, question: e.target.value })}
+                      placeholder="প্রশ্ন লিখুন (যেমন: পেমেন্ট পেতে কতক্ষণ সময় লাগে?)"
+                      className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-xs"
+                    />
+                    <textarea
+                      rows={2}
+                      value={newFaqForm.answer}
+                      onChange={(e) => setNewFaqForm({ ...newFaqForm, answer: e.target.value })}
+                      placeholder="উত্তর লিখুন (যেমন: রিকোয়েস্ট করার ১২ থেকে ২৪ ঘণ্টার মধ্যে পেমেন্ট পৌঁছে যাবে)..."
+                      className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-xs leading-relaxed"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddFaq}
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-sm"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>তালিকায় যুক্ত করুন</span>
+                    </button>
+                  </div>
+
+                  {/* Existing FAQ List */}
+                  <div className="space-y-3">
+                    <h4 className="font-bold text-white text-xs">বর্তমান FAQ তালিকা ({(settingsForm.faqs || []).length} টি):</h4>
+                    {(settingsForm.faqs || []).length === 0 ? (
+                      <p className="text-slate-500 italic text-[11px] py-2">এখনও কোনো কাস্টম FAQ যুক্ত করা হয়নি (ডিফল্ট FAQ দেখানো হচ্ছে)।</p>
+                    ) : (
+                      (settingsForm.faqs || []).map((faq, idx) => (
+                        <div key={faq.id || idx} className="bg-slate-900/80 p-3.5 rounded-xl border border-slate-700/70 space-y-1.5 relative group">
+                          <div className="flex items-start justify-between gap-3">
+                            <p className="font-bold text-slate-100 text-xs">
+                              {idx + 1}. {faq.question}
+                            </p>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteFaq(idx)}
+                              className="text-rose-400 hover:text-rose-300 p-1 rounded-lg hover:bg-rose-950/40 transition-colors"
+                              title="মুছে ফেলুন"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                          <p className="text-slate-400 text-[11px] leading-relaxed">{faq.answer}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleSaveSettings()}
+                    className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs py-3 rounded-xl shadow-md transition-transform active:scale-98"
+                  >
+                    সকল FAQ পরিবর্তন সংরক্ষণ করুন
+                  </button>
                 </div>
               </div>
+            )}
 
-              <div className="flex flex-wrap gap-2.5 pt-1">
-                <button
-                  type="button"
-                  disabled={cloudSyncLoading}
-                  onClick={handlePushToCloud}
-                  className="flex-1 min-w-[140px] flex items-center justify-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold text-xs py-2.5 px-3 rounded-xl transition-all shadow-md"
-                >
-                  <UploadCloud className="w-4 h-4" />
-                  <span>{cloudSyncLoading ? 'সিঙ্ক হচ্ছে...' : 'ক্লাউডে ম্যানুয়াল ব্যাকআপ পুশ করুন'}</span>
-                </button>
+            {/* Sub-tab 6: Admin Password Security */}
+            {settingsSubTab === 'security' && (
+              <form onSubmit={handleChangeAdminPassword} className="bg-slate-800 rounded-2xl p-6 border border-slate-700 space-y-5 shadow-sm max-w-lg">
+                <div className="flex items-center justify-between border-b border-slate-700 pb-3">
+                  <div>
+                    <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                      <KeyRound className="w-4 h-4 text-amber-400" />
+                      <span>সুপার অ্যাডমিন পাসওয়ার্ড পরিবর্তন</span>
+                    </h2>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      অ্যাডমিন প্যানেলের নিরাপত্তা বজায় রাখতে এখান থেকে সরাসরি পাসওয়ার্ড পরিবর্তন করুন
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3.5">
+                  <div className="space-y-1">
+                    <label className="text-slate-300 font-bold block">বর্তমান পাসওয়ার্ড (Current Password):</label>
+                    <input
+                      type="password"
+                      value={adminPasswordForm.currentPassword}
+                      onChange={(e) => setAdminPasswordForm({ ...adminPasswordForm, currentPassword: e.target.value })}
+                      placeholder="বর্তমান পাসওয়ার্ড লিখুন"
+                      className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono text-xs focus:ring-1 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-slate-300 font-bold block">নতুন পাসওয়ার্ড (New Password):</label>
+                    <input
+                      type="password"
+                      required
+                      minLength={6}
+                      value={adminPasswordForm.newPassword}
+                      onChange={(e) => setAdminPasswordForm({ ...adminPasswordForm, newPassword: e.target.value })}
+                      placeholder="কমপক্ষে ৬ অক্ষরের নতুন পাসওয়ার্ড"
+                      className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono text-xs focus:ring-1 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-slate-300 font-bold block">কনফার্ম নতুন পাসওয়ার্ড (Confirm New Password):</label>
+                    <input
+                      type="password"
+                      required
+                      minLength={6}
+                      value={adminPasswordForm.confirmNewPassword}
+                      onChange={(e) => setAdminPasswordForm({ ...adminPasswordForm, confirmNewPassword: e.target.value })}
+                      placeholder="নতুন পাসওয়ার্ডটি পুনরায় লিখুন"
+                      className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono text-xs focus:ring-1 focus:ring-amber-500"
+                    />
+                  </div>
+                </div>
 
                 <button
-                  type="button"
-                  disabled={cloudSyncLoading}
-                  onClick={handlePullFromCloud}
-                  className="flex-1 min-w-[140px] flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-200 font-bold text-xs py-2.5 px-3 rounded-xl border border-slate-700 transition-all"
+                  type="submit"
+                  disabled={adminPasswordLoading}
+                  className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-xs py-3 rounded-xl shadow-md transition-transform active:scale-98 flex items-center justify-center gap-2"
                 >
-                  <RefreshCw className={`w-3.5 h-3.5 ${cloudSyncLoading ? 'animate-spin text-amber-400' : ''}`} />
-                  <span>ক্লাউড থেকে রিস্টোর করুন</span>
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>{adminPasswordLoading ? 'পরিবর্তন করা হচ্ছে...' : 'পাসওয়ার্ড আপডেট করুন'}</span>
                 </button>
+              </form>
+            )}
+
+            {/* Sub-tab 7: Cloud Database (Firebase Firestore) */}
+            {settingsSubTab === 'cloud' && (
+              <div className="bg-gradient-to-br from-slate-800 via-slate-800 to-indigo-950/40 border-2 border-indigo-500/40 rounded-2xl p-6 space-y-5 shadow-lg">
+                <div className="flex items-center justify-between border-b border-slate-700/80 pb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center border border-indigo-500/30">
+                      <Cloud className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-bold text-white text-sm">
+                          ক্লাউড ডেটাবেস সুরক্ষা ও পারসিস্টেন্স (Firebase Firestore)
+                        </h3>
+                        <span className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                          সংযুক্ত ও সুরক্ষিত
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        সার্ভার রিস্টার্ট বা কোড আপডেট হলেও নতুন ইউজার ও লেনদেন কখনো মুছে যাবে না
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div className="bg-slate-950/70 p-4 rounded-xl border border-slate-800 space-y-1">
+                    <span className="text-slate-400 text-[11px] flex items-center gap-1.5">
+                      <Database className="w-3.5 h-3.5 text-indigo-400" />
+                      বর্তমান রেজিস্টার্ড ইউজার:
+                    </span>
+                    <p className="text-white font-bold text-base">
+                      {cloudSyncInfo?.localUsersCount !== undefined ? cloudSyncInfo.localUsersCount : users.length} জন
+                    </p>
+                  </div>
+
+                  <div className="bg-slate-950/70 p-4 rounded-xl border border-slate-800 space-y-1">
+                    <span className="text-slate-400 text-[11px] flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-amber-400" />
+                      সর্বশেষ ক্লাউড সিঙ্ক:
+                    </span>
+                    <p className="text-white font-mono text-[11px]">
+                      {cloudSyncInfo?.lastSync ? new Date(cloudSyncInfo.lastSync).toLocaleString('bn-BD') : 'সার্বক্ষণিক অটো-সিঙ্ক সক্রিয়'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-3 pt-2">
+                  <button
+                    type="button"
+                    disabled={cloudSyncLoading}
+                    onClick={handlePushToCloud}
+                    className="flex-1 min-w-[160px] flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold text-xs py-3 px-4 rounded-xl transition-all shadow-md"
+                  >
+                    <UploadCloud className="w-4 h-4" />
+                    <span>{cloudSyncLoading ? 'সিঙ্ক হচ্ছে...' : 'ক্লাউডে ম্যানুয়াল ব্যাকআপ পুশ করুন'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={cloudSyncLoading}
+                    onClick={handlePullFromCloud}
+                    className="flex-1 min-w-[160px] flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-200 font-bold text-xs py-3 px-4 rounded-xl border border-slate-700 transition-all"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${cloudSyncLoading ? 'animate-spin text-amber-400' : ''}`} />
+                    <span>ক্লাউড থেকে ডেটা রিস্টোর করুন</span>
+                  </button>
+                </div>
               </div>
-            </div>
-          </form>
+            )}
+          </div>
         )}
 
         {/* ========================================================= */}

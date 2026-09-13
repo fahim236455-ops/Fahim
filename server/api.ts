@@ -31,15 +31,30 @@ apiRouter.get('/settings', (req, res) => {
   const db = getDatabase();
   const settings = db.site_settings;
   res.json({
-    brandName: settings.brandName,
-    referralReward: settings.referralReward,
-    minWithdrawal: settings.minWithdrawal,
-    withdrawalFeePercent: settings.withdrawalFeePercent,
-    withdrawalMethods: settings.withdrawalMethods,
-    supportPhone: settings.supportPhone,
-    supportWhatsapp: settings.supportWhatsapp,
-    supportTelegram: settings.supportTelegram,
-    announcement: settings.announcement,
+    brandName: settings.brandName || 'Earnora',
+    referralReward: settings.referralReward ?? 50,
+    minWithdrawal: settings.minWithdrawal ?? 500,
+    maxWithdrawal: settings.maxWithdrawal ?? 50000,
+    withdrawalFeePercent: settings.withdrawalFeePercent ?? 2,
+    withdrawalMethods: settings.withdrawalMethods || ['bKash', 'Nagad', 'Rocket'],
+    bkashNumber: settings.bkashNumber || '',
+    nagadNumber: settings.nagadNumber || '',
+    rocketNumber: settings.rocketNumber || '',
+    supportPhone: settings.supportPhone || '',
+    supportWhatsapp: settings.supportWhatsapp || '',
+    supportTelegram: settings.supportTelegram || '',
+    supportEmail: settings.supportEmail || '',
+    announcement: settings.announcement || '',
+    signupBonus: settings.signupBonus ?? 10,
+    dailyCheckinReward: settings.dailyCheckinReward ?? 1,
+    popupNotice: settings.popupNotice || { enabled: false, title: '', message: '' },
+    maintenanceMode: settings.maintenanceMode || { enabled: false, message: '' },
+    heroTitle: settings.heroTitle || '',
+    heroSubtitle: settings.heroSubtitle || '',
+    heroVideoUrl: settings.heroVideoUrl || '',
+    telegramChannelUrl: settings.telegramChannelUrl || '',
+    telegramGroupUrl: settings.telegramGroupUrl || '',
+    faqs: settings.faqs || [],
   });
 });
 
@@ -2236,11 +2251,27 @@ apiRouter.put('/admin/settings', requirePermission('canEditSiteSettings'), (req:
       brandName,
       referralReward,
       minWithdrawal,
+      maxWithdrawal,
       withdrawalFeePercent,
+      withdrawalMethods,
+      bkashNumber,
+      nagadNumber,
+      rocketNumber,
       supportPhone,
       supportWhatsapp,
       supportTelegram,
+      supportEmail,
       announcement,
+      signupBonus,
+      dailyCheckinReward,
+      popupNotice,
+      maintenanceMode,
+      heroTitle,
+      heroSubtitle,
+      heroVideoUrl,
+      telegramChannelUrl,
+      telegramGroupUrl,
+      faqs,
     } = req.body;
 
     const updated = mutateLedger((db) => {
@@ -2250,11 +2281,44 @@ apiRouter.put('/admin/settings', requirePermission('canEditSiteSettings'), (req:
       }
       if (referralReward !== undefined) s.referralReward = Math.max(0, Number(referralReward));
       if (minWithdrawal !== undefined) s.minWithdrawal = Math.max(0, Number(minWithdrawal));
+      if (maxWithdrawal !== undefined) s.maxWithdrawal = Math.max(0, Number(maxWithdrawal));
       if (withdrawalFeePercent !== undefined) s.withdrawalFeePercent = Math.max(0, Number(withdrawalFeePercent));
+      if (Array.isArray(withdrawalMethods)) s.withdrawalMethods = withdrawalMethods;
+      if (bkashNumber !== undefined) s.bkashNumber = String(bkashNumber).trim();
+      if (nagadNumber !== undefined) s.nagadNumber = String(nagadNumber).trim();
+      if (rocketNumber !== undefined) s.rocketNumber = String(rocketNumber).trim();
       if (supportPhone !== undefined) s.supportPhone = String(supportPhone).trim();
       if (supportWhatsapp !== undefined) s.supportWhatsapp = String(supportWhatsapp).trim();
       if (supportTelegram !== undefined) s.supportTelegram = String(supportTelegram).trim();
+      if (supportEmail !== undefined) s.supportEmail = String(supportEmail).trim();
       if (announcement !== undefined) s.announcement = String(announcement).trim();
+      if (signupBonus !== undefined) s.signupBonus = Math.max(0, Number(signupBonus));
+      if (dailyCheckinReward !== undefined) s.dailyCheckinReward = Math.max(0, Number(dailyCheckinReward));
+      if (popupNotice !== undefined && typeof popupNotice === 'object') {
+        s.popupNotice = {
+          enabled: Boolean(popupNotice.enabled),
+          title: String(popupNotice.title || '').trim(),
+          message: String(popupNotice.message || '').trim(),
+        };
+      }
+      if (maintenanceMode !== undefined && typeof maintenanceMode === 'object') {
+        s.maintenanceMode = {
+          enabled: Boolean(maintenanceMode.enabled),
+          message: String(maintenanceMode.message || '').trim(),
+        };
+      }
+      if (heroTitle !== undefined) s.heroTitle = String(heroTitle).trim();
+      if (heroSubtitle !== undefined) s.heroSubtitle = String(heroSubtitle).trim();
+      if (heroVideoUrl !== undefined) s.heroVideoUrl = String(heroVideoUrl).trim();
+      if (telegramChannelUrl !== undefined) s.telegramChannelUrl = String(telegramChannelUrl).trim();
+      if (telegramGroupUrl !== undefined) s.telegramGroupUrl = String(telegramGroupUrl).trim();
+      if (Array.isArray(faqs)) {
+        s.faqs = faqs.map((f: any) => ({
+          id: f.id || generateId(),
+          question: String(f.question || '').trim(),
+          answer: String(f.answer || '').trim(),
+        })).filter(f => f.question && f.answer);
+      }
       s.updatedAt = new Date().toISOString();
 
       db.audit_logs.push({
@@ -2263,6 +2327,7 @@ apiRouter.put('/admin/settings', requirePermission('canEditSiteSettings'), (req:
         actorEmail: req.user!.email,
         action: 'settings_updated',
         details: {
+          brandName: s.brandName,
           supportWhatsapp: s.supportWhatsapp,
           supportTelegram: s.supportTelegram,
           supportPhone: s.supportPhone,
@@ -2274,6 +2339,55 @@ apiRouter.put('/admin/settings', requirePermission('canEditSiteSettings'), (req:
     });
 
     res.json({ message: 'সেটিংস সফলভাবে সংরক্ষণ করা হয়েছে।', settings: updated });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Admin change own password
+apiRouter.post('/admin/change-password', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { currentPassword, newPassword, confirmNewPassword } = req.body;
+
+    if (!newPassword || typeof newPassword !== 'string' || newPassword.length < 6) {
+      res.status(400).json({ error: 'নতুন পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।' });
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      res.status(400).json({ error: 'নতুন পাসওয়ার্ড এবং কনফার্ম পাসওয়ার্ড মিলছে না।' });
+      return;
+    }
+
+    mutateLedger((db) => {
+      const user = db.profiles.find((p) => p.id === req.user!.userId);
+      if (!user) throw new Error('ইউজার পাওয়া যায়নি।');
+
+      const cred = db.auth_credentials.find((c) => c.userId === req.user!.userId);
+      if (!cred) throw new Error('অথেনটিকেশন রেকর্ড পাওয়া যায়নি।');
+
+      // Verify current password if provided
+      if (currentPassword) {
+        const isMatch = bcrypt.compareSync(currentPassword, cred.passwordHash);
+        if (!isMatch) {
+          throw new Error('বর্তমান পাসওয়ার্ড ভুল হয়েছে।');
+        }
+      }
+
+      cred.passwordHash = bcrypt.hashSync(newPassword, 10);
+      cred.updatedAt = new Date().toISOString();
+
+      db.audit_logs.push({
+        id: generateId(),
+        actorId: req.user!.userId,
+        actorEmail: req.user!.email,
+        action: 'admin_password_changed',
+        details: { userId: user.id },
+        createdAt: new Date().toISOString(),
+      });
+    });
+
+    res.json({ message: 'অ্যাডমিন পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে।' });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
