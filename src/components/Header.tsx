@@ -51,12 +51,9 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate, currentRoute }) => {
           {/* Center: Brand Title */}
           <button
             onClick={() => onNavigate('dashboard')}
-            className="focus:outline-none flex items-center justify-center gap-2"
+            className="focus:outline-none flex items-center justify-center gap-1.5 group cursor-pointer"
           >
-            <Logo size={28} className="transform hover:rotate-12 transition-transform duration-300" />
-            <h1 className="text-base sm:text-lg font-black tracking-widest uppercase bg-gradient-to-r from-sky-400 via-cyan-300 to-amber-400 bg-clip-text text-transparent font-sans mt-0.5">
-              EARNORA
-            </h1>
+            <Logo size={30} variant="full" className="group-hover:scale-105 transition-transform" />
           </button>
 
           {/* Right: Notifications & Profile Avatar */}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { fetchApi } from '../lib/api';
+import { Logo } from '../components/Logo';
 import { Task, SiteSettings, SocialJobConfig, SupportTicket, AdminRoleInfo, AdminPermissions } from '../types';
 import { formatWhatsAppLink, formatTelegramLink } from './SupportPage';
 import {
@@ -1271,12 +1272,16 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
-            <div className="w-8 h-8 rounded-lg bg-amber-500 text-slate-950 font-black flex items-center justify-center shadow-xs">
-              <ShieldCheck className="w-5 h-5" />
+            <div className="relative">
+              <Logo size={32} />
+              <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-amber-500 rounded-full flex items-center justify-center text-[8px] text-slate-950 font-bold border border-slate-900">
+                ★
+              </span>
             </div>
             <div>
               <h1 className="text-sm font-bold text-white flex items-center gap-1.5">
-                <span>{settings?.brandName || 'Earnora'} কন্ট্রোল সেন্টার</span>
+                <span className="font-sans font-black text-amber-400">EARNORA</span>
+                <span className="text-slate-200">কন্ট্রোল সেন্টার</span>
                 <span className="bg-amber-500/20 text-amber-400 text-[10px] px-1.5 py-0.5 rounded border border-amber-500/30 font-mono">
                   SUPER ADMIN
                 </span>

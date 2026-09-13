@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { User, Phone, Mail, Lock, Gift, ArrowRight } from 'lucide-react';
+import { User, Phone, Mail, Lock, Gift, ArrowRight, ArrowLeft } from 'lucide-react';
 
 import { Logo } from '../components/Logo';
 
@@ -73,14 +73,23 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center px-4 py-8 max-w-md mx-auto">
+      {/* Back to Home */}
+      <button
+        onClick={() => onNavigate('dashboard')}
+        className="self-start mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-sky-600 transition-colors cursor-pointer"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        <span>হোম পেজে ফিরে যান</span>
+      </button>
+
       {/* Brand Header */}
       <div className="text-center space-y-2 mb-6 flex flex-col items-center">
-        <Logo size={64} className="mb-2" />
-        <h1 className="text-xl font-black text-slate-900 tracking-tight">
+        <Logo size={72} variant="stacked" className="mb-2" />
+        <h1 className="text-lg font-black text-slate-900 tracking-tight">
           নতুন অ্যাকাউন্ট তৈরি করুন
         </h1>
         <p className="text-xs text-slate-500 font-medium">
-          {settings?.brandName || 'Earnora'}-তে ফ্রি একাউন্ট খুলে এখনই আয় শুরু করুন
+          Earnora-তে ফ্রি একাউন্ট খুলে এখনই আয় শুরু করুন
         </p>
       </div>
 

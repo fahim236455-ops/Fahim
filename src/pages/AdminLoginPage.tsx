@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { Logo } from '../components/Logo';
 import { ShieldCheck, Lock, Mail, ArrowRight, ArrowLeft, Eye, EyeOff, ShieldAlert } from 'lucide-react';
 
 interface AdminLoginPageProps {
@@ -34,15 +35,21 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onNavigate }) =>
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col justify-center px-4 py-8 max-w-md mx-auto font-['Hind_Siliguri',sans-serif]">
       {/* Brand Header */}
-      <div className="text-center space-y-2 mb-6">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-400 text-slate-950 font-black text-2xl shadow-xl shadow-amber-500/20 border border-amber-300/30">
-          <ShieldCheck className="w-8 h-8" />
+      <div className="text-center space-y-2 mb-6 flex flex-col items-center">
+        <div className="relative mb-2">
+          <Logo size={60} variant="icon" />
+          <div className="absolute -bottom-1 -right-1 bg-amber-500 text-slate-950 p-1 rounded-full border-2 border-slate-950 shadow-md">
+            <ShieldCheck className="w-3.5 h-3.5" />
+          </div>
         </div>
-        <h1 className="text-xl font-black text-white tracking-tight">
+        <div className="flex items-center justify-center">
+          <Logo variant="wordmark" />
+        </div>
+        <h1 className="text-sm font-bold text-amber-400 tracking-wide">
           অ্যাডমিন সিকিউর কন্ট্রোল প্যানেল
         </h1>
-        <p className="text-xs text-slate-400 font-medium">
-          Earnora প্রশাসনিক সিকিউরিটি গেটওয়ে (ম্যানেজমেন্ট পোর্টাল)
+        <p className="text-[11px] text-slate-400 font-medium">
+          প্রশাসনিক সিকিউরিটি গেটওয়ে (ম্যানেজমেন্ট পোর্টাল)
         </p>
       </div>
 

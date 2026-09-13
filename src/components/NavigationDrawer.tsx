@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
+import { Logo } from './Logo';
 import {
   X,
   Home,
@@ -74,11 +75,15 @@ export const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
       <div className="relative w-72 max-w-[85vw] bg-slate-950 text-slate-100 h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-250 border-r border-slate-800">
         {/* Top Profile Header */}
         <div className="p-4 bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 text-white relative border-b border-slate-800">
+          <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800/80 pr-8">
+            <Logo variant="full" size={26} />
+          </div>
+
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 p-1.5 rounded-full bg-slate-800/60 hover:bg-slate-800 text-slate-300 hover:text-white transition-colors border border-slate-700/50"
+            className="absolute top-3.5 right-3 p-1.5 rounded-full bg-slate-800/60 hover:bg-slate-800 text-slate-300 hover:text-white transition-colors border border-slate-700/50"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
 
           <div className="flex items-center gap-3">

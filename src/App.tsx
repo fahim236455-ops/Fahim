@@ -15,6 +15,7 @@ import { AccountPage } from './pages/AccountPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
+import { LandingPage } from './pages/LandingPage';
 import { AdminLoginPage } from './pages/AdminLoginPage';
 import { AdminPanelPage } from './pages/AdminPanelPage';
 import { LeadershipPage } from './pages/LeadershipPage';
@@ -84,10 +85,10 @@ function AppContent() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
-        <div className="animate-pulse">
-          <Logo size={56} />
+        <div className="animate-pulse flex flex-col items-center">
+          <Logo size={68} variant="stacked" />
         </div>
-        <p className="mt-3 text-xs font-bold text-slate-300">Earnora লোড হচ্ছে...</p>
+        <p className="mt-4 text-xs font-semibold text-slate-400 font-sans tracking-wide">লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</p>
       </div>
     );
   }
@@ -112,6 +113,15 @@ function AppContent() {
   }
 
   // Public unauthenticated routes
+  if (currentRoute === 'login' && !user) {
+    return (
+      <>
+        <ToastContainer />
+        <LoginPage onNavigate={navigate} />
+      </>
+    );
+  }
+
   if (currentRoute === 'register' && !user) {
     return (
       <>
@@ -134,7 +144,7 @@ function AppContent() {
     return (
       <>
         <ToastContainer />
-        <LoginPage onNavigate={navigate} />
+        <LandingPage onNavigate={navigate} />
       </>
     );
   }
