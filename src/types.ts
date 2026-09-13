@@ -37,6 +37,7 @@ export interface UserProfile {
   email: string;
   fullName: string;
   phoneNumber: string;
+  avatar?: string;
   referralCode: string;
   referredBy?: string | null;
   balance: number;
@@ -152,6 +153,25 @@ export interface TaskSubmission {
   screenshot?: string;
   status: SubmissionStatus;
   rewardAmount: number;
+  rejectionReason?: string;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  createdAt: string;
+}
+
+export interface SocialAccountSale {
+  id: string;
+  userId: string;
+  userEmail?: string;
+  userFullName?: string;
+  userPhone?: string;
+  service: 'gmail' | 'facebook' | 'instagram';
+  taskId?: string;
+  accountIdentifier: string;
+  password?: string;
+  extraField?: string;
+  rate: number;
+  status: 'pending' | 'approved' | 'rejected';
   rejectionReason?: string;
   reviewedBy?: string;
   reviewedAt?: string;

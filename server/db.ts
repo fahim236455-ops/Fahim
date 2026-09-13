@@ -52,6 +52,7 @@ export interface DatabaseSchema {
     email: string;
     fullName: string;
     phoneNumber: string;
+    avatar?: string;
     referralCode: string;
     referredBy?: string | null;
     balance: number;

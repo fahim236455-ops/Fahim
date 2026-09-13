@@ -77,9 +77,13 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate, currentRoute }) => {
                 className="relative p-0.5 rounded-full border-2 border-emerald-400 overflow-hidden hover:scale-105 transition-transform bg-[#0a1224] shadow-sm flex items-center justify-center w-8 h-8 focus:outline-none cursor-pointer"
                 title="প্রোফাইল মেনু"
               >
-                <div className="w-full h-full rounded-full bg-gradient-to-tr from-slate-900 to-slate-800 text-white flex items-center justify-center text-xs font-bold">
-                  {userInitial}
-                </div>
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="Profile" className="w-full h-full object-cover rounded-full" />
+                ) : (
+                  <div className="w-full h-full rounded-full bg-gradient-to-tr from-slate-900 to-slate-800 text-white flex items-center justify-center text-xs font-bold">
+                    {userInitial}
+                  </div>
+                )}
               </button>
 
               {/* Profile Dropdown */}

@@ -20,6 +20,7 @@ import {
   RotateCw,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { getToken } from '../lib/api';
 
 interface GmailSellPageProps {
   onNavigate: (route: string) => void;
@@ -88,7 +89,7 @@ export const GmailSellPage: React.FC<GmailSellPageProps> = ({ onNavigate }) => {
   const fetchActiveTask = async () => {
     setFetchingTask(true);
     try {
-      const token = localStorage.getItem('fpb_token') || sessionStorage.getItem('fpb_token');
+      const token = getToken() || localStorage.getItem('fahimpay_token') || localStorage.getItem('fpb_token') || sessionStorage.getItem('fpb_token');
       const res = await fetch(`/api/social-sell/active-task?service=gmail&skipCount=${skipCount}`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
@@ -116,7 +117,7 @@ export const GmailSellPage: React.FC<GmailSellPageProps> = ({ onNavigate }) => {
   const handleSkipTask = async () => {
     setFetchingTask(true);
     try {
-      const token = localStorage.getItem('fpb_token') || sessionStorage.getItem('fpb_token');
+      const token = getToken() || localStorage.getItem('fahimpay_token') || localStorage.getItem('fpb_token') || sessionStorage.getItem('fpb_token');
       const currentTaskId = activeTask?.taskId || '';
       const nextSkipCount = skipCount + 1;
       const updatedSkipped = currentTaskId ? [...skippedIds, currentTaskId] : skippedIds;
@@ -173,7 +174,7 @@ export const GmailSellPage: React.FC<GmailSellPageProps> = ({ onNavigate }) => {
 
   const fetchHistory = async () => {
     try {
-      const token = localStorage.getItem('fpb_token') || sessionStorage.getItem('fpb_token');
+      const token = getToken() || localStorage.getItem('fahimpay_token') || localStorage.getItem('fpb_token') || sessionStorage.getItem('fpb_token');
       if (!token) {
         const local = localStorage.getItem('fpb_social_sales_gmail');
         if (local) {
@@ -236,7 +237,7 @@ export const GmailSellPage: React.FC<GmailSellPageProps> = ({ onNavigate }) => {
 
     setSubmitting(true);
     try {
-      const token = localStorage.getItem('fpb_token') || sessionStorage.getItem('fpb_token');
+      const token = getToken() || localStorage.getItem('fahimpay_token') || localStorage.getItem('fpb_token') || sessionStorage.getItem('fpb_token');
       const payload = {
         service: 'gmail',
         accountIdentifier: gmailAddress.trim(),

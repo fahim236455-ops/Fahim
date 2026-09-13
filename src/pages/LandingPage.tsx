@@ -1059,7 +1059,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-400">
             <p>© {new Date().getFullYear()} {brandName.toUpperCase()}. All rights reserved.</p>
             <p className="flex items-center gap-1">
-              Developed with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> by <span className="font-bold text-slate-600">AKASH</span>
+              Developed with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> by <span className="font-bold text-slate-600">Fahim</span>
             </p>
           </div>
         </div>

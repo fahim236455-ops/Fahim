@@ -88,7 +88,11 @@ export const NavigationDrawer: React.FC<NavigationDrawerProps> = ({
 
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full border-2 border-amber-400/80 bg-slate-900 flex items-center justify-center text-amber-400 font-bold text-lg overflow-hidden shadow-inner">
-              {user?.fullName?.charAt(0) || 'U'}
+              {user?.avatar ? (
+                <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                user?.fullName?.charAt(0) || 'U'
+              )}
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="font-bold text-sm truncate text-white">

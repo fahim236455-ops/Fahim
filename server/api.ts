@@ -338,12 +338,7 @@ apiRouter.post('/auth/change-password', requireAuth, (req: AuthenticatedRequest,
 });
 
 apiRouter.put('/user/update-profile', requireAuth, (req: AuthenticatedRequest, res: Response) => {
-  const { fullName, phoneNumber } = req.body;
-  
-  if (!fullName || typeof fullName !== 'string' || fullName.trim() === '') {
-    res.status(400).json({ error: 'সঠিক নাম প্রদান করুন।' });
-    return;
-  }
+  const { fullName, phoneNumber, avatar } = req.body;
 
   try {
     let updatedProfile = null;
@@ -352,7 +347,10 @@ apiRouter.put('/user/update-profile', requireAuth, (req: AuthenticatedRequest, r
       if (!profile) {
         throw new Error('ব্যবহারকারী খুঁজে পাওয়া যায়নি।');
       }
-      profile.fullName = fullName.trim();
+
+      if (fullName && typeof fullName === 'string' && fullName.trim() !== '') {
+        profile.fullName = fullName.trim();
+      }
       
       if (phoneNumber && typeof phoneNumber === 'string' && /^01[3-9]\d{8}$/.test(phoneNumber.replace(/\s+/g, ''))) {
         const cleanPhone = phoneNumber.replace(/\s+/g, '');
@@ -362,6 +360,10 @@ apiRouter.put('/user/update-profile', requireAuth, (req: AuthenticatedRequest, r
           throw new Error('এই মোবাইল নম্বরটি অন্য একজন ব্যবহারকারী ব্যবহার করছেন।');
         }
         profile.phoneNumber = cleanPhone;
+      }
+
+      if (avatar !== undefined) {
+        profile.avatar = typeof avatar === 'string' ? avatar : '';
       }
 
       profile.updatedAt = new Date().toISOString();
@@ -1088,9 +1090,14 @@ apiRouter.get('/user/pending', requireAuth, (req: AuthenticatedRequest, res: Res
     .filter((w) => w.userId === userId)
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
+  const socialSales = (db.social_account_sales || [])
+    .filter((s) => s.userId === userId)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
   res.json({
-    pendingSubmissions: submissions, // Keep key for backward compatibility or we can change it in frontend
+    pendingSubmissions: submissions,
     pendingWithdrawals: withdrawals,
+    socialSales,
   });
 });
 
@@ -1470,8 +1477,13 @@ apiRouter.get('/admin/stats', requireAdmin, (req: AuthenticatedRequest, res: Res
     pendingWithdrawals.reduce((sum, w) => sum + w.amount, 0).toFixed(2)
   );
 
-  const pendingTasksCount = db.task_submissions.filter((s) => s.status === 'pending').length;
-  const completedTasksCount = db.task_submissions.filter((s) => s.status === 'approved').length;
+  const pendingGeneralTasks = db.task_submissions.filter((s) => s.status === 'pending').length;
+  const pendingSocialSales = (db.social_account_sales || []).filter((s) => s.status === 'pending').length;
+  const pendingTasksCount = pendingGeneralTasks + pendingSocialSales;
+
+  const completedGeneralTasks = db.task_submissions.filter((s) => s.status === 'approved').length;
+  const completedSocialSales = (db.social_account_sales || []).filter((s) => s.status === 'approved').length;
+  const completedTasksCount = completedGeneralTasks + completedSocialSales;
   const totalReferralsCount = db.referrals.length;
 
   res.json({
@@ -1483,6 +1495,8 @@ apiRouter.get('/admin/stats', requireAdmin, (req: AuthenticatedRequest, res: Res
     pendingWithdrawalsAmount,
     pendingTasksCount,
     completedTasksCount,
+    pendingSocialSalesCount: pendingSocialSales,
+    pendingGeneralTasksCount: pendingGeneralTasks,
     totalReferralsCount,
   });
 });
@@ -2593,19 +2607,9 @@ function generateDynamicSocialTask(
 }
 
 // Get active task & user status for a service
-apiRouter.get('/social-sell/active-task', (req, res) => {
+apiRouter.get('/social-sell/active-task', optionalAuth, (req: AuthenticatedRequest, res: Response) => {
   const db = getDatabase();
-  const authHeader = req.headers.authorization;
-  let userId: string | null = null;
-
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    try {
-      const decoded: any = (req as any).user;
-      if (decoded?.userId) userId = decoded.userId;
-    } catch {
-      // Ignored
-    }
-  }
+  const userId = req.user?.userId || null;
 
   const service = ((req.query.service as string) || 'gmail').toLowerCase() as 'gmail' | 'facebook' | 'instagram';
   if (!['gmail', 'facebook', 'instagram'].includes(service)) {
@@ -2627,19 +2631,9 @@ apiRouter.get('/social-sell/active-task', (req, res) => {
 });
 
 // Skip or generate next task
-apiRouter.all('/social-sell/next-task', (req, res) => {
+apiRouter.all('/social-sell/next-task', optionalAuth, (req: AuthenticatedRequest, res: Response) => {
   const db = getDatabase();
-  const authHeader = req.headers.authorization;
-  let userId: string | null = null;
-
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    try {
-      const decoded: any = (req as any).user;
-      if (decoded?.userId) userId = decoded.userId;
-    } catch {
-      // Ignored
-    }
-  }
+  const userId = req.user?.userId || null;
 
   const service = ((req.query.service || req.body?.service || 'gmail') as string).toLowerCase() as 'gmail' | 'facebook' | 'instagram';
   const skipCurrentId = (req.query.skipTaskId || req.body?.skipTaskId || '') as string;
@@ -2666,19 +2660,9 @@ apiRouter.all('/social-sell/next-task', (req, res) => {
 });
 
 // Dedicated skip endpoint
-apiRouter.post('/social-sell/skip', (req, res) => {
+apiRouter.post('/social-sell/skip', optionalAuth, (req: AuthenticatedRequest, res: Response) => {
   const db = getDatabase();
-  const authHeader = req.headers.authorization;
-  let userId: string | null = null;
-
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    try {
-      const decoded: any = (req as any).user;
-      if (decoded?.userId) userId = decoded.userId;
-    } catch {
-      // Ignored
-    }
-  }
+  const userId = req.user?.userId || null;
 
   const { service = 'gmail', skipTaskId, skipTaskIds = [], skipCount = 0 } = req.body;
   const svc = (service as string).toLowerCase() as 'gmail' | 'facebook' | 'instagram';
@@ -2703,19 +2687,9 @@ apiRouter.post('/social-sell/skip', (req, res) => {
 });
 
 // Get config & user 24h submission count (Public & User)
-apiRouter.get('/social-sell/info', (req, res) => {
+apiRouter.get('/social-sell/info', optionalAuth, (req: AuthenticatedRequest, res: Response) => {
   const db = getDatabase();
-  const authHeader = req.headers.authorization;
-  let userId: string | null = null;
-
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    try {
-      const decoded: any = (req as any).user;
-      if (decoded?.userId) userId = decoded.userId;
-    } catch {
-      // Ignored
-    }
-  }
+  const userId = req.user?.userId || null;
 
   const service = (req.query.service as string)?.toLowerCase();
   const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
