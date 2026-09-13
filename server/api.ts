@@ -1470,7 +1470,7 @@ apiRouter.get('/admin/stats', requireAdmin, (req: AuthenticatedRequest, res: Res
 });
 
 // Admin Users Management
-apiRouter.get('/admin/users', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.get('/admin/users', requirePermission('canManageUsers'), (req: AuthenticatedRequest, res: Response) => {
   const db = getDatabase();
   const search = (req.query.search as string || '').toLowerCase().trim();
 
@@ -1497,7 +1497,7 @@ apiRouter.get('/admin/users', requireAdmin, (req: AuthenticatedRequest, res: Res
   res.json(users);
 });
 
-apiRouter.post('/admin/users/:id/toggle-status', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/users/:id/toggle-status', requirePermission('canManageUsers'), (req: AuthenticatedRequest, res: Response) => {
   const userId = req.params.id;
   try {
     const updated = mutateLedger((db) => {
@@ -1530,7 +1530,7 @@ apiRouter.post('/admin/users/:id/toggle-status', requireAdmin, (req: Authenticat
   }
 });
 
-apiRouter.post('/admin/users/:id/balance', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/users/:id/balance', requirePermission('canManageUsers'), (req: AuthenticatedRequest, res: Response) => {
   const userId = req.params.id;
   const { amount, type, reason } = req.body;
 
@@ -1592,7 +1592,7 @@ apiRouter.post('/admin/users/:id/balance', requireAdmin, (req: AuthenticatedRequ
   }
 });
 
-apiRouter.delete('/admin/users/:id', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.delete('/admin/users/:id', requirePermission('canManageUsers'), (req: AuthenticatedRequest, res: Response) => {
   const userId = req.params.id;
 
   try {
@@ -1638,7 +1638,7 @@ apiRouter.delete('/admin/users/:id', requireAdmin, (req: AuthenticatedRequest, r
 });
 
 // Admin Tasks Management
-apiRouter.get('/admin/tasks', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.get('/admin/tasks', requirePermission('canManageTasks'), (req: AuthenticatedRequest, res: Response) => {
   const db = getDatabase();
   
   // Enrich tasks with submission statistics
@@ -1662,7 +1662,7 @@ apiRouter.get('/admin/tasks', requireAdmin, (req: AuthenticatedRequest, res: Res
   res.json(enrichedTasks);
 });
 
-apiRouter.post('/admin/tasks', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/tasks', requirePermission('canManageTasks'), (req: AuthenticatedRequest, res: Response) => {
   try {
     const { title, description, category, rewardAmount, taskType, proofType, proofInstruction, targetUrl, dailyLimit } = req.body;
 
@@ -1715,7 +1715,7 @@ apiRouter.post('/admin/tasks', requireAdmin, (req: AuthenticatedRequest, res: Re
   }
 });
 
-apiRouter.put('/admin/tasks/:id', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.put('/admin/tasks/:id', requirePermission('canManageTasks'), (req: AuthenticatedRequest, res: Response) => {
   try {
     const taskId = req.params.id;
     const { title, description, category, rewardAmount, status, taskType, proofType, proofInstruction, targetUrl, dailyLimit } = req.body;
@@ -1759,7 +1759,7 @@ apiRouter.put('/admin/tasks/:id', requireAdmin, (req: AuthenticatedRequest, res:
 });
 
 // Admin: Duplicate Task
-apiRouter.post('/admin/tasks/:id/duplicate', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/tasks/:id/duplicate', requirePermission('canManageTasks'), (req: AuthenticatedRequest, res: Response) => {
   try {
     const taskId = req.params.id;
     const duplicated = mutateLedger((db) => {
@@ -1796,7 +1796,7 @@ apiRouter.post('/admin/tasks/:id/duplicate', requireAdmin, (req: AuthenticatedRe
   }
 });
 
-apiRouter.delete('/admin/tasks/:id', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.delete('/admin/tasks/:id', requirePermission('canManageTasks'), (req: AuthenticatedRequest, res: Response) => {
   try {
     const taskId = req.params.id;
     const permanent = req.query.permanent === 'true';
@@ -1829,7 +1829,7 @@ apiRouter.delete('/admin/tasks/:id', requireAdmin, (req: AuthenticatedRequest, r
 });
 
 // Admin: Clear All Tasks
-apiRouter.post('/admin/tasks/clear-all', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/tasks/clear-all', requirePermission('canManageTasks'), (req: AuthenticatedRequest, res: Response) => {
   try {
     mutateLedger((db) => {
       const removedCount = db.tasks.length;
@@ -1855,7 +1855,7 @@ apiRouter.post('/admin/tasks/clear-all', requireAdmin, (req: AuthenticatedReques
 });
 
 // Admin Task Submissions Review
-apiRouter.get('/admin/submissions', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.get('/admin/submissions', requirePermission('canReviewTaskProofs'), (req: AuthenticatedRequest, res: Response) => {
   const db = getDatabase();
   const enriched = db.task_submissions.map((sub) => {
     const task = db.tasks.find((t) => t.id === sub.taskId);
@@ -1875,7 +1875,7 @@ apiRouter.get('/admin/submissions', requireAdmin, (req: AuthenticatedRequest, re
   res.json(enriched);
 });
 
-apiRouter.post('/admin/submissions/:id/review', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/submissions/:id/review', requirePermission('canReviewTaskProofs'), (req: AuthenticatedRequest, res: Response) => {
   try {
     const subId = req.params.id;
     const rawDecision = req.body.decision || req.body.action;
@@ -1946,7 +1946,7 @@ apiRouter.post('/admin/submissions/:id/review', requireAdmin, (req: Authenticate
 });
 
 // Admin Withdrawal Requests
-apiRouter.get('/admin/withdrawals', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.get('/admin/withdrawals', requirePermission('canManageWithdrawals'), (req: AuthenticatedRequest, res: Response) => {
   const db = getDatabase();
   const enriched = db.withdrawal_requests.map((w) => {
     const user = db.profiles.find((p) => p.id === w.userId);
@@ -1961,7 +1961,7 @@ apiRouter.get('/admin/withdrawals', requireAdmin, (req: AuthenticatedRequest, re
   res.json(enriched);
 });
 
-apiRouter.post('/admin/withdrawals/:id/review', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/withdrawals/:id/review', requirePermission('canManageWithdrawals'), (req: AuthenticatedRequest, res: Response) => {
   try {
     const withdrawalId = req.params.id;
     const { action, adminNote } = req.body;
@@ -2075,7 +2075,7 @@ apiRouter.get('/admin/transactions', requireAdmin, (req: AuthenticatedRequest, r
 });
 
 // Admin Support Tickets
-apiRouter.get('/admin/tickets', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.get('/admin/tickets', requirePermission('canManageSupport'), (req: AuthenticatedRequest, res: Response) => {
   const db = getDatabase();
   const tickets = db.support_tickets.map((t) => {
     const user = db.profiles.find((p) => p.id === t.userId);
@@ -2091,7 +2091,7 @@ apiRouter.get('/admin/tickets', requireAdmin, (req: AuthenticatedRequest, res: R
   res.json(tickets);
 });
 
-apiRouter.post('/admin/tickets/:id/reply', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/tickets/:id/reply', requirePermission('canManageSupport'), (req: AuthenticatedRequest, res: Response) => {
   try {
     const ticketId = req.params.id;
     const { reply, status, attachmentUrl } = req.body;
@@ -2139,7 +2139,7 @@ apiRouter.post('/admin/tickets/:id/reply', requireAdmin, (req: AuthenticatedRequ
   }
 });
 
-apiRouter.post('/admin/tickets/:id/status', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/tickets/:id/status', requirePermission('canManageSupport'), (req: AuthenticatedRequest, res: Response) => {
   try {
     const ticketId = req.params.id;
     const { status } = req.body;
@@ -2157,7 +2157,7 @@ apiRouter.post('/admin/tickets/:id/status', requireAdmin, (req: AuthenticatedReq
 });
 
 // Aliases for support tickets
-apiRouter.get('/admin/support/tickets', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.get('/admin/support/tickets', requirePermission('canManageSupport'), (req: AuthenticatedRequest, res: Response) => {
   const db = getDatabase();
   const tickets = db.support_tickets.map((t) => {
     const user = db.profiles.find((p) => p.id === t.userId);
@@ -2173,7 +2173,7 @@ apiRouter.get('/admin/support/tickets', requireAdmin, (req: AuthenticatedRequest
   res.json(tickets);
 });
 
-apiRouter.post('/admin/support/tickets/:id/reply', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/support/tickets/:id/reply', requirePermission('canManageSupport'), (req: AuthenticatedRequest, res: Response) => {
   try {
     const ticketId = req.params.id;
     const { reply, status, attachmentUrl } = req.body;
@@ -2227,7 +2227,7 @@ apiRouter.get('/admin/settings', requireAdmin, (req: AuthenticatedRequest, res: 
   res.json(db.site_settings);
 });
 
-apiRouter.put('/admin/settings', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.put('/admin/settings', requirePermission('canEditSiteSettings'), (req: AuthenticatedRequest, res: Response) => {
   try {
     const {
       brandName,
@@ -2277,7 +2277,7 @@ apiRouter.put('/admin/settings', requireAdmin, (req: AuthenticatedRequest, res: 
 });
 
 // Admin Audit Logs
-apiRouter.get('/admin/audit-logs', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.get('/admin/audit-logs', requirePermission('canViewAuditLogs'), (req: AuthenticatedRequest, res: Response) => {
   const db = getDatabase();
   const logs = [...db.audit_logs].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -2617,7 +2617,7 @@ apiRouter.get('/admin/social-tasks', requireAdmin, (req: AuthenticatedRequest, r
 });
 
 // Admin: Create individual or batch social tasks in queue
-apiRouter.post('/admin/social-tasks/create', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/social-tasks/create', requirePermission('canManageSocialJobs'), (req: AuthenticatedRequest, res: Response) => {
   try {
     const {
       service,
@@ -2688,7 +2688,7 @@ apiRouter.post('/admin/social-tasks/create', requireAdmin, (req: AuthenticatedRe
 });
 
 // Admin: Instant Generate 1000 Tasks Queue
-apiRouter.post('/admin/social-tasks/generate-1000', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/social-tasks/generate-1000', requirePermission('canManageSocialJobs'), (req: AuthenticatedRequest, res: Response) => {
   try {
     const { service } = req.body;
     if (!['gmail', 'facebook', 'instagram'].includes(service)) {
@@ -2765,7 +2765,7 @@ apiRouter.post('/admin/social-tasks/generate-1000', requireAdmin, (req: Authenti
 });
 
 // Admin: Delete a queued social task
-apiRouter.delete('/admin/social-tasks/:id', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.delete('/admin/social-tasks/:id', requirePermission('canManageSocialJobs'), (req: AuthenticatedRequest, res: Response) => {
   try {
     const { id } = req.params;
     mutateLedger((db) => {
@@ -2779,7 +2779,7 @@ apiRouter.delete('/admin/social-tasks/:id', requireAdmin, (req: AuthenticatedReq
 });
 
 // Admin: Update / Set social job configuration
-apiRouter.post('/admin/social-jobs/update', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/social-jobs/update', requirePermission('canManageSocialJobs'), (req: AuthenticatedRequest, res: Response) => {
   try {
     const {
       service,
@@ -2963,7 +2963,7 @@ apiRouter.get('/admin/social-sales', requireAdmin, (req: AuthenticatedRequest, r
 });
 
 // Admin: Review social sale (Approve/Reject)
-apiRouter.post('/admin/social-sales/:id/review', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/social-sales/:id/review', requirePermission('canReviewSocialSubmissions'), (req: AuthenticatedRequest, res: Response) => {
   try {
     const { id } = req.params;
     const { status, rejectionReason } = req.body;
@@ -3028,7 +3028,7 @@ apiRouter.post('/admin/social-sales/:id/review', requireAdmin, (req: Authenticat
 // ==========================================
 
 // Get list of all admins and their permission settings
-apiRouter.get('/admin/roles', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.get('/admin/roles', requirePermission('canManageAdmins'), (req: AuthenticatedRequest, res: Response) => {
   const db = getDatabase();
   const adminRoleRecords = db.user_roles.filter((r) => r.role === 'admin');
 
@@ -3072,7 +3072,7 @@ apiRouter.get('/admin/roles', requireAdmin, (req: AuthenticatedRequest, res: Res
 });
 
 // Assign or update admin role and permissions for any user
-apiRouter.post('/admin/roles/assign', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/roles/assign', requirePermission('canManageAdmins'), (req: AuthenticatedRequest, res: Response) => {
   const { userId, title, permissions, isSuperAdmin } = req.body;
   if (!userId) {
     res.status(400).json({ error: 'ব্যবহারকারী প্রদান করুন।' });
@@ -3182,7 +3182,7 @@ apiRouter.post('/admin/roles/assign', requireAdmin, (req: AuthenticatedRequest, 
 });
 
 // Revoke admin access from a user
-apiRouter.post('/admin/roles/revoke', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+apiRouter.post('/admin/roles/revoke', requirePermission('canManageAdmins'), (req: AuthenticatedRequest, res: Response) => {
   const { userId } = req.body;
   if (!userId) {
     res.status(400).json({ error: 'ব্যবহারকারী আইডি দিন।' });
