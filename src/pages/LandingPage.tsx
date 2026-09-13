@@ -17,6 +17,8 @@ import {
   MessageCircle,
   Facebook,
   Heart,
+  Sparkles,
+  Bell,
 } from 'lucide-react';
 import { motion, type Variants } from 'motion/react';
 
@@ -83,6 +85,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
   const { settings } = useApp();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+  const [dismissedNotice, setDismissedNotice] = useState(false);
 
   const brandName = settings?.brandName || 'Earnora';
 
@@ -118,6 +121,33 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
 
   return (
     <div className="min-h-screen bg-white text-slate-800 font-['Hind_Siliguri',sans-serif] selection:bg-sky-500 selection:text-white overflow-x-hidden">
+      {/* Dynamic Popup Notice Alert Modal (controlled from Admin Panel) */}
+      {settings?.popupNotice?.enabled && !dismissedNotice && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-slate-900 border border-sky-500/40 rounded-3xl p-6 sm:p-7 max-w-sm w-full text-white shadow-2xl relative space-y-4 animate-in zoom-in-95">
+            <div className="w-12 h-12 rounded-2xl bg-sky-500/20 border border-sky-500/40 text-sky-400 flex items-center justify-center mx-auto shadow-inner">
+              <Sparkles className="w-6 h-6" />
+            </div>
+
+            <div className="text-center space-y-2">
+              <h3 className="text-base sm:text-lg font-bold text-sky-300">
+                {settings.popupNotice.title || 'জরুরি বিজ্ঞপ্তি'}
+              </h3>
+              <p className="text-xs sm:text-[13px] text-slate-300 leading-relaxed whitespace-pre-line">
+                {settings.popupNotice.message || 'সকল ইউজারদের অবগতির জন্য জানানো যাচ্ছে যে কাজ সঠিকভাবে সম্পন্ন করুন।'}
+              </p>
+            </div>
+
+            <button
+              onClick={() => setDismissedNotice(true)}
+              className="w-full bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs py-3 rounded-xl shadow-md active:scale-98 transition-all cursor-pointer"
+            >
+              ঠিক আছে, বুঝেছি
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 1. Header / Navbar */}
       <motion.header
         initial={{ y: -50, opacity: 0 }}

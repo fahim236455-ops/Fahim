@@ -27,7 +27,7 @@ import { JobPostPage } from './pages/JobPostPage';
 import { Logo } from './components/Logo';
 
 function AppContent() {
-  const { user, isLoading, isAdmin } = useApp();
+  const { user, isLoading, isAdmin, settings } = useApp();
 
   // Route state
   const getInitialRoute = () => {
@@ -108,6 +108,16 @@ function AppContent() {
       <>
         <ToastContainer />
         <AdminPanelPage onNavigate={navigate} />
+      </>
+    );
+  }
+
+  // System Maintenance Mode Enforcement (when enabled from Admin Panel)
+  if (settings?.maintenanceMode?.enabled && !isAdmin) {
+    return (
+      <>
+        <ToastContainer />
+        <SystemClosedPage onNavigate={navigate} />
       </>
     );
   }

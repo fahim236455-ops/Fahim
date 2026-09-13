@@ -1128,6 +1128,57 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
     }
   };
 
+  // Instant Toggle for Popup Notice
+  const handleTogglePopupNotice = async () => {
+    if (!settingsForm) return;
+    const newEnabled = !settingsForm.popupNotice?.enabled;
+    const updated = {
+      ...settingsForm,
+      popupNotice: {
+        enabled: newEnabled,
+        title: settingsForm.popupNotice?.title || 'জরুরি বিজ্ঞপ্তি',
+        message: settingsForm.popupNotice?.message || 'সকল ইউজারদের অবগতির জন্য জানানো যাচ্ছে যে কাজ সঠিকভাবে সম্পন্ন করুন।',
+      },
+    };
+    setSettingsForm(updated);
+    try {
+      const res = await fetchApi<{ message: string }>('/admin/settings', {
+        method: 'PUT',
+        body: JSON.stringify(updated),
+      });
+      showToast(newEnabled ? 'পপ-আপ নোটিশ সক্রিয় (ON) করা হয়েছে!' : 'পপ-আপ নোটিশ নিষ্ক্রিয় (OFF) করা হয়েছে!', 'success');
+      await refreshSettings();
+      await loadData();
+    } catch (err: any) {
+      showToast(err.message || 'পপ-আপ নোটিশ আপডেট ব্যর্থ হয়েছে।', 'error');
+    }
+  };
+
+  // Instant Toggle for Maintenance Mode
+  const handleToggleMaintenanceMode = async () => {
+    if (!settingsForm) return;
+    const newEnabled = !settingsForm.maintenanceMode?.enabled;
+    const updated = {
+      ...settingsForm,
+      maintenanceMode: {
+        enabled: newEnabled,
+        message: settingsForm.maintenanceMode?.message || 'সিস্টেম আপগ্রেডের কাজ চলছে, কিছুক্ষণ পর আবার চেষ্টা করুন।',
+      },
+    };
+    setSettingsForm(updated);
+    try {
+      const res = await fetchApi<{ message: string }>('/admin/settings', {
+        method: 'PUT',
+        body: JSON.stringify(updated),
+      });
+      showToast(newEnabled ? 'সিস্টেম মেইনটেন্যান্স মোড সক্রিয় (ON) করা হয়েছে!' : 'মেইনটেন্যান্স মোড বন্ধ (স্বাভাবিক চালু) করা হয়েছে!', 'success');
+      await refreshSettings();
+      await loadData();
+    } catch (err: any) {
+      showToast(err.message || 'মেইনটেন্যান্স মোড আপডেট ব্যর্থ হয়েছে।', 'error');
+    }
+  };
+
   // Change Super Admin Password
   const handleChangeAdminPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -4518,41 +4569,50 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                 </div>
 
                 {/* Pop-up Alert Modal Settings */}
-                <div className="bg-slate-900/80 border border-slate-700 rounded-xl p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Bell className="w-4 h-4 text-amber-400" />
+                <div className="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+                        <Bell className="w-5 h-5" />
+                      </div>
                       <div>
-                        <span className="font-bold text-white block">লগইন পপ-আপ নোটিশ (Popup Alert Notice)</span>
-                        <span className="text-[10px] text-slate-400">ইউজার অ্যাপ ওপেন করলে এই নোটিশটি পপ-আপ হিসেবে ভাসবে</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-white text-sm">লগইন পপ-আপ নোটিশ (Popup Alert Notice)</span>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            settingsForm.popupNotice?.enabled
+                              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                              : 'bg-slate-800 text-slate-400 border border-slate-700'
+                          }`}>
+                            {settingsForm.popupNotice?.enabled ? 'সক্রিয় (ON)' : 'নিষ্ক্রিয় (OFF)'}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 mt-0.5">ইউজার অ্যাপ ওপেন করলে বা হোমপেজে ঢুকলে এই নোটিশটি পপ-আপ হিসেবে ভাসবে</p>
                       </div>
                     </div>
+
+                    {/* Interactive Switch Toggle */}
                     <button
                       type="button"
-                      onClick={() =>
-                        setSettingsForm({
-                          ...settingsForm,
-                          popupNotice: {
-                            enabled: !settingsForm.popupNotice?.enabled,
-                            title: settingsForm.popupNotice?.title || 'জরুরি বিজ্ঞপ্তি',
-                            message: settingsForm.popupNotice?.message || '',
-                          },
-                        })
-                      }
-                      className={`px-3 py-1 rounded-full text-[11px] font-bold transition-all ${
-                        settingsForm.popupNotice?.enabled
-                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                          : 'bg-slate-800 text-slate-400 border border-slate-700'
+                      onClick={handleTogglePopupNotice}
+                      role="switch"
+                      aria-checked={settingsForm.popupNotice?.enabled}
+                      className={`relative inline-flex h-7 w-13 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                        settingsForm.popupNotice?.enabled ? 'bg-emerald-500' : 'bg-slate-700'
                       }`}
                     >
-                      {settingsForm.popupNotice?.enabled ? 'সক্রিয় (ON)' : 'নিষ্ক্রিয় (OFF)'}
+                      <span
+                        aria-hidden="true"
+                        className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                          settingsForm.popupNotice?.enabled ? 'translate-x-6' : 'translate-x-0'
+                        }`}
+                      />
                     </button>
                   </div>
 
                   {settingsForm.popupNotice?.enabled && (
-                    <div className="space-y-2 pt-2 border-t border-slate-800">
+                    <div className="space-y-3 pt-3 border-t border-slate-800 animate-in fade-in duration-200">
                       <div>
-                        <label className="text-slate-300 font-medium block text-[11px] mb-1">পপ-আপ শিরোনাম (Title):</label>
+                        <label className="text-slate-300 font-bold block text-xs mb-1">পপ-আপ শিরোনাম (Title):</label>
                         <input
                           type="text"
                           value={settingsForm.popupNotice?.title || ''}
@@ -4566,14 +4626,14 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                               },
                             })
                           }
-                          placeholder="যেমন: আজকের বিশেষ অফার বা আপডেট"
-                          className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white text-xs"
+                          placeholder="যেমন: আজকের বিশেষ অফার বা জরুরি বিজ্ঞপ্তি"
+                          className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-xs focus:ring-1 focus:ring-amber-500"
                         />
                       </div>
                       <div>
-                        <label className="text-slate-300 font-medium block text-[11px] mb-1">পপ-আপ বার্তা (Message):</label>
+                        <label className="text-slate-300 font-bold block text-xs mb-1">পপ-আপ বার্তা (Message):</label>
                         <textarea
-                          rows={2}
+                          rows={3}
                           value={settingsForm.popupNotice?.message || ''}
                           onChange={(e) =>
                             setSettingsForm({
@@ -4586,7 +4646,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                             })
                           }
                           placeholder="বিজ্ঞপ্তির বিস্তারিত বিবরণ লিখুন..."
-                          className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white text-xs"
+                          className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-xs leading-relaxed focus:ring-1 focus:ring-amber-500"
                         />
                       </div>
                     </div>
@@ -4594,39 +4654,49 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                 </div>
 
                 {/* Maintenance Mode Toggle */}
-                <div className="bg-slate-900/80 border border-slate-700 rounded-xl p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <AlertTriangle className="w-4 h-4 text-rose-400" />
+                <div className="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0 mt-0.5">
+                        <AlertTriangle className="w-5 h-5" />
+                      </div>
                       <div>
-                        <span className="font-bold text-white block">সিস্টেম মেইনটেন্যান্স মোড (Maintenance Mode)</span>
-                        <span className="text-[10px] text-slate-400">জরুরি আপডেটের সময় সাধারণ ইউজারদের জন্য সাইট সাময়িক স্থগিত রাখতে</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-white text-sm">সিস্টেম মেইনটেন্যান্স মোড (Maintenance Mode)</span>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            settingsForm.maintenanceMode?.enabled
+                              ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30 animate-pulse'
+                              : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                          }`}>
+                            {settingsForm.maintenanceMode?.enabled ? 'মেইনটেন্যান্স চালু (Site Closed)' : 'স্বাভাবিক চালু (Normal Active)'}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 mt-0.5">জরুরি আপডেটের সময় সাধারণ ইউজারদের জন্য সাইট সাময়িক স্থগিত রাখতে চালু করুন</p>
                       </div>
                     </div>
+
+                    {/* Interactive Switch Toggle */}
                     <button
                       type="button"
-                      onClick={() =>
-                        setSettingsForm({
-                          ...settingsForm,
-                          maintenanceMode: {
-                            enabled: !settingsForm.maintenanceMode?.enabled,
-                            message: settingsForm.maintenanceMode?.message || 'সিস্টেম আপগ্রেডের কাজ চলছে, কিছুক্ষণ পর আবার চেষ্টা করুন।',
-                          },
-                        })
-                      }
-                      className={`px-3 py-1 rounded-full text-[11px] font-bold transition-all ${
-                        settingsForm.maintenanceMode?.enabled
-                          ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                          : 'bg-slate-800 text-slate-400 border border-slate-700'
+                      onClick={handleToggleMaintenanceMode}
+                      role="switch"
+                      aria-checked={settingsForm.maintenanceMode?.enabled}
+                      className={`relative inline-flex h-7 w-13 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                        settingsForm.maintenanceMode?.enabled ? 'bg-rose-500' : 'bg-slate-700'
                       }`}
                     >
-                      {settingsForm.maintenanceMode?.enabled ? 'মেইনটেন্যান্স চালু' : 'স্বাভাবিক চালু'}
+                      <span
+                        aria-hidden="true"
+                        className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                          settingsForm.maintenanceMode?.enabled ? 'translate-x-6' : 'translate-x-0'
+                        }`}
+                      />
                     </button>
                   </div>
 
                   {settingsForm.maintenanceMode?.enabled && (
-                    <div className="pt-2 border-t border-slate-800">
-                      <label className="text-slate-300 font-medium block text-[11px] mb-1">মেইনটেন্যান্স বার্তা:</label>
+                    <div className="space-y-2 pt-3 border-t border-slate-800 animate-in fade-in duration-200">
+                      <label className="text-slate-300 font-bold block text-xs">মেইনটেন্যান্স বার্তা (ইউজাররা যা দেখতে পাবে):</label>
                       <input
                         type="text"
                         value={settingsForm.maintenanceMode?.message || ''}
@@ -4639,8 +4709,8 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                             },
                           })
                         }
-                        placeholder="সিস্টেম আপগ্রেডের কাজ চলছে..."
-                        className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white text-xs"
+                        placeholder="সিস্টেম আপগ্রেডের কাজ চলছে, কিছুক্ষণ পর আবার চেষ্টা করুন..."
+                        className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-xs focus:ring-1 focus:ring-rose-500"
                       />
                     </div>
                   )}
