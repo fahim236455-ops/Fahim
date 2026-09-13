@@ -1,0 +1,6 @@
+{
+  "name": "Earnora",
+  "description": "Bengali task, referral, earnings, and withdrawal platform with bKash, Nagad, and Rocket support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,493 @@
+{
+  "profiles": [
+    {
+      "id": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "email": "fahim236455@gmail.com",
+      "fullName": "Fahim (Founder & Admin)",
+      "phoneNumber": "01700000000",
+      "referralCode": "FPBADMIN",
+      "referredBy": null,
+      "balance": 10,
+      "totalEarned": 10,
+      "totalWithdrawn": 0,
+      "totalReferrals": 2,
+      "status": "active",
+      "createdAt": "2026-09-12T13:19:40.803Z",
+      "updatedAt": "2026-09-13T07:12:52.690Z"
+    },
+    {
+      "id": "e2a1b9c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+      "email": "rafiq@earnora.com",
+      "fullName": "রফিকুল ইসলাম",
+      "phoneNumber": "01711223344",
+      "referralCode": "FPBRAFIQ",
+      "referredBy": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "balance": 150,
+      "totalEarned": 150,
+      "totalWithdrawn": 0,
+      "totalReferrals": 1,
+      "status": "active",
+      "createdAt": "2026-09-13T05:00:00.000Z",
+      "updatedAt": "2026-09-13T05:00:00.000Z"
+    },
+    {
+      "id": "f3b2c1d0-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+      "email": "mehedi@earnora.com",
+      "fullName": "মেহেদী হাসান",
+      "phoneNumber": "01899887766",
+      "referralCode": "FPBMEHEDI",
+      "referredBy": "e2a1b9c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+      "balance": 45,
+      "totalEarned": 45,
+      "totalWithdrawn": 0,
+      "totalReferrals": 0,
+      "status": "active",
+      "createdAt": "2026-09-13T05:15:00.000Z",
+      "updatedAt": "2026-09-13T05:15:00.000Z"
+    },
+    {
+      "id": "aecfe8fc-832d-43f9-b07b-acc9bd4294ff",
+      "email": "test456@gmail.com",
+      "fullName": "Test User",
+      "phoneNumber": "01712345679",
+      "referralCode": "FPBNJ825",
+      "referredBy": null,
+      "balance": 0,
+      "totalEarned": 0,
+      "totalWithdrawn": 0,
+      "totalReferrals": 0,
+      "status": "active",
+      "createdAt": "2026-09-13T06:17:46.702Z",
+      "updatedAt": "2026-09-13T06:27:39.515Z"
+    },
+    {
+      "id": "d8fdd5e3-26c1-4ddc-b2dd-adfca157c984",
+      "email": "test4562@gmail.com",
+      "fullName": "Test User Updated",
+      "phoneNumber": "01712345673",
+      "referralCode": "FPBHLAU3",
+      "referredBy": null,
+      "balance": 0,
+      "totalEarned": 0,
+      "totalWithdrawn": 0,
+      "totalReferrals": 0,
+      "status": "active",
+      "createdAt": "2026-09-13T06:18:37.022Z",
+      "updatedAt": "2026-09-13T06:18:42.690Z"
+    },
+    {
+      "id": "cf33c95b-0202-4059-8488-eae82ff98d72",
+      "email": "newuserf@gmail.com",
+      "fullName": "New F User",
+      "phoneNumber": "01712345600",
+      "referralCode": "FPBA8EDS",
+      "referredBy": null,
+      "balance": 0,
+      "totalEarned": 0,
+      "totalWithdrawn": 0,
+      "totalReferrals": 0,
+      "status": "active",
+      "createdAt": "2026-09-13T06:29:45.735Z",
+      "updatedAt": "2026-09-13T06:29:45.735Z"
+    },
+    {
+      "id": "da5f424e-7ff8-4c09-8748-7882ac9b7e6f",
+      "email": "another99@gmail.com",
+      "fullName": "Another User",
+      "phoneNumber": "01712345699",
+      "referralCode": "FPBSJZ23",
+      "referredBy": null,
+      "balance": 0,
+      "totalEarned": 0,
+      "totalWithdrawn": 0,
+      "totalReferrals": 0,
+      "status": "active",
+      "createdAt": "2026-09-13T06:33:04.366Z",
+      "updatedAt": "2026-09-13T06:33:04.366Z"
+    },
+    {
+      "id": "849c6177-6a8d-43fe-b2fa-262a79563f62",
+      "email": "fahimmaruf90@gmail.com",
+      "fullName": "Fahim Maruf",
+      "phoneNumber": "01700000099",
+      "referralCode": "FPBRJYAC",
+      "referredBy": null,
+      "balance": 0,
+      "totalEarned": 0,
+      "totalWithdrawn": 0,
+      "totalReferrals": 0,
+      "status": "active",
+      "createdAt": "2026-09-13T06:34:37.473Z",
+      "updatedAt": "2026-09-13T06:34:37.473Z"
+    },
+    {
+      "id": "4677bd99-390e-4a93-afd3-b70fcb0ce4b5",
+      "email": "another993@gmail.com",
+      "fullName": "Another User",
+      "phoneNumber": "01712345601",
+      "referralCode": "FPBL5KM8",
+      "referredBy": null,
+      "balance": 0,
+      "totalEarned": 0,
+      "totalWithdrawn": 0,
+      "totalReferrals": 0,
+      "status": "active",
+      "createdAt": "2026-09-13T06:36:49.579Z",
+      "updatedAt": "2026-09-13T06:36:49.579Z"
+    }
+  ],
+  "user_roles": [
+    {
+      "id": "af47c29f-8178-4830-8d84-aac459ddd840",
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "role": "admin",
+      "createdAt": "2026-09-12T13:19:40.803Z",
+      "isSuperAdmin": true,
+      "title": "সুপার অ্যাডমিন (Founder & Admin)",
+      "permissions": {
+        "canManageTasks": true,
+        "canReviewTaskProofs": true,
+        "canManageSocialJobs": true,
+        "canReviewSocialSubmissions": true,
+        "canManageWithdrawals": true,
+        "canManageUsers": true,
+        "canManageSupport": true,
+        "canEditSiteSettings": true,
+        "canViewAuditLogs": true,
+        "canManageAdmins": true
+      }
+    },
+    {
+      "id": "b1a2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+      "userId": "e2a1b9c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+      "role": "user",
+      "createdAt": "2026-09-13T05:00:00.000Z"
+    },
+    {
+      "id": "c2b3a4d5-e6f7-8a9b-0c1d-2e3f4a5b6c7d",
+      "userId": "f3b2c1d0-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+      "role": "user",
+      "createdAt": "2026-09-13T05:15:00.000Z"
+    },
+    {
+      "id": "82912012-6a57-492d-a197-99bc54e7ca43",
+      "userId": "aecfe8fc-832d-43f9-b07b-acc9bd4294ff",
+      "role": "user",
+      "createdAt": "2026-09-13T06:17:46.702Z"
+    },
+    {
+      "id": "d4b3c4ca-54c6-4126-9b2f-35781f139b27",
+      "userId": "d8fdd5e3-26c1-4ddc-b2dd-adfca157c984",
+      "role": "user",
+      "createdAt": "2026-09-13T06:18:37.022Z"
+    },
+    {
+      "id": "a5129126-852a-476d-99d3-c598e1cc26a4",
+      "userId": "cf33c95b-0202-4059-8488-eae82ff98d72",
+      "role": "user",
+      "createdAt": "2026-09-13T06:29:45.735Z"
+    },
+    {
+      "id": "b8cf26af-0646-4bd1-bba6-e437a67c40af",
+      "userId": "da5f424e-7ff8-4c09-8748-7882ac9b7e6f",
+      "role": "user",
+      "createdAt": "2026-09-13T06:33:04.366Z"
+    },
+    {
+      "id": "9156d422-d131-434e-a43e-706fdfdd27ef",
+      "userId": "849c6177-6a8d-43fe-b2fa-262a79563f62",
+      "role": "user",
+      "createdAt": "2026-09-13T06:34:37.473Z"
+    },
+    {
+      "id": "8701c359-fe6f-4f68-a665-292ce6df26f0",
+      "userId": "4677bd99-390e-4a93-afd3-b70fcb0ce4b5",
+      "role": "user",
+      "createdAt": "2026-09-13T06:36:49.579Z"
+    }
+  ],
+  "auth_credentials": [
+    {
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "passwordHash": "$2b$10$zEax/6kQuu6lesqxZFgzbOoRR1j2e2/wQ6ATOH21YwkHxHTzniqYO",
+      "updatedAt": "2026-09-12T13:19:40.803Z"
+    },
+    {
+      "userId": "e2a1b9c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+      "passwordHash": "$2b$10$zEax/6kQuu6lesqxZFgzbOoRR1j2e2/wQ6ATOH21YwkHxHTzniqYO",
+      "updatedAt": "2026-09-13T05:00:00.000Z"
+    },
+    {
+      "userId": "f3b2c1d0-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+      "passwordHash": "$2b$10$zEax/6kQuu6lesqxZFgzbOoRR1j2e2/wQ6ATOH21YwkHxHTzniqYO",
+      "updatedAt": "2026-09-13T05:15:00.000Z"
+    },
+    {
+      "userId": "aecfe8fc-832d-43f9-b07b-acc9bd4294ff",
+      "passwordHash": "$2b$10$dNZjE6EQGgxiyHEjgNIUIe0uJ5hdC43wWkPZbj6A5THsSzgCGduXq",
+      "updatedAt": "2026-09-13T06:17:46.702Z"
+    },
+    {
+      "userId": "d8fdd5e3-26c1-4ddc-b2dd-adfca157c984",
+      "passwordHash": "$2b$10$j01xeJumnpQIwTj3JfhKxOGWp7YQ/lNBRMQrvTi5af3Ju6hPxOy4e",
+      "updatedAt": "2026-09-13T06:18:37.022Z"
+    },
+    {
+      "userId": "cf33c95b-0202-4059-8488-eae82ff98d72",
+      "passwordHash": "$2b$10$8a3VTB/NZVLlz.TAP31IgOauo8/Upc31jiF0cHyFzt24tP6XahTNa",
+      "updatedAt": "2026-09-13T06:29:45.735Z"
+    },
+    {
+      "userId": "da5f424e-7ff8-4c09-8748-7882ac9b7e6f",
+      "passwordHash": "$2b$10$6y.HUvWe4H7B5wZs9DrEBOjJAfJJFHBvX8mF4jJ24RWT07qv.SiOe",
+      "updatedAt": "2026-09-13T06:33:04.366Z"
+    },
+    {
+      "userId": "849c6177-6a8d-43fe-b2fa-262a79563f62",
+      "passwordHash": "$2b$10$rZ5Tbt3FG3rfsVgYF4ZqrufTuDCvNHTy3exZdYegK.3ab8sEs3W4a",
+      "updatedAt": "2026-09-13T06:34:37.473Z"
+    },
+    {
+      "userId": "4677bd99-390e-4a93-afd3-b70fcb0ce4b5",
+      "passwordHash": "$2b$10$s.KnT4PrWeegsJzbv19gnODTsnkt7OYmiOPuF92xNrLeUAndFGiHu",
+      "updatedAt": "2026-09-13T06:36:49.579Z"
+    }
+  ],
+  "site_settings": {
+    "id": "f9ac8b12-cb2c-4bc0-a66d-a530aef71641",
+    "brandName": "Earnora",
+    "referralReward": 50,
+    "minWithdrawal": 500,
+    "withdrawalFeePercent": 2,
+    "withdrawalMethods": [
+      "bKash",
+      "Nagad",
+      "Rocket"
+    ],
+    "supportPhone": "+880 1700-000000",
+    "supportWhatsapp": "+880 1700-000000",
+    "supportTelegram": "@earnora_official",
+    "announcement": "📢 স্বাগতম! Earnora-তে প্রতিটি টাস্ক সম্পূর্ণ করে এবং বন্ধুদের রেফার করে নিশ্চিত আয় করুন। উইথড্র রিকোয়েস্ট ১২-২৪ ঘণ্টার মধ্যে সফলভাবে বিকাশ, নগদ ও রকেটে পরিশোধ করা হয়।",
+    "updatedAt": "2026-09-12T13:19:40.803Z"
+  },
+  "tasks": [
+    {
+      "id": "51f2f403-0c5b-42f0-be2a-6a1bb7ae7346",
+      "title": "দৈনিক উপস্থিতি বোনাস (Daily Login Bonus)",
+      "description": "প্রতিদিন লগইন করে ইনস্ট্যান্ট ফ্রি বোনাস টাকা সংগ্রহ করুন।",
+      "category": "daily_checkin",
+      "rewardAmount": 5,
+      "taskType": "auto",
+      "proofType": "none",
+      "proofInstruction": "স্বয়ংক্রিয়ভাবে ব্যালেন্সে যুক্ত হবে।",
+      "targetUrl": "",
+      "dailyLimit": 1,
+      "status": "active",
+      "createdAt": "2026-09-13T04:27:04.116Z",
+      "updatedAt": "2026-09-13T04:27:04.116Z"
+    },
+    {
+      "id": "c7f7b65f-d2ee-4f9c-9c3d-d6c6df689093",
+      "title": "Test Task",
+      "description": "Test",
+      "category": "telegram",
+      "rewardAmount": 10,
+      "taskType": "manual",
+      "proofType": "text",
+      "proofInstruction": "Send username",
+      "targetUrl": "https://t.me/test",
+      "dailyLimit": 1,
+      "status": "active",
+      "createdAt": "2026-09-13T06:57:36.767Z",
+      "updatedAt": "2026-09-13T06:57:36.767Z"
+    },
+    {
+      "id": "b749fc07-349b-454a-9d71-a6fe86e35ae3",
+      "title": "Test Task 2",
+      "description": "Test",
+      "category": "telegram",
+      "rewardAmount": 10,
+      "taskType": "manual",
+      "proofType": "text",
+      "proofInstruction": "Send username",
+      "targetUrl": "https://t.me/test",
+      "dailyLimit": 10,
+      "status": "active",
+      "createdAt": "2026-09-13T07:21:59.972Z",
+      "updatedAt": "2026-09-13T07:21:59.972Z"
+    }
+  ],
+  "task_submissions": [
+    {
+      "id": "ed265fbf-2066-49f7-880d-f59680011e64",
+      "taskId": "c7f7b65f-d2ee-4f9c-9c3d-d6c6df689093",
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "proofData": "my_username",
+      "status": "approved",
+      "rewardAmount": 10,
+      "createdAt": "2026-09-13T06:57:42.698Z",
+      "reviewedBy": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "reviewedAt": "2026-09-13T07:12:52.690Z"
+    },
+    {
+      "id": "559d27f8-2a99-4a91-85a9-6f7ffd305dc1",
+      "taskId": "b749fc07-349b-454a-9d71-a6fe86e35ae3",
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "proofData": "my_new_submission_test",
+      "status": "pending",
+      "rewardAmount": 10,
+      "createdAt": "2026-09-13T07:22:04.937Z"
+    }
+  ],
+  "referrals": [
+    {
+      "id": "r1a2b3c4-5d6e-7f8a-9b0c-1d2e3f4a5b6c",
+      "referrerId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "referredUserId": "e2a1b9c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+      "rewardAmount": 50,
+      "status": "rewarded",
+      "createdAt": "2026-09-13T05:00:00.000Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "2bb03f17-f9c3-43a5-bd71-93b2a3c3a807",
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "type": "task_reward",
+      "amount": 10,
+      "balanceAfter": 10,
+      "description": "টাস্ক সম্পন্ন: Test Task",
+      "referenceId": "ed265fbf-2066-49f7-880d-f59680011e64",
+      "createdAt": "2026-09-13T07:12:52.690Z"
+    }
+  ],
+  "withdrawal_requests": [],
+  "support_tickets": [],
+  "audit_logs": [
+    {
+      "id": "652429cc-042a-47f1-87a9-915273c70cb9",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "system_initialized",
+      "details": {
+        "message": "Earnora clean production database initialized."
+      },
+      "createdAt": "2026-09-12T13:19:40.803Z"
+    },
+    {
+      "id": "15739992-6db9-4373-ad4c-84f94ab2ccc6",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "user_suspended",
+      "details": {
+        "targetUserId": "aecfe8fc-832d-43f9-b07b-acc9bd4294ff",
+        "targetEmail": "test456@gmail.com"
+      },
+      "createdAt": "2026-09-13T06:27:38.043Z"
+    },
+    {
+      "id": "9bf1a0b6-1143-4c0d-97ce-405f6b59a9d3",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "user_reactivated",
+      "details": {
+        "targetUserId": "aecfe8fc-832d-43f9-b07b-acc9bd4294ff",
+        "targetEmail": "test456@gmail.com"
+      },
+      "createdAt": "2026-09-13T06:27:39.515Z"
+    },
+    {
+      "id": "0fcea33c-15d2-4ce3-a20f-49b5d3704caa",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "task_created",
+      "details": {
+        "taskId": "c7f7b65f-d2ee-4f9c-9c3d-d6c6df689093",
+        "title": "Test Task",
+        "rewardAmount": 10,
+        "category": "telegram"
+      },
+      "createdAt": "2026-09-13T06:57:36.767Z"
+    },
+    {
+      "id": "65b7c436-bfaa-4176-a8e8-f518e35726be",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "task_submission_approved",
+      "details": {
+        "submissionId": "ed265fbf-2066-49f7-880d-f59680011e64",
+        "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+        "reward": 10
+      },
+      "createdAt": "2026-09-13T07:12:52.690Z"
+    },
+    {
+      "id": "46586a1a-38be-41b9-895c-93b99eb7bdbd",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "task_created",
+      "details": {
+        "taskId": "b749fc07-349b-454a-9d71-a6fe86e35ae3",
+        "title": "Test Task 2",
+        "rewardAmount": 10,
+        "category": "telegram"
+      },
+      "createdAt": "2026-09-13T07:21:59.972Z"
+    }
+  ],
+  "social_account_sales": [
+    {
+      "id": "c2728e2a-2b01-4bdb-8fc2-abbf2860c178",
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "userEmail": "fahim236455@gmail.com",
+      "service": "gmail",
+      "taskId": "test1234",
+      "accountIdentifier": "test@gmail.com",
+      "password": "password123",
+      "rate": 14,
+      "status": "pending",
+      "createdAt": "2026-09-13T07:22:30.464Z"
+    }
+  ],
+  "social_jobs_config": [
+    {
+      "service": "gmail",
+      "title": "Gmail Create & Sell",
+      "rate": 14,
+      "dailyLimit": 1000,
+      "reportTime": "15-30 hours",
+      "usernameTemplate": "sgw",
+      "todayPassword": "sgwteam1@21A",
+      "active": true,
+      "tutorialUrl": "https://youtube.com",
+      "notes": "নতুন জিমেইল তৈরি করুন। রিকভারি ছাড়া পাসওয়ার্ড sgwteam1@21A দিন।",
+      "updatedAt": "2026-09-13T04:05:09.003Z"
+    },
+    {
+      "service": "facebook",
+      "title": "Facebook ID / Followers Sell",
+      "rate": 4.5,
+      "dailyLimit": 1000,
+      "reportTime": "15/40 hours",
+      "todayPassword": "Earnnora@12",
+      "active": true,
+      "tutorialUrl": "https://youtube.com",
+      "notes": "ফেসবুক ইউআইডি ও পাসওয়ার্ড দিন। কুকিজ দিলে দ্রুত অনুমোদন।",
+      "updatedAt": "2026-09-13T03:04:26.544Z"
+    },
+    {
+      "service": "instagram",
+      "title": "Instagram Account Sell",
+      "rate": 2.5,
+      "dailyLimit": 1000,
+      "reportTime": "10/20 hours",
+      "todayPassword": "Earnnora@12",
+      "active": true,
+      "tutorialUrl": "https://youtube.com",
+      "notes": "ইনস্টাগ্রাম ইউজারনেম ও পাসওয়ার্ড দিয়ে সাবমিট করুন।",
+      "updatedAt": "2026-09-13T03:04:34.680Z"
+    }
+  ],
+  "social_tasks_queue": [],
+  "user_posted_jobs": []
+}

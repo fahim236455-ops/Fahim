@@ -1,0 +1,86 @@
+@import "tailwindcss";
+@custom-variant dark (&:is(.dark *));
+
+/* Force solid crisp dark text on all inputs, textareas, and selects */
+input, textarea, select {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  caret-color: #0f172a !important;
+  font-weight: 500;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  opacity: 1 !important;
+}
+
+/* Autofill fixes for browser auto-complete (Chrome, Edge, Safari) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: #0f172a !important;
+  caret-color: #0f172a !important;
+  box-shadow: 0 0 0 30px #ffffff inset !important;
+  -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+}
+
+/* ONLY when an input itself explicitly has a dark background class */
+input.dark-input,
+textarea.dark-input,
+select.dark-input,
+input.bg-slate-900,
+input.bg-slate-950,
+input.bg-slate-800,
+input.bg-black,
+textarea.bg-slate-900,
+textarea.bg-slate-950,
+textarea.bg-slate-800,
+select.bg-slate-900,
+select.bg-slate-950,
+select.bg-slate-800 {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #38bdf8 !important;
+}
+
+input.dark-input::placeholder,
+textarea.dark-input::placeholder,
+input.bg-slate-900::placeholder,
+input.bg-slate-950::placeholder,
+input.bg-slate-800::placeholder,
+textarea.bg-slate-900::placeholder,
+textarea.bg-slate-950::placeholder,
+textarea.bg-slate-800::placeholder {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+}
+
+input.dark-input:-webkit-autofill,
+input.bg-slate-900:-webkit-autofill,
+input.bg-slate-950:-webkit-autofill,
+input.bg-slate-800:-webkit-autofill {
+  box-shadow: 0 0 0 30px #0f172a inset !important;
+  -webkit-box-shadow: 0 0 0 30px #0f172a inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #38bdf8 !important;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 22s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
