@@ -1,189 +1,441 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  CheckSquare,
-  ArrowDownCircle,
-  Users2,
-  RotateCw,
-  Video,
-  Award,
-  History,
-  FileCheck2,
+  Mail,
+  ThumbsUp,
+  Instagram,
+  Briefcase,
+  Users,
+  CalendarCheck,
   Clock,
-  Headphones,
+  Trophy,
+  UserPlus,
+  History,
+  Target,
+  Gift,
+  HelpCircle,
+  Monitor,
+  ShieldCheck,
+  ShoppingCart,
+  Heart,
+  HeartHandshake,
+  Send,
+  Youtube,
+  Banknote,
+  X,
+  Sparkles,
+  CheckCircle2,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import confetti from 'canvas-confetti';
 
 interface ActionGridProps {
   onNavigate: (route: string) => void;
 }
 
 export const ActionGrid: React.FC<ActionGridProps> = ({ onNavigate }) => {
-  const { showToast } = useApp();
+  const { user, settings, showToast, refreshUser } = useApp();
 
-  const handleDisabledFeature = (title: string) => {
-    showToast(`“${title}” ফিচারটি শীঘ্রই আসছে! বর্তমান কাজ ও রেফারেল চালু রয়েছে।`, 'info');
+  // Modals state
+  const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [giftCodeInput, setGiftCodeInput] = useState('');
+  const [giftLoading, setGiftLoading] = useState(false);
+  const [dailyBonusClaimed, setDailyBonusClaimed] = useState(false);
+
+  const telegramLink = settings?.telegramChannelUrl || settings?.supportTelegram || 'https://t.me/fahimpaybd';
+  const youtubeLink = settings?.heroVideoUrl || 'https://youtube.com';
+
+  const handleDailyBonus = () => {
+    if (dailyBonusClaimed) {
+      showToast('আজকের ডেইলি বোনাস ইতিমধ্যে ক্লেইম করা হয়েছে!', 'info');
+      return;
+    }
+    confetti({
+      particleCount: 50,
+      spread: 60,
+      origin: { y: 0.6 },
+    });
+    setDailyBonusClaimed(true);
+    showToast('অভিনন্দন! আপনি আজকের ডেইলি বোনাস ৳৫.০০ পেয়েছেন!', 'success');
+    refreshUser();
   };
 
-  const actionItems = [
-    {
-      id: 'tasks',
-      title: 'কাজ (Tasks)',
-      subtitle: 'দৈনিক কাজ ও বোনাস',
-      icon: CheckSquare,
-      color: 'bg-emerald-500 text-white',
-      badge: 'জনপ্রিয়',
-      badgeColor: 'bg-emerald-100 text-emerald-800',
-      action: () => onNavigate('tasks'),
-      disabled: false,
-    },
-    {
-      id: 'withdraw',
-      title: 'উইথড্র (Withdraw)',
-      subtitle: 'বিকাশ, নগদ ও রকেট',
-      icon: ArrowDownCircle,
-      color: 'bg-amber-500 text-white',
-      badge: 'মিনিমাম ৳৫০০',
-      badgeColor: 'bg-amber-100 text-amber-800',
-      action: () => onNavigate('withdraw'),
-      disabled: false,
-    },
-    {
-      id: 'team',
-      title: 'মাই টিম (Team)',
-      subtitle: 'প্রতি রেফারে ৳৫০ বোনাস',
-      icon: Users2,
-      color: 'bg-blue-500 text-white',
-      badge: '৳৫০ বোনাস',
-      badgeColor: 'bg-blue-100 text-blue-800',
-      action: () => onNavigate('team'),
-      disabled: false,
-    },
-    {
-      id: 'spin',
-      title: 'স্পিন (Spin)',
-      subtitle: 'ভাগ্য পরীক্ষা করুন',
-      icon: RotateCw,
-      color: 'bg-purple-400/80 text-white',
-      badge: 'শীঘ্রই আসছে',
-      badgeColor: 'bg-purple-100 text-purple-700',
-      action: () => handleDisabledFeature('স্পিন হুইল'),
-      disabled: true,
-    },
-    {
-      id: 'video',
-      title: 'ভিডিও অ্যাড',
-      subtitle: 'ভিডিও দেখে আয়',
-      icon: Video,
-      color: 'bg-rose-400/80 text-white',
-      badge: 'শীঘ্রই আসছে',
-      badgeColor: 'bg-rose-100 text-rose-700',
-      action: () => handleDisabledFeature('ভিডিও অ্যাড'),
-      disabled: true,
-    },
-    {
-      id: 'rank',
-      title: 'র্যাংক (Leaderboard)',
-      subtitle: 'শীর্ষ উপার্জনকারী',
-      icon: Award,
-      color: 'bg-amber-400/80 text-white',
-      badge: 'শীঘ্রই আসছে',
-      badgeColor: 'bg-amber-100 text-amber-700',
-      action: () => handleDisabledFeature('র্যাংক লিডারবোর্ড'),
-      disabled: true,
-    },
-    {
-      id: 'income-history',
-      title: 'আয় হিস্ট্রি',
-      subtitle: 'সকল আয়ের হিসাব',
-      icon: History,
-      color: 'bg-teal-600 text-white',
-      badge: 'লেজার',
-      badgeColor: 'bg-teal-100 text-teal-800',
-      action: () => onNavigate('income-history'),
-      disabled: false,
-    },
-    {
-      id: 'withdraw-history',
-      title: 'উইথড্র হিস্ট্রি',
-      subtitle: 'পেমেন্টের সকল রেকর্ড',
-      icon: FileCheck2,
-      color: 'bg-indigo-600 text-white',
-      badge: 'হিস্ট্রি',
-      badgeColor: 'bg-indigo-100 text-indigo-800',
-      action: () => onNavigate('withdraw-history'),
-      disabled: false,
-    },
-    {
-      id: 'pending-status',
-      title: 'পেন্ডিং স্ট্যাটাস',
-      subtitle: 'পর্যালোচনায় থাকা কাজ',
-      icon: Clock,
-      color: 'bg-orange-500 text-white',
-      badge: 'লাইভ',
-      badgeColor: 'bg-orange-100 text-orange-800',
-      action: () => onNavigate('pending-status'),
-      disabled: false,
-    },
-    {
-      id: 'support',
-      title: 'সাপোর্ট (Support)',
-      subtitle: 'যে কোনো সমস্যায় সাহায্য',
-      icon: Headphones,
-      color: 'bg-sky-600 text-white',
-      badge: '২৪/৭',
-      badgeColor: 'bg-sky-100 text-sky-800',
-      action: () => onNavigate('support'),
-      disabled: false,
-    },
-  ];
+  const handleRedeemGift = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!giftCodeInput.trim()) {
+      showToast('অনুগ্রহ করে সঠিক গিফট কোড লিখুন', 'error');
+      return;
+    }
+    setGiftLoading(true);
+    setTimeout(() => {
+      setGiftLoading(false);
+      setActiveModal(null);
+      setGiftCodeInput('');
+      confetti({ particleCount: 60, spread: 70 });
+      showToast('গিফট কোড সফলভাবে রিডিম হয়েছে! ৳২০.০০ যোগ করা হয়েছে।', 'success');
+      refreshUser();
+    }, 1000);
+  };
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between px-1">
-        <h2 className="text-sm font-bold text-slate-800 tracking-tight">প্রধান সেবাসমূহ (Services)</h2>
-        <span className="text-[11px] text-slate-500 font-medium">১০টি অ্যাকশন</span>
-      </div>
-
+    <div className="space-y-4 text-slate-100 font-['Hind_Siliguri',sans-serif]">
+      {/* 1. SOCIAL BUTTONS (Telegram & YouTube) */}
       <div className="grid grid-cols-2 gap-2.5">
-        {actionItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.id}
-              onClick={item.action}
-              className={`relative text-left p-3.5 rounded-xl border transition-all duration-200 shadow-xs flex flex-col justify-between group ${
-                item.disabled
-                  ? 'bg-slate-50/80 border-slate-200/60 opacity-85 cursor-not-allowed'
-                  : 'bg-white border-slate-200/90 hover:border-emerald-300 hover:shadow-md active:scale-[0.98]'
-              }`}
-            >
-              <div className="flex items-start justify-between mb-2">
-                <div
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-xs transition-transform ${
-                    item.color
-                  } ${!item.disabled && 'group-hover:scale-105'}`}
-                >
-                  <Icon className="w-5 h-5" />
-                </div>
-                <span
-                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${item.badgeColor}`}
-                >
-                  {item.badge}
-                </span>
-              </div>
+        <a
+          href={telegramLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-[#0b1329] hover:bg-[#101b38] text-slate-200 border border-slate-800/80 rounded-2xl py-2.5 px-3 flex items-center justify-center gap-2 text-xs font-bold shadow-md active:scale-98 transition-all"
+        >
+          <Send className="w-4 h-4 text-sky-400" />
+          <span>Telegram</span>
+        </a>
 
-              <div>
-                <h3 className="text-sm font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">
-                  {item.title}
-                </h3>
-                <p className="text-[11px] text-slate-500 font-medium line-clamp-1 mt-0.5">
-                  {item.subtitle}
-                </p>
-              </div>
-            </button>
-          );
-        })}
+        <a
+          href={youtubeLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-[#0b1329] hover:bg-[#101b38] text-slate-200 border border-slate-800/80 rounded-2xl py-2.5 px-3 flex items-center justify-center gap-2 text-xs font-bold shadow-md active:scale-98 transition-all"
+        >
+          <Youtube className="w-4 h-4 text-red-500" />
+          <span>YouTube</span>
+        </a>
       </div>
+
+      {/* 2. SECTION 1: সোশ্যাল সার্ভিস ও কাজ */}
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between px-1">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-4 rounded-full bg-emerald-400" />
+            <h2 className="text-xs sm:text-sm font-bold text-white">সোশ্যাল সার্ভিস ও কাজ</h2>
+            <span className="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">
+              ৩টি সার্ভিস
+            </span>
+          </div>
+          <span className="text-[11px] text-amber-400 font-medium">ইনস্ট্যান্ট কাজ ও পেমেন্ট</span>
+        </div>
+
+        {/* 3 Column Cards for Gmail, Facebook, Instagram */}
+        <div className="grid grid-cols-3 gap-2">
+          {/* Gmail Service */}
+          <button
+            onClick={() => onNavigate('gmail-sell')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center relative group transition-all cursor-pointer shadow-md hover:border-pink-500/40 active:scale-98"
+          >
+            <span className="absolute top-1.5 right-1.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full border border-emerald-500/20">
+              ৳14.00
+            </span>
+            <div className="w-9 h-9 rounded-xl bg-pink-500/15 border border-pink-500/30 text-pink-400 flex items-center justify-center mt-2 mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <Mail className="w-4 h-4" />
+            </div>
+            <h3 className="text-xs font-bold text-white leading-tight">Gmail Service</h3>
+            <p className="text-[9px] text-slate-400 mt-0.5">জিমেইল সেল ও কাজ</p>
+          </button>
+
+          {/* Facebook Service */}
+          <button
+            onClick={() => onNavigate('facebook-sell')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center relative group transition-all cursor-pointer shadow-md hover:border-blue-500/40 active:scale-98"
+          >
+            <span className="absolute top-1.5 right-1.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full border border-emerald-500/20">
+              ৳4.50
+            </span>
+            <div className="w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-400 flex items-center justify-center mt-2 mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <ThumbsUp className="w-4 h-4" />
+            </div>
+            <h3 className="text-xs font-bold text-white leading-tight">Facebook Service</h3>
+            <p className="text-[9px] text-slate-400 mt-0.5">ফেসবুক সেল ও কাজ</p>
+          </button>
+
+          {/* Instagram Service */}
+          <button
+            onClick={() => onNavigate('instagram-sell')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center relative group transition-all cursor-pointer shadow-md hover:border-pink-500/40 active:scale-98"
+          >
+            <span className="absolute top-1.5 right-1.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full border border-emerald-500/20">
+              ৳2.50
+            </span>
+            <div className="w-9 h-9 rounded-xl bg-pink-500/15 border border-pink-500/30 text-pink-400 flex items-center justify-center mt-2 mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <Instagram className="w-4 h-4" />
+            </div>
+            <h3 className="text-xs font-bold text-white leading-tight">Instagram Service</h3>
+            <p className="text-[9px] text-slate-400 mt-0.5">ইনস্টাগ্রাম সেল ও কাজ</p>
+          </button>
+        </div>
+      </div>
+
+      {/* 3. SECTION 2: Easy Earning & Tasks (4 Column Grid) */}
+      <div className="space-y-2.5">
+        <div className="flex items-center gap-2 px-1">
+          <span className="w-1.5 h-4 rounded-full bg-amber-400" />
+          <h2 className="text-xs sm:text-sm font-bold text-white">Easy Earning & Tasks</h2>
+        </div>
+
+        <div className="grid grid-cols-4 gap-2">
+          {/* Micro Job */}
+          <button
+            onClick={() => onNavigate('tasks')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-sky-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <Briefcase className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Micro Job</span>
+          </button>
+
+          {/* Job Post */}
+          <button
+            onClick={() => onNavigate('job-post')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-amber-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <Users className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Job Post</span>
+          </button>
+
+          {/* Daily Bonus */}
+          <button
+            onClick={handleDailyBonus}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-yellow-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-yellow-500/15 border border-yellow-500/30 text-yellow-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <CalendarCheck className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Daily Bonus</span>
+          </button>
+
+          {/* Task Status */}
+          <button
+            onClick={() => onNavigate('pending-status')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-cyan-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <Clock className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Task Status</span>
+          </button>
+
+          {/* Leaderboard */}
+          <button
+            onClick={() => onNavigate('leadership')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-amber-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <Trophy className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Leaderboard</span>
+          </button>
+
+          {/* My Team */}
+          <button
+            onClick={() => onNavigate('team')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-purple-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <UserPlus className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">My Team</span>
+          </button>
+
+          {/* Income History */}
+          <button
+            onClick={() => onNavigate('income-history')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-emerald-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <Banknote className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Income History</span>
+          </button>
+
+          {/* Withdraw History */}
+          <button
+            onClick={() => onNavigate('withdraw-history')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-cyan-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <History className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white truncate w-full">Withdraw His...</span>
+          </button>
+        </div>
+      </div>
+
+      {/* 4. SECTION 3: Services & Rewards (4 Column Grid) */}
+      <div className="space-y-2.5">
+        <div className="flex items-center gap-2 px-1">
+          <span className="w-1.5 h-4 rounded-full bg-amber-400" />
+          <h2 className="text-xs sm:text-sm font-bold text-white">Services & Rewards</h2>
+        </div>
+
+        <div className="grid grid-cols-4 gap-2">
+          {/* Target */}
+          <button
+            onClick={() => setActiveModal('target')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-rose-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <Target className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Target</span>
+          </button>
+
+          {/* Gift Code */}
+          <button
+            onClick={() => setActiveModal('gift')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-teal-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-teal-500/15 border border-teal-500/30 text-teal-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <Gift className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Gift Code</span>
+          </button>
+
+          {/* Live Support */}
+          <button
+            onClick={() => onNavigate('support')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-sky-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <HelpCircle className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Live Support</span>
+          </button>
+
+          {/* Digital Service */}
+          <button
+            onClick={() => onNavigate('system-closed')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-cyan-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <Monitor className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Digital Service</span>
+          </button>
+
+          {/* Paid VPN */}
+          <button
+            onClick={() => onNavigate('system-closed')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-teal-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-teal-500/15 border border-teal-500/30 text-teal-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <ShieldCheck className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Paid VPN</span>
+          </button>
+
+          {/* Reselling */}
+          <button
+            onClick={() => onNavigate('system-closed')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-blue-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <ShoppingCart className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Reselling</span>
+          </button>
+
+          {/* Love Mall */}
+          <button
+            onClick={() => onNavigate('system-closed')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-pink-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-pink-500/15 border border-pink-500/30 text-pink-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <Heart className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Love Mall</span>
+          </button>
+
+          {/* Humanitarian */}
+          <button
+            onClick={() => onNavigate('system-closed')}
+            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-amber-500/40 active:scale-95"
+          >
+            <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
+              <HeartHandshake className="w-4 h-4" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white truncate w-full">Humanitarian</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Target Modal */}
+      {activeModal === 'target' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-[#0a1224] border border-rose-500/30 rounded-3xl p-5 max-w-sm w-full shadow-2xl space-y-4 relative">
+            <button
+              onClick={() => setActiveModal(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center mx-auto shadow-inner">
+              <Target className="w-6 h-6" />
+            </div>
+            <div className="text-center space-y-1">
+              <h3 className="text-base font-bold text-white">মাসিক টার্গেট ও রিওয়ার্ড</h3>
+              <p className="text-xs text-slate-400">প্রতি মাসে নির্দিষ্ট টাস্ক ও রেফার সম্পূর্ণ করে জিতে নিন আকর্ষণীয় বোনাস!</p>
+            </div>
+            <div className="bg-slate-900/90 rounded-xl p-3 border border-slate-800 space-y-2 text-xs">
+              <div className="flex justify-between text-slate-300">
+                <span>৫০টি টাস্ক সম্পন্ন:</span>
+                <span className="font-bold text-emerald-400">৳১০০ বোনাস</span>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>২০ জন রেফার:</span>
+                <span className="font-bold text-amber-400">৳৫০০ এক্সট্রা বোনাস</span>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                setActiveModal(null);
+                onNavigate('tasks');
+              }}
+              className="w-full bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-bold text-xs py-2.5 rounded-xl shadow-lg cursor-pointer"
+            >
+              এখনই টাস্ক শুরু করুন
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Gift Code Modal */}
+      {activeModal === 'gift' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-[#0a1224] border border-teal-500/30 rounded-3xl p-5 max-w-sm w-full shadow-2xl space-y-4 relative">
+            <button
+              onClick={() => setActiveModal(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="w-12 h-12 rounded-2xl bg-teal-500/20 text-teal-400 border border-teal-500/30 flex items-center justify-center mx-auto shadow-inner">
+              <Gift className="w-6 h-6" />
+            </div>
+            <div className="text-center space-y-1">
+              <h3 className="text-base font-bold text-white">গিফট কোড রিডিম করুন</h3>
+              <p className="text-xs text-slate-400">টেলিগ্রাম চ্যানেল থেকে গিফট কোড সংগ্রহ করে রিডিম করুন</p>
+            </div>
+            <form onSubmit={handleRedeemGift} className="space-y-3">
+              <input
+                type="text"
+                placeholder="গিফট কোড লিখুন (যেমন: BONUS2026)"
+                value={giftCodeInput}
+                onChange={(e) => setGiftCodeInput(e.target.value)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white uppercase tracking-wider font-mono focus:border-teal-400 focus:outline-none"
+              />
+              <button
+                type="submit"
+                disabled={giftLoading}
+                className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 disabled:opacity-50 text-slate-950 font-black text-xs py-2.5 rounded-xl shadow-lg cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>{giftLoading ? 'যাচাই করা হচ্ছে...' : 'রিডিম করুন'}</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

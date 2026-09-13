@@ -171,12 +171,12 @@ function AppContent() {
 
   // Authenticated App Shell with Header and Bottom Navigation
   return (
-    <div className="min-h-screen bg-slate-950 font-['Hind_Siliguri',sans-serif] text-slate-100 selection:bg-amber-500 selection:text-slate-950">
+    <div className="min-h-screen bg-slate-950 font-['Hind_Siliguri',sans-serif] text-slate-100 selection:bg-amber-500 selection:text-black">
       <ToastContainer />
 
       <Header onNavigate={navigate} currentRoute={currentRoute} />
 
-      <main className="min-h-[calc(100vh-120px)]">
+      <main className="min-h-[calc(100vh-130px)] pb-16">
         {currentRoute === 'dashboard' && <DashboardPage onNavigate={navigate} />}
         {currentRoute === 'tasks' && <TasksPage onNavigate={navigate} />}
         {currentRoute === 'job-post' && <JobPostPage onNavigate={navigate} />}

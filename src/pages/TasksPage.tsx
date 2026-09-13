@@ -303,7 +303,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-4 space-y-4 pb-24 text-slate-100">
+    <div className="max-w-md mx-auto px-4 py-4 space-y-4 pb-24 font-['Hind_Siliguri',sans-serif] text-slate-100">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
