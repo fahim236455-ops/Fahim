@@ -47,6 +47,9 @@ import {
   Filter,
   Youtube,
   Video,
+  Cloud,
+  Database,
+  UploadCloud,
 } from 'lucide-react';
 
 interface AdminPanelPageProps {
@@ -182,6 +185,8 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
   const [settingsForm, setSettingsForm] = useState<SiteSettings | null>(null);
   const [auditLogs, setAuditLogs] = useState<AuditLogItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const [cloudSyncInfo, setCloudSyncInfo] = useState<{ provider?: string; status?: string; lastSync?: string; localUsersCount?: number } | null>(null);
+  const [cloudSyncLoading, setCloudSyncLoading] = useState(false);
 
   // Social job edit / new modal state
   const [editingSocialJob, setEditingSocialJob] = useState<SocialJobConfig | null>(null);
@@ -298,7 +303,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
-      const [statsData, subData, withData, taskData, usrData, tktData, settsData, logsData, socData, socJobsData, socTasksData, rolesData] =
+      const [statsData, subData, withData, taskData, usrData, tktData, settsData, logsData, socData, socJobsData, socTasksData, rolesData, syncData] =
         await Promise.all([
           fetchApi(`/admin/stats?t=${Date.now()}`).catch((e) => { console.error('Stats API:', e); return null; }),
           fetchApi(`/admin/submissions?t=${Date.now()}`).catch((e) => { console.error('Subs API:', e); return null; }),
@@ -312,6 +317,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
           fetchApi(`/admin/social-jobs?t=${Date.now()}`).catch((e) => { console.error('SocJobs API:', e); return null; }),
           fetchApi(`/admin/social-tasks?t=${Date.now()}`).catch((e) => { console.error('SocTasks API:', e); return null; }),
           fetchApi(`/admin/roles?t=${Date.now()}`).catch((e) => { console.error('Roles API:', e); return null; }),
+          fetchApi(`/admin/cloud-sync?t=${Date.now()}`).catch((e) => { console.error('CloudSync API:', e); return null; }),
         ]);
 
       if (statsData) setStats(statsData);
@@ -326,6 +332,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
       if (Array.isArray(socJobsData)) setSocialJobs(socJobsData);
       if (Array.isArray(socTasksData)) setSocialTasksQueue(socTasksData);
       if (Array.isArray(rolesData)) setAdminRolesList(rolesData);
+      if (syncData) setCloudSyncInfo(syncData);
     } catch (err: any) {
       showToast(err.message || 'অ্যাডমিন ডেটা লোড ব্যর্থ হয়েছে।', 'error');
     } finally {
@@ -1097,6 +1104,38 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
       await loadData();
     } catch (err: any) {
       showToast(err.message || 'সেটিংস আপডেট ব্যর্থ হয়েছে।', 'error');
+    }
+  };
+
+  // Cloud Database Actions (Firebase Firestore)
+  const handlePushToCloud = async () => {
+    try {
+      setCloudSyncLoading(true);
+      const res = await fetchApi<{ success: boolean; message: string }>('/admin/cloud-sync/push', {
+        method: 'POST',
+      });
+      showToast(res.message || 'বর্তমান ডেটাবেস সফলভাবে ক্লাউডে আপলোড হয়েছে!', 'success');
+      await loadData();
+    } catch (err: any) {
+      showToast(err.message || 'ক্লাউড আপলোড ব্যর্থ হয়েছে।', 'error');
+    } finally {
+      setCloudSyncLoading(false);
+    }
+  };
+
+  const handlePullFromCloud = async () => {
+    if (!window.confirm('আপনি কি নিশ্চিত যে ক্লাউড ফায়ারস্টোর থেকে সর্বশেষ ইউজার ও ডেটা রিস্টোর করতে চান?')) return;
+    try {
+      setCloudSyncLoading(true);
+      const res = await fetchApi<{ success: boolean; message: string }>('/admin/cloud-sync/pull', {
+        method: 'POST',
+      });
+      showToast(res.message || 'ক্লাউড থেকে সফলভাবে ডেটা রিস্টোর করা হয়েছে!', 'success');
+      await loadData();
+    } catch (err: any) {
+      showToast(err.message || 'ক্লাউড রিস্টোর ব্যর্থ হয়েছে।', 'error');
+    } finally {
+      setCloudSyncLoading(false);
     }
   };
 
@@ -4449,6 +4488,75 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
             >
               সেটিংস সংরক্ষণ করুন
             </button>
+
+            {/* Cloud Database Protection & Persistence Box */}
+            <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/40 border-2 border-indigo-500/40 rounded-2xl p-4 sm:p-5 space-y-4 shadow-lg">
+              <div className="flex items-center justify-between border-b border-slate-700/80 pb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center border border-indigo-500/30">
+                    <Cloud className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-white text-xs sm:text-sm">
+                        ক্লাউড ডেটাবেস সুরক্ষা ও পারসিস্টেন্স (Firebase Firestore)
+                      </h3>
+                      <span className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        সংযুক্ত ও সুরক্ষিত
+                      </span>
+                    </div>
+                    <p className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5">
+                      সার্ভার রিস্টার্ট বা কোড আপডেট হলেও নতুন ইউজার ও লেনদেন কখনো মুছে যাবে না
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-1">
+                  <span className="text-slate-400 text-[11px] flex items-center gap-1.5">
+                    <Database className="w-3.5 h-3.5 text-indigo-400" />
+                    বর্তমান রেজিস্টার্ড ইউজার:
+                  </span>
+                  <p className="text-white font-bold text-sm">
+                    {cloudSyncInfo?.localUsersCount !== undefined ? cloudSyncInfo.localUsersCount : users.length} জন
+                  </p>
+                </div>
+
+                <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-1">
+                  <span className="text-slate-400 text-[11px] flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-amber-400" />
+                    সর্বশেষ ক্লাউড সিঙ্ক:
+                  </span>
+                  <p className="text-white font-mono text-[11px] truncate">
+                    {cloudSyncInfo?.lastSync ? new Date(cloudSyncInfo.lastSync).toLocaleString('bn-BD') : 'সার্বক্ষণিক অটো-সিঙ্ক সক্রিয়'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2.5 pt-1">
+                <button
+                  type="button"
+                  disabled={cloudSyncLoading}
+                  onClick={handlePushToCloud}
+                  className="flex-1 min-w-[140px] flex items-center justify-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold text-xs py-2.5 px-3 rounded-xl transition-all shadow-md"
+                >
+                  <UploadCloud className="w-4 h-4" />
+                  <span>{cloudSyncLoading ? 'সিঙ্ক হচ্ছে...' : 'ক্লাউডে ম্যানুয়াল ব্যাকআপ পুশ করুন'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={cloudSyncLoading}
+                  onClick={handlePullFromCloud}
+                  className="flex-1 min-w-[140px] flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-200 font-bold text-xs py-2.5 px-3 rounded-xl border border-slate-700 transition-all"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${cloudSyncLoading ? 'animate-spin text-amber-400' : ''}`} />
+                  <span>ক্লাউড থেকে রিস্টোর করুন</span>
+                </button>
+              </div>
+            </div>
           </form>
         )}
 

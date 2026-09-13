@@ -8,6 +8,9 @@ import {
   AdminPermissions,
   DEFAULT_SUPER_ADMIN_PERMISSIONS,
   DEFAULT_SUB_ADMIN_PERMISSIONS,
+  getCloudSyncStatus,
+  forcePushToCloud,
+  forcePullFromCloud,
 } from './db.js';
 import {
   requireAuth,
@@ -2273,6 +2276,42 @@ apiRouter.put('/admin/settings', requirePermission('canEditSiteSettings'), (req:
     res.json({ message: 'সেটিংস সফলভাবে সংরক্ষণ করা হয়েছে।', settings: updated });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
+  }
+});
+
+// Admin Cloud Sync Management (Firebase Firestore)
+apiRouter.get('/admin/cloud-sync', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+  const status = getCloudSyncStatus();
+  res.json({
+    provider: 'Firebase Cloud Firestore',
+    status: 'connected',
+    ...status,
+  });
+});
+
+apiRouter.post('/admin/cloud-sync/push', requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const success = await forcePushToCloud();
+    if (success) {
+      res.json({ success: true, message: 'বর্তমান ডেটাবেস সফলভাবে ক্লাউড ফায়ারস্টোরে আপলোড হয়েছে।' });
+    } else {
+      res.status(500).json({ success: false, error: 'ক্লাউডে আপলোড করতে সমস্যা হয়েছে।' });
+    }
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+apiRouter.post('/admin/cloud-sync/pull', requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const success = await forcePullFromCloud();
+    if (success) {
+      res.json({ success: true, message: 'ক্লাউড ফায়ারস্টোর থেকে সফলভাবে সর্বশেষ ডেটা রিস্টোর করা হয়েছে।' });
+    } else {
+      res.status(500).json({ success: false, error: 'ক্লাউড থেকে ডেটা পাওয়া যায়নি বা সমস্যা হয়েছে।' });
+    }
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 

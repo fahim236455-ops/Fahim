@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
+import { fetchCloudState, saveCloudState } from './firebase.js';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'database.json');
@@ -550,12 +551,111 @@ export function getDatabase(): DatabaseSchema {
   }
 }
 
+let cloudSyncTimer: NodeJS.Timeout | null = null;
+let lastCloudSyncTime: string | null = null;
+let isCloudSyncing = false;
+
+export function getCloudSyncStatus() {
+  return {
+    lastSync: lastCloudSyncTime,
+    isSyncing: isCloudSyncing,
+    localUsersCount: dbInstance ? dbInstance.profiles.length : 0,
+  };
+}
+
+export async function forcePushToCloud(): Promise<boolean> {
+  if (!dbInstance) return false;
+  try {
+    isCloudSyncing = true;
+    const ok = await saveCloudState(dbInstance);
+    if (ok) {
+      lastCloudSyncTime = new Date().toISOString();
+      console.log(`[Cloud DB] Successfully pushed database snapshot to Cloud Firestore! Users: ${dbInstance.profiles.length}`);
+    }
+    return ok;
+  } catch (err) {
+    console.error('[Cloud DB] Force push failed:', err);
+    return false;
+  } finally {
+    isCloudSyncing = false;
+  }
+}
+
+export async function forcePullFromCloud(): Promise<boolean> {
+  try {
+    isCloudSyncing = true;
+    const cloud = await fetchCloudState();
+    if (cloud && cloud.data && Array.isArray(cloud.data.profiles)) {
+      dbInstance = cloud.data as DatabaseSchema;
+      ensureDataDirectory();
+      fs.writeFileSync(DB_FILE, JSON.stringify(dbInstance, null, 2), 'utf-8');
+      lastCloudSyncTime = cloud.syncedAt || new Date().toISOString();
+      console.log(`[Cloud DB] Pulled and restored ${dbInstance.profiles.length} user(s) from Cloud Firestore.`);
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error('[Cloud DB] Force pull failed:', err);
+    return false;
+  } finally {
+    isCloudSyncing = false;
+  }
+}
+
 export function saveDatabase(): void {
   if (!dbInstance) return;
   ensureDataDirectory();
   const tempFile = `${DB_FILE}.tmp.${Date.now()}`;
   fs.writeFileSync(tempFile, JSON.stringify(dbInstance, null, 2), 'utf-8');
   fs.renameSync(tempFile, DB_FILE);
+
+  // Trailing-debounce async sync to Firestore (every 800ms max)
+  if (cloudSyncTimer) {
+    clearTimeout(cloudSyncTimer);
+  }
+  cloudSyncTimer = setTimeout(async () => {
+    if (!dbInstance) return;
+    try {
+      isCloudSyncing = true;
+      const success = await saveCloudState(dbInstance);
+      if (success) {
+        lastCloudSyncTime = new Date().toISOString();
+      }
+    } catch (err) {
+      console.error('[Cloud DB] Auto sync to Firestore encountered an error:', err);
+    } finally {
+      isCloudSyncing = false;
+    }
+  }, 800);
+}
+
+export async function initCloudDatabase(): Promise<void> {
+  const local = getDatabase();
+  try {
+    console.log('[Cloud DB] Initializing connection with Cloud Firestore...');
+    const cloud = await fetchCloudState();
+    if (cloud && cloud.data && Array.isArray(cloud.data.profiles) && cloud.data.profiles.length > 0) {
+      console.log(`[Cloud DB] Cloud Firestore state detected with ${cloud.data.profiles.length} profile(s). (Local has ${local.profiles.length})`);
+      
+      // If cloud has equal or more users, or cloud has data while local only has initial default
+      if (cloud.data.profiles.length >= local.profiles.length) {
+        dbInstance = cloud.data as DatabaseSchema;
+        ensureDataDirectory();
+        fs.writeFileSync(DB_FILE, JSON.stringify(dbInstance, null, 2), 'utf-8');
+        lastCloudSyncTime = cloud.syncedAt || new Date().toISOString();
+        console.log(`[Cloud DB] Preserved and loaded ${dbInstance.profiles.length} user(s) from Cloud Firestore.`);
+      } else {
+        // Local has more users (e.g. initial migration or local update), upload local to cloud
+        console.log(`[Cloud DB] Updating Cloud Firestore with ${local.profiles.length} local profiles.`);
+        await forcePushToCloud();
+      }
+    } else {
+      console.log('[Cloud DB] Cloud database empty. Seeding initial snapshot to Cloud Firestore.');
+      await forcePushToCloud();
+    }
+  } catch (err) {
+    console.error('[Cloud DB] Error during Cloud Firestore initialization:', err);
+  }
 }
 
 // Mutex-like synchronous wrapper for critical ledger mutations
@@ -567,3 +667,4 @@ export function mutateLedger<T>(fn: (db: DatabaseSchema) => T): T {
 }
 
 export { generateId, generateReferralCode };
+

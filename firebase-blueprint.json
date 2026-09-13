@@ -1,0 +1,66 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile containing balance, contact info, and status",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "fullName": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "referralCode": { "type": "string" },
+        "referredBy": { "type": "string" },
+        "balance": { "type": "number" },
+        "totalEarned": { "type": "number" },
+        "totalWithdrawn": { "type": "number" },
+        "totalReferrals": { "type": "number" },
+        "status": { "type": "string", "enum": ["active", "suspended"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "email", "fullName", "phoneNumber", "referralCode", "balance", "status"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global website configuration, referral reward, and notices",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "brandName": { "type": "string" },
+        "referralReward": { "type": "number" },
+        "minWithdrawal": { "type": "number" },
+        "withdrawalFeePercent": { "type": "number" },
+        "announcement": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "brandName", "referralReward", "minWithdrawal"]
+    },
+    "AppState": {
+      "title": "AppState",
+      "description": "Durable cloud backup snapshot containing full platform relational collections",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "payloadJson": { "type": "string" },
+        "version": { "type": "number" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "payloadJson", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Registered user accounts and balance state"
+    },
+    "/site_settings/{settingsId}": {
+      "schema": "SiteSettings",
+      "description": "Application settings and notices"
+    },
+    "/app_state/{stateId}": {
+      "schema": "AppState",
+      "description": "Cloud synchronized persistent database snapshot"
+    }
+  }
+}

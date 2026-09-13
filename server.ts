@@ -4,12 +4,18 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import { createServer as createViteServer } from 'vite';
 import { apiRouter } from './server/api.js';
+import { initCloudDatabase } from './server/db.js';
 
 dotenv.config();
 
 const PORT = 3000;
 
 async function startServer() {
+  // Hydrate persistent state from Cloud Firestore before serving requests
+  await initCloudDatabase().catch((err) => {
+    console.warn('[Cloud DB] Proceeding with local database due to cloud init delay:', err);
+  });
+
   const app = express();
 
   app.use(express.json({ limit: '15mb' }));
