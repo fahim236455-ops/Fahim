@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { Menu, Bell, User, Trophy, DownloadCloud, Headphones, Moon, Power } from 'lucide-react';
 import { NavigationDrawer } from './NavigationDrawer';
+import { Logo } from './Logo';
 
 interface HeaderProps {
   onNavigate: (route: string) => void;
@@ -50,9 +51,10 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate, currentRoute }) => {
           {/* Center: Brand Title */}
           <button
             onClick={() => onNavigate('dashboard')}
-            className="focus:outline-none flex items-center justify-center"
+            className="focus:outline-none flex items-center justify-center gap-2"
           >
-            <h1 className="text-base sm:text-lg font-black tracking-widest uppercase bg-gradient-to-r from-sky-400 via-cyan-300 to-amber-400 bg-clip-text text-transparent font-sans">
+            <Logo size={28} className="transform hover:rotate-12 transition-transform duration-300" />
+            <h1 className="text-base sm:text-lg font-black tracking-widest uppercase bg-gradient-to-r from-sky-400 via-cyan-300 to-amber-400 bg-clip-text text-transparent font-sans mt-0.5">
               EARNORA
             </h1>
           </button>

@@ -23,6 +23,7 @@ import { FacebookSellPage } from './pages/FacebookSellPage';
 import { InstagramSellPage } from './pages/InstagramSellPage';
 import { SystemClosedPage } from './pages/SystemClosedPage';
 import { JobPostPage } from './pages/JobPostPage';
+import { Logo } from './components/Logo';
 
 function AppContent() {
   const { user, isLoading, isAdmin } = useApp();
@@ -83,8 +84,8 @@ function AppContent() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
-        <div className="w-12 h-12 rounded-2xl bg-amber-500 text-slate-950 font-black text-xl flex items-center justify-center animate-pulse shadow-lg shadow-amber-500/20">
-          EA
+        <div className="animate-pulse">
+          <Logo size={56} />
         </div>
         <p className="mt-3 text-xs font-bold text-slate-300">Earnora লোড হচ্ছে...</p>
       </div>

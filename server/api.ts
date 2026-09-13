@@ -2299,7 +2299,7 @@ const DEFAULT_SOCIAL_CONFIG = {
     usernameTemplate: 'earnora',
     todayPassword: 'sgwteam1@21A',
     active: true,
-    tutorialUrl: 'https://www.youtube.com/watch?v=zxEo8GfEG-c',
+    tutorialUrl: '',
     notes: 'নতুন জিমেইল তৈরি করুন। নির্দেশিত পাসওয়ার্ড দিয়ে রিকভারি ইমেইল ছাড়া সাবমিট করুন।',
   },
   facebook: {

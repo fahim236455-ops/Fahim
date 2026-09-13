@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { User, Phone, Mail, Lock, Gift, ArrowRight } from 'lucide-react';
 
+import { Logo } from '../components/Logo';
+
 interface RegisterPageProps {
   onNavigate: (route: string) => void;
 }
@@ -72,10 +74,8 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center px-4 py-8 max-w-md mx-auto">
       {/* Brand Header */}
-      <div className="text-center space-y-2 mb-6">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-600 text-slate-950 font-black text-2xl shadow-lg shadow-amber-500/20">
-          EA
-        </div>
+      <div className="text-center space-y-2 mb-6 flex flex-col items-center">
+        <Logo size={64} className="mb-2" />
         <h1 className="text-xl font-black text-slate-900 tracking-tight">
           নতুন অ্যাকাউন্ট তৈরি করুন
         </h1>

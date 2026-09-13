@@ -14,126 +14,6 @@
       "status": "active",
       "createdAt": "2026-09-12T13:19:40.803Z",
       "updatedAt": "2026-09-13T07:33:09.145Z"
-    },
-    {
-      "id": "e2a1b9c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
-      "email": "rafiq@earnora.com",
-      "fullName": "রফিকুল ইসলাম",
-      "phoneNumber": "01711223344",
-      "referralCode": "FPBRAFIQ",
-      "referredBy": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "balance": 150,
-      "totalEarned": 150,
-      "totalWithdrawn": 0,
-      "totalReferrals": 1,
-      "status": "active",
-      "createdAt": "2026-09-13T05:00:00.000Z",
-      "updatedAt": "2026-09-13T05:00:00.000Z"
-    },
-    {
-      "id": "f3b2c1d0-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
-      "email": "mehedi@earnora.com",
-      "fullName": "মেহেদী হাসান",
-      "phoneNumber": "01899887766",
-      "referralCode": "FPBMEHEDI",
-      "referredBy": "e2a1b9c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
-      "balance": 45,
-      "totalEarned": 45,
-      "totalWithdrawn": 0,
-      "totalReferrals": 0,
-      "status": "active",
-      "createdAt": "2026-09-13T05:15:00.000Z",
-      "updatedAt": "2026-09-13T05:15:00.000Z"
-    },
-    {
-      "id": "aecfe8fc-832d-43f9-b07b-acc9bd4294ff",
-      "email": "test456@gmail.com",
-      "fullName": "Test User",
-      "phoneNumber": "01712345679",
-      "referralCode": "FPBNJ825",
-      "referredBy": null,
-      "balance": 0,
-      "totalEarned": 0,
-      "totalWithdrawn": 0,
-      "totalReferrals": 0,
-      "status": "active",
-      "createdAt": "2026-09-13T06:17:46.702Z",
-      "updatedAt": "2026-09-13T06:27:39.515Z"
-    },
-    {
-      "id": "d8fdd5e3-26c1-4ddc-b2dd-adfca157c984",
-      "email": "test4562@gmail.com",
-      "fullName": "Test User Updated",
-      "phoneNumber": "01712345673",
-      "referralCode": "FPBHLAU3",
-      "referredBy": null,
-      "balance": 0,
-      "totalEarned": 0,
-      "totalWithdrawn": 0,
-      "totalReferrals": 0,
-      "status": "active",
-      "createdAt": "2026-09-13T06:18:37.022Z",
-      "updatedAt": "2026-09-13T06:18:42.690Z"
-    },
-    {
-      "id": "cf33c95b-0202-4059-8488-eae82ff98d72",
-      "email": "newuserf@gmail.com",
-      "fullName": "New F User",
-      "phoneNumber": "01712345600",
-      "referralCode": "FPBA8EDS",
-      "referredBy": null,
-      "balance": 0,
-      "totalEarned": 0,
-      "totalWithdrawn": 0,
-      "totalReferrals": 0,
-      "status": "active",
-      "createdAt": "2026-09-13T06:29:45.735Z",
-      "updatedAt": "2026-09-13T06:29:45.735Z"
-    },
-    {
-      "id": "da5f424e-7ff8-4c09-8748-7882ac9b7e6f",
-      "email": "another99@gmail.com",
-      "fullName": "Another User",
-      "phoneNumber": "01712345699",
-      "referralCode": "FPBSJZ23",
-      "referredBy": null,
-      "balance": 0,
-      "totalEarned": 0,
-      "totalWithdrawn": 0,
-      "totalReferrals": 0,
-      "status": "active",
-      "createdAt": "2026-09-13T06:33:04.366Z",
-      "updatedAt": "2026-09-13T06:33:04.366Z"
-    },
-    {
-      "id": "849c6177-6a8d-43fe-b2fa-262a79563f62",
-      "email": "fahimmaruf90@gmail.com",
-      "fullName": "Fahim Maruf",
-      "phoneNumber": "01700000099",
-      "referralCode": "FPBRJYAC",
-      "referredBy": null,
-      "balance": 0,
-      "totalEarned": 0,
-      "totalWithdrawn": 0,
-      "totalReferrals": 0,
-      "status": "active",
-      "createdAt": "2026-09-13T06:34:37.473Z",
-      "updatedAt": "2026-09-13T06:34:37.473Z"
-    },
-    {
-      "id": "4677bd99-390e-4a93-afd3-b70fcb0ce4b5",
-      "email": "another993@gmail.com",
-      "fullName": "Another User",
-      "phoneNumber": "01712345601",
-      "referralCode": "FPBL5KM8",
-      "referredBy": null,
-      "balance": 0,
-      "totalEarned": 0,
-      "totalWithdrawn": 0,
-      "totalReferrals": 0,
-      "status": "active",
-      "createdAt": "2026-09-13T06:36:49.579Z",
-      "updatedAt": "2026-09-13T06:36:49.579Z"
     }
   ],
   "user_roles": [
@@ -156,54 +36,6 @@
         "canViewAuditLogs": true,
         "canManageAdmins": true
       }
-    },
-    {
-      "id": "b1a2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
-      "userId": "e2a1b9c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
-      "role": "user",
-      "createdAt": "2026-09-13T05:00:00.000Z"
-    },
-    {
-      "id": "c2b3a4d5-e6f7-8a9b-0c1d-2e3f4a5b6c7d",
-      "userId": "f3b2c1d0-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
-      "role": "user",
-      "createdAt": "2026-09-13T05:15:00.000Z"
-    },
-    {
-      "id": "82912012-6a57-492d-a197-99bc54e7ca43",
-      "userId": "aecfe8fc-832d-43f9-b07b-acc9bd4294ff",
-      "role": "user",
-      "createdAt": "2026-09-13T06:17:46.702Z"
-    },
-    {
-      "id": "d4b3c4ca-54c6-4126-9b2f-35781f139b27",
-      "userId": "d8fdd5e3-26c1-4ddc-b2dd-adfca157c984",
-      "role": "user",
-      "createdAt": "2026-09-13T06:18:37.022Z"
-    },
-    {
-      "id": "a5129126-852a-476d-99d3-c598e1cc26a4",
-      "userId": "cf33c95b-0202-4059-8488-eae82ff98d72",
-      "role": "user",
-      "createdAt": "2026-09-13T06:29:45.735Z"
-    },
-    {
-      "id": "b8cf26af-0646-4bd1-bba6-e437a67c40af",
-      "userId": "da5f424e-7ff8-4c09-8748-7882ac9b7e6f",
-      "role": "user",
-      "createdAt": "2026-09-13T06:33:04.366Z"
-    },
-    {
-      "id": "9156d422-d131-434e-a43e-706fdfdd27ef",
-      "userId": "849c6177-6a8d-43fe-b2fa-262a79563f62",
-      "role": "user",
-      "createdAt": "2026-09-13T06:34:37.473Z"
-    },
-    {
-      "id": "8701c359-fe6f-4f68-a665-292ce6df26f0",
-      "userId": "4677bd99-390e-4a93-afd3-b70fcb0ce4b5",
-      "role": "user",
-      "createdAt": "2026-09-13T06:36:49.579Z"
     }
   ],
   "auth_credentials": [
@@ -508,7 +340,7 @@
       "usernameTemplate": "sgw",
       "todayPassword": "sgwteam1@21A",
       "active": true,
-      "tutorialUrl": "https://www.youtube.com/watch?v=zxEo8GfEG-c",
+      "tutorialUrl": "",
       "notes": "নতুন জিমেইল তৈরি করুন। রিকভারি ছাড়া পাসওয়ার্ড sgwteam1@21A দিন।",
       "updatedAt": "2026-09-13T08:19:41.172Z"
     },
