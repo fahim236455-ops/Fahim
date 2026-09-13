@@ -2398,6 +2398,17 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                 </div>
 
                 <div className="space-y-1">
+                  <label className="text-slate-300 font-bold block">টিউটোরিয়াল লিংক (ইউটিউব):</label>
+                  <input
+                    type="url"
+                    value={newSocialJobForm.tutorialUrl}
+                    onChange={(e) => setNewSocialJobForm({ ...newSocialJobForm, tutorialUrl: e.target.value })}
+                    placeholder="https://youtube.com/watch?v=..."
+                    className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono"
+                  />
+                </div>
+
+                <div className="space-y-1">
                   <label className="text-slate-300 font-bold block">কাজের নির্দেশাবলী ও নিয়মাবলী:</label>
                   <textarea
                     rows={2}
@@ -2553,6 +2564,19 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                       />
                     </div>
                   )}
+
+                  <div className="space-y-1">
+                    <label className="text-slate-300 font-bold block">টিউটোরিয়াল লিংক (ইউটিউব):</label>
+                    <input
+                      type="url"
+                      value={editingSocialJob.tutorialUrl || ''}
+                      onChange={(e) =>
+                        setEditingSocialJob({ ...editingSocialJob, tutorialUrl: e.target.value })
+                      }
+                      placeholder="https://youtube.com/watch?v=..."
+                      className="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono"
+                    />
+                  </div>
 
                   <div className="space-y-1">
                     <label className="text-slate-300 font-bold block">নির্দেশনা / বিবরণ:</label>

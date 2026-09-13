@@ -2299,7 +2299,7 @@ const DEFAULT_SOCIAL_CONFIG = {
     usernameTemplate: 'earnora',
     todayPassword: 'sgwteam1@21A',
     active: true,
-    tutorialUrl: 'https://youtube.com',
+    tutorialUrl: 'https://www.youtube.com/watch?v=zxEo8GfEG-c',
     notes: 'নতুন জিমেইল তৈরি করুন। নির্দেশিত পাসওয়ার্ড দিয়ে রিকভারি ইমেইল ছাড়া সাবমিট করুন।',
   },
   facebook: {
@@ -2311,7 +2311,7 @@ const DEFAULT_SOCIAL_CONFIG = {
     usernameTemplate: 'earnora_fb',
     todayPassword: 'earnora@12',
     active: true,
-    tutorialUrl: 'https://youtube.com',
+    tutorialUrl: '',
     notes: 'ফেসবুক ইউআইডি ও পাসওয়ার্ড দিন। কুকিজ দিলে দ্রুত অনুমোদন।',
   },
   instagram: {
@@ -2323,7 +2323,7 @@ const DEFAULT_SOCIAL_CONFIG = {
     usernameTemplate: 'earnora_ig',
     todayPassword: 'earnora@12',
     active: true,
-    tutorialUrl: 'https://youtube.com',
+    tutorialUrl: '',
     notes: 'ইনস্টাগ্রাম ইউজারনেম ও পাসওয়ার্ড দিয়ে সাবমিট করুন।',
   },
 };
@@ -2435,7 +2435,7 @@ function generateDynamicSocialTask(
     remainingToday: Math.max(0, (Number(config.dailyLimit) || 1000) - userCompletedCount),
     active: config.active !== false,
     reportTime: config.reportTime || '15-30 hours',
-    tutorialUrl: config.tutorialUrl || 'https://youtube.com',
+    tutorialUrl: config.tutorialUrl,
   };
 }
 

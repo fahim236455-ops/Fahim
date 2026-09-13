@@ -7,13 +7,13 @@
       "phoneNumber": "01700000000",
       "referralCode": "FPBADMIN",
       "referredBy": null,
-      "balance": 10,
-      "totalEarned": 10,
+      "balance": 34,
+      "totalEarned": 34,
       "totalWithdrawn": 0,
       "totalReferrals": 2,
       "status": "active",
       "createdAt": "2026-09-12T13:19:40.803Z",
-      "updatedAt": "2026-09-13T07:12:52.690Z"
+      "updatedAt": "2026-09-13T07:33:09.145Z"
     },
     {
       "id": "e2a1b9c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
@@ -334,9 +334,11 @@
       "taskId": "b749fc07-349b-454a-9d71-a6fe86e35ae3",
       "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
       "proofData": "my_new_submission_test",
-      "status": "pending",
+      "status": "approved",
       "rewardAmount": 10,
-      "createdAt": "2026-09-13T07:22:04.937Z"
+      "createdAt": "2026-09-13T07:22:04.937Z",
+      "reviewedBy": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "reviewedAt": "2026-09-13T07:33:09.145Z"
     }
   ],
   "referrals": [
@@ -359,6 +361,26 @@
       "description": "টাস্ক সম্পন্ন: Test Task",
       "referenceId": "ed265fbf-2066-49f7-880d-f59680011e64",
       "createdAt": "2026-09-13T07:12:52.690Z"
+    },
+    {
+      "id": "0bcb98ef-7463-443a-9995-82f6736d9f90",
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "type": "task_reward",
+      "amount": 14,
+      "balanceAfter": 24,
+      "description": "GMAIL অ্যাকাউন্ট সেল পেমেন্ট (test@gmail.com)",
+      "referenceId": "c2728e2a-2b01-4bdb-8fc2-abbf2860c178",
+      "createdAt": "2026-09-13T07:25:02.190Z"
+    },
+    {
+      "id": "b6343b66-94fa-422a-a414-a4d1ac3a6100",
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "type": "task_reward",
+      "amount": 10,
+      "balanceAfter": 34,
+      "description": "টাস্ক সম্পন্ন: Test Task 2",
+      "referenceId": "559d27f8-2a99-4a91-85a9-6f7ffd305dc1",
+      "createdAt": "2026-09-13T07:33:09.145Z"
     }
   ],
   "withdrawal_requests": [],
@@ -433,6 +455,31 @@
         "category": "telegram"
       },
       "createdAt": "2026-09-13T07:21:59.972Z"
+    },
+    {
+      "id": "6faaf30c-2ef0-45be-915c-82ecf367808d",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "task_submission_approved",
+      "details": {
+        "submissionId": "559d27f8-2a99-4a91-85a9-6f7ffd305dc1",
+        "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+        "reward": 10
+      },
+      "createdAt": "2026-09-13T07:33:09.145Z"
+    },
+    {
+      "id": "550c0412-d35a-4d42-b555-29eed669c2cf",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "social_job_config_updated",
+      "details": {
+        "service": "gmail",
+        "rate": 14,
+        "active": true,
+        "todayPassword": "sgwteam1@21A"
+      },
+      "createdAt": "2026-09-13T08:19:41.172Z"
     }
   ],
   "social_account_sales": [
@@ -445,8 +492,10 @@
       "accountIdentifier": "test@gmail.com",
       "password": "password123",
       "rate": 14,
-      "status": "pending",
-      "createdAt": "2026-09-13T07:22:30.464Z"
+      "status": "approved",
+      "createdAt": "2026-09-13T07:22:30.464Z",
+      "reviewedAt": "2026-09-13T07:25:02.190Z",
+      "reviewedBy": "fahim236455@gmail.com"
     }
   ],
   "social_jobs_config": [
@@ -459,9 +508,9 @@
       "usernameTemplate": "sgw",
       "todayPassword": "sgwteam1@21A",
       "active": true,
-      "tutorialUrl": "https://youtube.com",
+      "tutorialUrl": "https://www.youtube.com/watch?v=zxEo8GfEG-c",
       "notes": "নতুন জিমেইল তৈরি করুন। রিকভারি ছাড়া পাসওয়ার্ড sgwteam1@21A দিন।",
-      "updatedAt": "2026-09-13T04:05:09.003Z"
+      "updatedAt": "2026-09-13T08:19:41.172Z"
     },
     {
       "service": "facebook",

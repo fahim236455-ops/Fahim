@@ -323,7 +323,13 @@ export const InstagramSellPage: React.FC<InstagramSellPageProps> = ({ onNavigate
       {/* 2. Tutorial Button Pill */}
       <div className="flex justify-center">
         <button
-          onClick={() => setShowTutorialModal(true)}
+          onClick={() => {
+            if (activeTask?.tutorialUrl) {
+              window.open(activeTask.tutorialUrl, '_blank');
+            } else {
+              showToast('অ্যাডমিন এখনও কোনো টিউটোরিয়াল যুক্ত করেননি।', 'info');
+            }
+          }}
           className="bg-white border border-slate-200 hover:border-pink-300 shadow-xs px-4 py-1.5 rounded-full flex items-center gap-2 text-xs font-semibold text-slate-800 hover:bg-pink-50/50 transition-all group"
         >
           <div className="w-5 h-5 rounded-full bg-pink-100 flex items-center justify-center text-[#e1306c]">
