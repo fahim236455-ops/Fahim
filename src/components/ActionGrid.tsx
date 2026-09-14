@@ -11,7 +11,6 @@ import {
   UserPlus,
   History,
   Target,
-  Gift,
   HelpCircle,
   Monitor,
   ShieldCheck,
@@ -37,12 +36,18 @@ export const ActionGrid: React.FC<ActionGridProps> = ({ onNavigate }) => {
 
   // Modals state
   const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [giftCodeInput, setGiftCodeInput] = useState('');
-  const [giftLoading, setGiftLoading] = useState(false);
   const [dailyBonusClaimed, setDailyBonusClaimed] = useState(false);
 
-  const telegramLink = settings?.telegramChannelUrl || settings?.supportTelegram || 'https://t.me/fahimpaybd';
-  const youtubeLink = settings?.heroVideoUrl || 'https://youtube.com';
+  // Telegram and YouTube Links dynamically configured from Admin Panel
+  const rawTelegram = settings?.telegramChannelUrl || settings?.supportTelegram || 'fahimpaybd';
+  const telegramLink = rawTelegram.startsWith('http://') || rawTelegram.startsWith('https://')
+    ? rawTelegram
+    : `https://t.me/${rawTelegram.replace('@', '').trim()}`;
+
+  const rawYoutube = settings?.heroVideoUrl || 'https://youtube.com';
+  const youtubeLink = rawYoutube.startsWith('http://') || rawYoutube.startsWith('https://')
+    ? rawYoutube
+    : `https://${rawYoutube.trim()}`;
 
   const handleDailyBonus = () => {
     if (dailyBonusClaimed) {
@@ -57,23 +62,6 @@ export const ActionGrid: React.FC<ActionGridProps> = ({ onNavigate }) => {
     setDailyBonusClaimed(true);
     showToast('অভিনন্দন! আপনি আজকের ডেইলি বোনাস ৳৫.০০ পেয়েছেন!', 'success');
     refreshUser();
-  };
-
-  const handleRedeemGift = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!giftCodeInput.trim()) {
-      showToast('অনুগ্রহ করে সঠিক গিফট কোড লিখুন', 'error');
-      return;
-    }
-    setGiftLoading(true);
-    setTimeout(() => {
-      setGiftLoading(false);
-      setActiveModal(null);
-      setGiftCodeInput('');
-      confetti({ particleCount: 60, spread: 70 });
-      showToast('গিফট কোড সফলভাবে রিডিম হয়েছে! ৳২০.০০ যোগ করা হয়েছে।', 'success');
-      refreshUser();
-    }, 1000);
   };
 
   return (
@@ -280,17 +268,6 @@ export const ActionGrid: React.FC<ActionGridProps> = ({ onNavigate }) => {
             <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Target</span>
           </button>
 
-          {/* Gift Code */}
-          <button
-            onClick={() => setActiveModal('gift')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-teal-500/40 active:scale-95"
-          >
-            <div className="w-9 h-9 rounded-xl bg-teal-500/15 border border-teal-500/30 text-teal-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <Gift className="w-4 h-4" />
-            </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Gift Code</span>
-          </button>
-
           {/* Live Support */}
           <button
             onClick={() => onNavigate('support')}
@@ -395,44 +372,6 @@ export const ActionGrid: React.FC<ActionGridProps> = ({ onNavigate }) => {
             >
               এখনই টাস্ক শুরু করুন
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* Gift Code Modal */}
-      {activeModal === 'gift' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-[#0a1224] border border-teal-500/30 rounded-3xl p-5 max-w-sm w-full shadow-2xl space-y-4 relative">
-            <button
-              onClick={() => setActiveModal(null)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <div className="w-12 h-12 rounded-2xl bg-teal-500/20 text-teal-400 border border-teal-500/30 flex items-center justify-center mx-auto shadow-inner">
-              <Gift className="w-6 h-6" />
-            </div>
-            <div className="text-center space-y-1">
-              <h3 className="text-base font-bold text-white">গিফট কোড রিডিম করুন</h3>
-              <p className="text-xs text-slate-400">টেলিগ্রাম চ্যানেল থেকে গিফট কোড সংগ্রহ করে রিডিম করুন</p>
-            </div>
-            <form onSubmit={handleRedeemGift} className="space-y-3">
-              <input
-                type="text"
-                placeholder="গিফট কোড লিখুন (যেমন: BONUS2026)"
-                value={giftCodeInput}
-                onChange={(e) => setGiftCodeInput(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white uppercase tracking-wider font-mono focus:border-teal-400 focus:outline-none"
-              />
-              <button
-                type="submit"
-                disabled={giftLoading}
-                className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 disabled:opacity-50 text-slate-950 font-black text-xs py-2.5 rounded-xl shadow-lg cursor-pointer flex items-center justify-center gap-1.5"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>{giftLoading ? 'যাচাই করা হচ্ছে...' : 'রিডিম করুন'}</span>
-              </button>
-            </form>
           </div>
         </div>
       )}

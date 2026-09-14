@@ -2313,6 +2313,14 @@ apiRouter.put('/admin/settings', requirePermission('canEditSiteSettings'), (req:
           enabled: Boolean(popupNotice.enabled),
           title: String(popupNotice.title || '').trim(),
           message: String(popupNotice.message || '').trim(),
+          channelButtonText: String(popupNotice.channelButtonText || '').trim(),
+          channelUrl: String(popupNotice.channelUrl || '').trim(),
+          groupButtonText: String(popupNotice.groupButtonText || '').trim(),
+          groupUrl: String(popupNotice.groupUrl || '').trim(),
+          facebookUrl: String(popupNotice.facebookUrl || '').trim(),
+          youtubeUrl: String(popupNotice.youtubeUrl || '').trim(),
+          instagramUrl: String(popupNotice.instagramUrl || '').trim(),
+          showEveryVisit: popupNotice.showEveryVisit !== undefined ? Boolean(popupNotice.showEveryVisit) : true,
         };
       }
       if (maintenanceMode !== undefined && typeof maintenanceMode === 'object') {

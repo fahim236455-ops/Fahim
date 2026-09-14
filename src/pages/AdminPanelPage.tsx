@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { fetchApi } from '../lib/api';
 import { Logo } from '../components/Logo';
+import { SiteNoticeModal } from '../components/SiteNoticeModal';
 import { Task, SiteSettings, SocialJobConfig, SupportTicket, AdminRoleInfo, AdminPermissions } from '../types';
 import { formatWhatsAppLink, formatTelegramLink } from './SupportPage';
 import {
@@ -278,10 +279,12 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
   const [newFaqForm, setNewFaqForm] = useState({ question: '', answer: '' });
   const [editingFaqIndex, setEditingFaqIndex] = useState<number | null>(null);
 
-  // Quick WhatsApp & Telegram support modal states
+  // Quick WhatsApp, Telegram & YouTube support modal states
   const [quickSupportModalOpen, setQuickSupportModalOpen] = useState(false);
+  const [previewNoticeModalOpen, setPreviewNoticeModalOpen] = useState(false);
   const [quickWhatsapp, setQuickWhatsapp] = useState('');
   const [quickTelegram, setQuickTelegram] = useState('');
+  const [quickYoutube, setQuickYoutube] = useState('');
   const [quickPhone, setQuickPhone] = useState('');
   const [savingQuickSupport, setSavingQuickSupport] = useState(false);
 
@@ -289,6 +292,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
     if (settingsForm) {
       setQuickWhatsapp(settingsForm.supportWhatsapp || '');
       setQuickTelegram(settingsForm.supportTelegram || '');
+      setQuickYoutube(settingsForm.heroVideoUrl || '');
       setQuickPhone(settingsForm.supportPhone || '');
     }
     setQuickSupportModalOpen(true);
@@ -303,6 +307,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
         ...settingsForm,
         supportWhatsapp: quickWhatsapp.trim(),
         supportTelegram: quickTelegram.trim(),
+        heroVideoUrl: quickYoutube.trim(),
         supportPhone: quickPhone.trim(),
       };
       const res = await fetchApi<{ message: string }>('/admin/settings', {
@@ -310,7 +315,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
         body: JSON.stringify(updatedForm),
       });
       setSettingsForm(updatedForm);
-      showToast(res.message || 'সাপোর্ট নম্বর ও টেলিগ্রাম সফলভাবে আপডেট হয়েছে!', 'success');
+      showToast(res.message || 'সোশ্যাল লিংক ও সাপোর্ট সফলভাবে আপডেট হয়েছে!', 'success');
       await refreshSettings();
       setQuickSupportModalOpen(false);
     } catch (err: any) {
@@ -4568,16 +4573,16 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                   />
                 </div>
 
-                {/* Pop-up Alert Modal Settings */}
+                {/* Pop-up Alert Modal Settings (Matches Screenshot with Telegram Channels, Groups & Social Links) */}
                 <div className="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-start gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+                      <div className="w-9 h-9 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400 shrink-0 mt-0.5">
                         <Bell className="w-5 h-5" />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-white text-sm">লগইন পপ-আপ নোটিশ (Popup Alert Notice)</span>
+                          <span className="font-bold text-white text-sm">সাইট ভিজিট পপ-আপ নোটিশ (Site Visit Popup Notice)</span>
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                             settingsForm.popupNotice?.enabled
                               ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
@@ -4586,7 +4591,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                             {settingsForm.popupNotice?.enabled ? 'সক্রিয় (ON)' : 'নিষ্ক্রিয় (OFF)'}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-400 mt-0.5">ইউজার অ্যাপ ওপেন করলে বা হোমপেজে ঢুকলে এই নোটিশটি পপ-আপ হিসেবে ভাসবে</p>
+                        <p className="text-xs text-slate-400 mt-0.5">ইউজার সাইট ওপেন করলে বা ঢুকলে এই জরুরী নোটিশটি পপ-আপ হিসেবে ভাসবে (টেলিগ্রাম ও সোশ্যাল বাটন সহ)</p>
                       </div>
                     </div>
 
@@ -4610,44 +4615,225 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                   </div>
 
                   {settingsForm.popupNotice?.enabled && (
-                    <div className="space-y-3 pt-3 border-t border-slate-800 animate-in fade-in duration-200">
-                      <div>
-                        <label className="text-slate-300 font-bold block text-xs mb-1">পপ-আপ শিরোনাম (Title):</label>
-                        <input
-                          type="text"
-                          value={settingsForm.popupNotice?.title || ''}
-                          onChange={(e) =>
-                            setSettingsForm({
-                              ...settingsForm,
-                              popupNotice: {
-                                enabled: true,
-                                title: e.target.value,
-                                message: settingsForm.popupNotice?.message || '',
-                              },
-                            })
-                          }
-                          placeholder="যেমন: আজকের বিশেষ অফার বা জরুরি বিজ্ঞপ্তি"
-                          className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-xs focus:ring-1 focus:ring-amber-500"
-                        />
+                    <div className="space-y-4 pt-3 border-t border-slate-800 animate-in fade-in duration-200">
+                      <div className="flex items-center justify-between pb-1">
+                        <span className="text-xs font-bold text-sky-400 flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>পপ-আপ কাস্টমাইজেশন ও সোশ্যাল লিংকস</span>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setPreviewNoticeModalOpen(true)}
+                          className="px-3 py-1 bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/40 text-sky-300 text-xs rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                        >
+                          <Bell className="w-3.5 h-3.5" />
+                          <span>লাইভ প্রিভিউ দেখুন</span>
+                        </button>
                       </div>
-                      <div>
-                        <label className="text-slate-300 font-bold block text-xs mb-1">পপ-আপ বার্তা (Message):</label>
-                        <textarea
-                          rows={3}
-                          value={settingsForm.popupNotice?.message || ''}
-                          onChange={(e) =>
-                            setSettingsForm({
-                              ...settingsForm,
-                              popupNotice: {
-                                enabled: true,
-                                title: settingsForm.popupNotice?.title || '',
-                                message: e.target.value,
-                              },
-                            })
-                          }
-                          placeholder="বিজ্ঞপ্তির বিস্তারিত বিবরণ লিখুন..."
-                          className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-xs leading-relaxed focus:ring-1 focus:ring-amber-500"
-                        />
+
+                      {/* Title & Message */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-slate-300 font-bold block text-xs">পপ-আপ শিরোনাম (Title):</label>
+                          <input
+                            type="text"
+                            value={settingsForm.popupNotice?.title || ''}
+                            onChange={(e) =>
+                              setSettingsForm({
+                                ...settingsForm,
+                                popupNotice: {
+                                  enabled: true,
+                                  title: e.target.value,
+                                  message: settingsForm.popupNotice?.message || '',
+                                  channelButtonText: settingsForm.popupNotice?.channelButtonText,
+                                  channelUrl: settingsForm.popupNotice?.channelUrl,
+                                  groupButtonText: settingsForm.popupNotice?.groupButtonText,
+                                  groupUrl: settingsForm.popupNotice?.groupUrl,
+                                  facebookUrl: settingsForm.popupNotice?.facebookUrl,
+                                  youtubeUrl: settingsForm.popupNotice?.youtubeUrl,
+                                  instagramUrl: settingsForm.popupNotice?.instagramUrl,
+                                },
+                              })
+                            }
+                            placeholder="যেমন: জরুরী নোটিশ!"
+                            className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-xs focus:ring-1 focus:ring-sky-500"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-slate-300 font-bold block text-xs">বিজ্ঞপ্তির বার্তা (Notice Text):</label>
+                          <textarea
+                            rows={2}
+                            value={settingsForm.popupNotice?.message || ''}
+                            onChange={(e) =>
+                              setSettingsForm({
+                                ...settingsForm,
+                                popupNotice: {
+                                  enabled: true,
+                                  title: settingsForm.popupNotice?.title || '',
+                                  message: e.target.value,
+                                  channelButtonText: settingsForm.popupNotice?.channelButtonText,
+                                  channelUrl: settingsForm.popupNotice?.channelUrl,
+                                  groupButtonText: settingsForm.popupNotice?.groupButtonText,
+                                  groupUrl: settingsForm.popupNotice?.groupUrl,
+                                  facebookUrl: settingsForm.popupNotice?.facebookUrl,
+                                  youtubeUrl: settingsForm.popupNotice?.youtubeUrl,
+                                  instagramUrl: settingsForm.popupNotice?.instagramUrl,
+                                },
+                              })
+                            }
+                            placeholder="যেমন: একটিও গুরুত্বপূর্ণ আপডেট মিস করবেন না!..."
+                            className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-xs leading-relaxed focus:ring-1 focus:ring-sky-500"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Telegram Primary Buttons Configuration */}
+                      <div className="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800 space-y-3">
+                        <span className="text-xs font-bold text-sky-300 block">টেলিগ্রাম প্রাইমারি বাটন সেটিংস (Telegram Action Buttons)</span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {/* Channel Button */}
+                          <div className="space-y-1.5 bg-slate-900/90 p-2.5 rounded-lg border border-slate-800">
+                            <label className="text-slate-300 font-bold text-[11px] block">১. চ্যানেল বাটনের নাম ও লিংক:</label>
+                            <input
+                              type="text"
+                              value={settingsForm.popupNotice?.channelButtonText || ''}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  popupNotice: {
+                                    ...settingsForm.popupNotice!,
+                                    channelButtonText: e.target.value,
+                                  },
+                                })
+                              }
+                              placeholder="Join Officials Channel"
+                              className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white text-xs mb-1"
+                            />
+                            <input
+                              type="text"
+                              value={settingsForm.popupNotice?.channelUrl || ''}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  popupNotice: {
+                                    ...settingsForm.popupNotice!,
+                                    channelUrl: e.target.value,
+                                  },
+                                })
+                              }
+                              placeholder="যেমন: https://t.me/fahimpaybd"
+                              className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white font-mono text-[11px]"
+                            />
+                          </div>
+
+                          {/* Group Button */}
+                          <div className="space-y-1.5 bg-slate-900/90 p-2.5 rounded-lg border border-slate-800">
+                            <label className="text-slate-300 font-bold text-[11px] block">২. গ্রুপ বাটনের নাম ও লিংক:</label>
+                            <input
+                              type="text"
+                              value={settingsForm.popupNotice?.groupButtonText || ''}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  popupNotice: {
+                                    ...settingsForm.popupNotice!,
+                                    groupButtonText: e.target.value,
+                                  },
+                                })
+                              }
+                              placeholder="Join Officials Group"
+                              className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white text-xs mb-1"
+                            />
+                            <input
+                              type="text"
+                              value={settingsForm.popupNotice?.groupUrl || ''}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  popupNotice: {
+                                    ...settingsForm.popupNotice!,
+                                    groupUrl: e.target.value,
+                                  },
+                                })
+                              }
+                              placeholder="যেমন: https://t.me/fahimpaybd_group"
+                              className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white font-mono text-[11px]"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Social Media Links (Facebook, YouTube, Instagram) */}
+                      <div className="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800 space-y-2.5">
+                        <span className="text-xs font-bold text-slate-200 block">অন্যান্য সোশ্যাল লিংক (অথবা যুক্ত হন):</span>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                          {/* Facebook */}
+                          <div className="space-y-1">
+                            <label className="text-blue-400 font-bold text-[11px] flex items-center gap-1">
+                              <span>Facebook Link:</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={settingsForm.popupNotice?.facebookUrl || ''}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  popupNotice: {
+                                    ...settingsForm.popupNotice!,
+                                    facebookUrl: e.target.value,
+                                  },
+                                })
+                              }
+                              placeholder="https://facebook.com/..."
+                              className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white font-mono text-[11px]"
+                            />
+                          </div>
+
+                          {/* YouTube */}
+                          <div className="space-y-1">
+                            <label className="text-red-400 font-bold text-[11px] flex items-center gap-1">
+                              <span>YouTube Link:</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={settingsForm.popupNotice?.youtubeUrl || ''}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  popupNotice: {
+                                    ...settingsForm.popupNotice!,
+                                    youtubeUrl: e.target.value,
+                                  },
+                                })
+                              }
+                              placeholder="https://youtube.com/..."
+                              className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white font-mono text-[11px]"
+                            />
+                          </div>
+
+                          {/* Instagram */}
+                          <div className="space-y-1">
+                            <label className="text-pink-400 font-bold text-[11px] flex items-center gap-1">
+                              <span>Instagram Link:</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={settingsForm.popupNotice?.instagramUrl || ''}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  popupNotice: {
+                                    ...settingsForm.popupNotice!,
+                                    instagramUrl: e.target.value,
+                                  },
+                                })
+                              }
+                              placeholder="https://instagram.com/..."
+                              className="w-full p-2 bg-slate-950 border border-slate-700 rounded-lg text-white font-mono text-[11px]"
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -4770,12 +4956,12 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                     <p className="text-[10px] text-slate-400">যে ফরম্যাটেই লিখুন না কেন, ইউজার সরাসরি আপনার হোয়াটসঅ্যাপ চ্যাটে চলে যাবে।</p>
                   </div>
 
-                  {/* Telegram Channel / Support Link */}
+                  {/* Telegram Channel / Support Link (Controls Dashboard Telegram Button & Support) */}
                   <div className="space-y-1.5 bg-slate-900/80 p-3.5 rounded-xl border border-slate-700/80">
                     <div className="flex items-center justify-between">
                       <label className="text-slate-200 font-bold text-xs flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-sky-400" />
-                        <span>অফিসিয়াল টেলিগ্রাম সাপোর্ট লিংক (Telegram Link):</span>
+                        <span>ড্যাশবোর্ড ও অফিশিয়াল টেলিগ্রাম চ্যানেল/লিংক (Telegram Link):</span>
                       </label>
                       {settingsForm.supportTelegram && (
                         <a
@@ -4796,6 +4982,36 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                       placeholder="@earnora_official বা https://t.me/earnora_official"
                       className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-xs focus:ring-1 focus:ring-sky-500"
                     />
+                    <p className="text-[10px] text-slate-400">এই লিংকটি ইউজার ড্যাশবোর্ডের <strong>Telegram</strong> বাটন এবং সাপোর্ট পেজে কাজ করবে।</p>
+                  </div>
+
+                  {/* YouTube Channel / Tutorial Link (Controls Dashboard YouTube Button) */}
+                  <div className="space-y-1.5 bg-slate-900/80 p-3.5 rounded-xl border border-slate-700/80">
+                    <div className="flex items-center justify-between">
+                      <label className="text-slate-200 font-bold text-xs flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                        <span>ড্যাশবোর্ড ও অফিশিয়াল ইউটিউব চ্যানেল/টিউটোরিয়াল (YouTube Link):</span>
+                      </label>
+                      {settingsForm.heroVideoUrl && (
+                        <a
+                          href={settingsForm.heroVideoUrl.startsWith('http') ? settingsForm.heroVideoUrl : `https://${settingsForm.heroVideoUrl}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[11px] text-red-400 hover:text-red-300 flex items-center gap-1 font-medium bg-red-950/60 px-2.5 py-0.5 rounded border border-red-800"
+                        >
+                          <span>টেস্ট করুন</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      value={settingsForm.heroVideoUrl || ''}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, heroVideoUrl: e.target.value })}
+                      placeholder="https://youtube.com/@yourchannel বা https://youtube.com/watch?v=..."
+                      className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-xs focus:ring-1 focus:ring-red-500"
+                    />
+                    <p className="text-[10px] text-slate-400">এই লিংকটি ইউজার ড্যাশবোর্ডের <strong>YouTube</strong> বাটন এবং ল্যান্ডিং পেজে কাজ করবে।</p>
                   </div>
 
                   {/* Telegram Community Group Link */}
@@ -5824,10 +6040,10 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                   </div>
                   <div>
                     <h3 className="font-bold text-white text-sm">
-                      WhatsApp ও Telegram পরিবর্তন
+                      WhatsApp, Telegram ও YouTube লিংক পরিবর্তন
                     </h3>
                     <p className="text-[11px] text-slate-400">
-                      সাপোর্ট হেল্পলাইন নম্বর এবং টেলিগ্রাম লিংক আপডেট করুন
+                      ড্যাশবোর্ড সোশ্যাল বাটন ও সাপোর্ট লিংক দ্রুত আপডেট করুন
                     </p>
                   </div>
                 </div>
@@ -5859,7 +6075,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
 
                 <div className="space-y-1">
                   <label className="text-slate-300 font-bold block">
-                    অফিসিয়াল টেলিগ্রাম চ্যানেল বা গ্রুপ লিংক:
+                    ড্যাশবোর্ড ও অফিশিয়াল টেলিগ্রাম লিংক (Telegram Link):
                   </label>
                   <input
                     type="text"
@@ -5870,7 +6086,23 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                     className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-xs focus:ring-1 focus:ring-sky-500"
                   />
                   <p className="text-[10px] text-slate-500">
-                    ইউজাররা ক্লিক করলে সরাসরি আপনার টেলিগ্রাম চ্যানেলে জয়েন হবে।
+                    ড্যাশবোর্ডের Telegram বাটন এবং সাপোর্ট পেজে এই লিংক কাজ করবে।
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-300 font-bold block">
+                    ড্যাশবোর্ড ও অফিশিয়াল ইউটিউব লিংক (YouTube Channel/Video):
+                  </label>
+                  <input
+                    type="text"
+                    value={quickYoutube}
+                    onChange={(e) => setQuickYoutube(e.target.value)}
+                    placeholder="যেমন: https://youtube.com/@fahimpaybd"
+                    className="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono text-xs focus:ring-1 focus:ring-red-500"
+                  />
+                  <p className="text-[10px] text-slate-500">
+                    ড্যাশবোর্ডের YouTube বাটন এবং ল্যান্ডিং পেজে এই লিংক কাজ করবে।
                   </p>
                 </div>
 
@@ -5907,6 +6139,11 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
             </div>
           </div>
         )}
+        {/* Popup Notice Preview Modal for Admin */}
+        <SiteNoticeModal
+          isOpen={previewNoticeModalOpen}
+          onClose={() => setPreviewNoticeModalOpen(false)}
+        />
       </main>
     </div>
   );

@@ -80,6 +80,14 @@ export interface SiteSettings {
     enabled: boolean;
     title: string;
     message: string;
+    channelButtonText?: string;
+    channelUrl?: string;
+    groupButtonText?: string;
+    groupUrl?: string;
+    facebookUrl?: string;
+    youtubeUrl?: string;
+    instagramUrl?: string;
+    showEveryVisit?: boolean;
   };
   maintenanceMode?: {
     enabled: boolean;

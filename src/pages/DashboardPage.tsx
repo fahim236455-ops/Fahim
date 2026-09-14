@@ -8,6 +8,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { ActionGrid } from '../components/ActionGrid';
+import { SiteNoticeModal } from '../components/SiteNoticeModal';
 
 interface DashboardPageProps {
   onNavigate: (route: string) => void;
@@ -19,8 +20,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
   // Balance tap reveal state
   const [showBalance, setShowBalance] = useState(false);
 
-  // Dismissed popup notice state
-  const [dismissedNotice, setDismissedNotice] = useState(false);
+  // Popup notice state (shows every visit if enabled)
+  const [showNotice, setShowNotice] = useState(true);
 
   // Auto-hide balance after 4.5 seconds
   useEffect(() => {
@@ -46,32 +47,11 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
 
   return (
     <div className="max-w-md mx-auto px-4 py-3.5 space-y-3.5 pb-24 font-['Hind_Siliguri',sans-serif] text-slate-100">
-      {/* 0. Dynamic Popup Notice Modal (If enabled by admin) */}
-      {settings?.popupNotice?.enabled && !dismissedNotice && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-[#0a1224] border border-amber-500/30 rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4 animate-in zoom-in-95 duration-200 relative text-slate-100">
-            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center mx-auto shadow-inner">
-              <Sparkles className="w-6 h-6" />
-            </div>
-
-            <div className="text-center space-y-1.5">
-              <h3 className="text-base font-bold text-white">
-                {settings.popupNotice.title || 'জরুরি বিজ্ঞপ্তি'}
-              </h3>
-              <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-line">
-                {settings.popupNotice.message || 'সকল ইউজারদের অবগতির জন্য জানানো যাচ্ছে যে কাজ সঠিকভাবে সম্পন্ন করুন।'}
-              </p>
-            </div>
-
-            <button
-              onClick={() => setDismissedNotice(true)}
-              className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold text-xs py-2.5 rounded-xl shadow-lg active:scale-98 transition-all cursor-pointer"
-            >
-              ঠিক আছে, বুঝেছি
-            </button>
-          </div>
-        </div>
-      )}
+      {/* 0. Dynamic Popup Notice Modal (Exact match to screenshot & configured by admin) */}
+      <SiteNoticeModal
+        isOpen={Boolean(settings?.popupNotice?.enabled && showNotice)}
+        onClose={() => setShowNotice(false)}
+      />
 
       {/* 1. TOP NOTICE / MARQUEE TICKER */}
       <div className="bg-[#0b1329] rounded-full px-4 py-2 border border-slate-800 shadow-md flex items-center gap-2.5 overflow-hidden">
