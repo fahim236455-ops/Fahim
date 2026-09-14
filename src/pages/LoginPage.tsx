@@ -33,85 +33,97 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center px-4 py-8 max-w-md mx-auto">
-      {/* Back to Home */}
-      <button
-        onClick={() => onNavigate('dashboard')}
-        className="self-start mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-sky-600 transition-colors cursor-pointer"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        <span>হোম পেজে ফিরে যান</span>
-      </button>
+    <div className="min-h-screen bg-[#060b18] flex flex-col justify-center px-4 py-8 relative overflow-hidden">
+      {/* Background glow effects */}
+      <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-sky-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute bottom-[-20%] left-[-10%] w-[400px] h-[400px] bg-sky-600/5 blur-[100px] rounded-full pointer-events-none -z-10" />
 
-      {/* Brand Header */}
-      <div className="text-center space-y-2 mb-6 flex flex-col items-center">
-        <Logo size={72} variant="stacked" className="mb-2" />
-        <p className="text-xs text-slate-500 font-medium">
-          আপনার অ্যাকাউন্টে লগইন করে আয় শুরু করুন
-        </p>
-      </div>
+      <div className="w-full max-w-md mx-auto relative z-10">
+        {/* Back to Home */}
+        <button
+          onClick={() => onNavigate('dashboard')}
+          className="self-start mb-6 inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-sky-400 transition-colors cursor-pointer"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>হোম পেজে ফিরে যান</span>
+        </button>
 
-      {/* Login Card */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-md space-y-4">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 block">ইমেইল অথবা মোবাইল নম্বর:</label>
-            <div className="relative">
-              <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
-              <input
-                type="text"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="user@fahimpaybd.com অথবা 01712345678"
-                className="w-full text-xs font-medium pl-9 p-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              />
+        {/* Brand Header */}
+        <div className="text-center space-y-2 mb-8 flex flex-col items-center">
+          <Logo size={72} variant="stacked" className="mb-2 drop-shadow-md" />
+          <p className="text-xs text-slate-400 font-medium tracking-wide">
+            আপনার অ্যাকাউন্টে লগইন করে আয় শুরু করুন
+          </p>
+        </div>
+
+        {/* Login Card */}
+        <div className="glass-panel-dark rounded-3xl p-6 sm:p-8 shadow-xl shadow-black/20 border border-sky-500/20 space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-300 block tracking-wide">ইমেইল অথবা মোবাইল নম্বর:</label>
+              <div className="relative">
+                <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
+                <input
+                  type="text"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="user@fahimpaybd.com অথবা 01712345678"
+                  className="w-full text-sm font-medium pl-10 pr-3 py-3 rounded-xl bg-[#0a1128] border border-slate-700/50 text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500/50 focus:border-sky-500/50 shadow-inner transition-all"
+                />
+              </div>
             </div>
+
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-300 tracking-wide">পাসওয়ার্ড:</label>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('forgot-password')}
+                  className="text-[11px] text-sky-400 hover:text-sky-300 font-bold transition-colors"
+                >
+                  ভুলে গেছেন?
+                </button>
+              </div>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full text-sm font-medium pl-10 pr-3 py-3 rounded-xl bg-[#0a1128] border border-slate-700/50 text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500/50 focus:border-sky-500/50 shadow-inner transition-all"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full mt-6 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 text-white font-bold text-sm py-3.5 rounded-xl shadow-lg shadow-sky-500/25 border border-sky-400/30 flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>
+                  <span>লগইন করুন</span>
+                  <ArrowRight className="w-4 h-4 drop-shadow-md" />
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Register link */}
+          <div className="text-center pt-3 text-xs text-slate-400 font-medium">
+            নতুন একাউন্ট করতে চান?{' '}
+            <button
+              onClick={() => onNavigate('register')}
+              className="font-bold text-sky-400 hover:text-sky-300 cursor-pointer ml-1 transition-colors"
+            >
+              রেজিস্ট্রেশন করুন
+            </button>
           </div>
-
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-700">পাসওয়ার্ড:</label>
-              <button
-                type="button"
-                onClick={() => onNavigate('forgot-password')}
-                className="text-[11px] text-emerald-600 hover:text-emerald-700 font-bold"
-              >
-                ভুলে গেছেন?
-              </button>
-            </div>
-            <div className="relative">
-              <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full text-xs font-medium pl-9 p-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm py-2.5 rounded-xl shadow-md flex items-center justify-center gap-2 transition-transform active:scale-98 disabled:opacity-50"
-          >
-            <span>{loading ? 'যাচাই করা হচ্ছে...' : 'লগইন করুন'}</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </form>
-
-        {/* Register link */}
-        <div className="text-center pt-2 text-xs text-slate-600">
-          নতুন একাউন্ট করতে চান?{' '}
-          <button
-            onClick={() => onNavigate('register')}
-            className="font-bold text-emerald-600 hover:text-emerald-700 underline"
-          >
-            রেজিস্ট্রেশন করুন
-          </button>
         </div>
       </div>
     </div>

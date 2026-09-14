@@ -72,147 +72,135 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center px-4 py-8 max-w-md mx-auto">
-      {/* Back to Home */}
-      <button
-        onClick={() => onNavigate('dashboard')}
-        className="self-start mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-sky-600 transition-colors cursor-pointer"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        <span>হোম পেজে ফিরে যান</span>
-      </button>
+    <div className="min-h-screen bg-[#060b18] flex flex-col justify-center px-4 py-8 relative overflow-hidden">
+      {/* Background glow effects */}
+      <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-sky-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute bottom-[-20%] left-[-10%] w-[400px] h-[400px] bg-sky-600/5 blur-[100px] rounded-full pointer-events-none -z-10" />
 
-      {/* Brand Header */}
-      <div className="text-center space-y-2 mb-6 flex flex-col items-center">
-        <Logo size={72} variant="stacked" className="mb-2" />
-        <h1 className="text-lg font-black text-slate-900 tracking-tight">
-          নতুন অ্যাকাউন্ট তৈরি করুন
-        </h1>
-        <p className="text-xs text-slate-500 font-medium">
-          Earnora-তে ফ্রি একাউন্ট খুলে এখনই আয় শুরু করুন
-        </p>
-      </div>
+      <div className="w-full max-w-md mx-auto relative z-10">
+        {/* Back to Home */}
+        <button
+          onClick={() => onNavigate('dashboard')}
+          className="self-start mb-6 inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-sky-400 transition-colors cursor-pointer"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>হোম পেজে ফিরে যান</span>
+        </button>
 
-      {/* Register Card */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-md space-y-4">
-        <form onSubmit={handleSubmit} className="space-y-3.5">
-          {/* Full Name */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700 block">আপনার পুরো নাম:</label>
-            <div className="relative">
-              <User className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
-              <input
-                type="text"
-                required
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="যেমন: ফাহিম আহমেদ"
-                className="w-full text-xs font-medium pl-9 p-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-              />
+        {/* Brand Header */}
+        <div className="text-center space-y-2 mb-8 flex flex-col items-center">
+          <Logo size={72} variant="stacked" className="mb-2 drop-shadow-md" />
+          <h1 className="text-lg font-black text-white tracking-tight drop-shadow-md">
+            নতুন অ্যাকাউন্ট তৈরি করুন
+          </h1>
+          <p className="text-xs text-slate-400 font-medium tracking-wide">
+            Earnora-তে ফ্রি একাউন্ট খুলে এখনই আয় শুরু করুন
+          </p>
+        </div>
+
+        {/* Register Card */}
+        <div className="glass-panel-dark rounded-3xl p-6 sm:p-8 shadow-xl shadow-black/20 border border-sky-500/20 space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Full Name */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-300 block tracking-wide">আপনার পুরো নাম:</label>
+              <div className="relative">
+                <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
+                <input
+                  type="text"
+                  required
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="যেমন: ফাহিম আহমেদ"
+                  className="w-full text-sm font-medium pl-10 pr-3 py-3 rounded-xl bg-[#0a1128] border border-slate-700/50 text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500/50 focus:border-sky-500/50 shadow-inner transition-all"
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Phone Number */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700 block">মোবাইল নম্বর (১১ ডিজিট):</label>
-            <div className="relative">
-              <Phone className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
-              <input
-                type="tel"
-                required
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="01712345678"
-                className="w-full text-xs font-medium pl-9 p-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-              />
+            {/* Phone Number */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-300 block tracking-wide">মোবাইল নম্বর (১১ ডিজিট):</label>
+              <div className="relative">
+                <Phone className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
+                <input
+                  type="tel"
+                  required
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="01712345678"
+                  className="w-full text-sm font-medium pl-10 pr-3 py-3 rounded-xl bg-[#0a1128] border border-slate-700/50 text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500/50 focus:border-sky-500/50 shadow-inner transition-all"
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Email */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700 block">ইমেইল অ্যাড্রেস:</label>
-            <div className="relative">
-              <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@example.com"
-                className="w-full text-xs font-medium pl-9 p-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-              />
+            {/* Email */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-300 block tracking-wide">ইমেইল অ্যাড্রেস:</label>
+              <div className="relative">
+                <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  className="w-full text-sm font-medium pl-10 pr-3 py-3 rounded-xl bg-[#0a1128] border border-slate-700/50 text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500/50 focus:border-sky-500/50 shadow-inner transition-all"
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Password */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700 block">পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর):</label>
-            <div className="relative">
-              <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full text-xs font-medium pl-9 p-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-              />
+            {/* Password */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-300 block tracking-wide">পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর):</label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full text-sm font-medium pl-10 pr-3 py-3 rounded-xl bg-[#0a1128] border border-slate-700/50 text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500/50 focus:border-sky-500/50 shadow-inner transition-all"
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Confirm Password */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700 block">পাসওয়ার্ড নিশ্চিত করুন:</label>
-            <div className="relative">
-              <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
-              <input
-                type="password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full text-xs font-medium pl-9 p-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-              />
+            {/* Confirm Password */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-300 block tracking-wide">পাসওয়ার্ড নিশ্চিত করুন:</label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" />
+                <input
+                  type="password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full text-sm font-medium pl-10 pr-3 py-3 rounded-xl bg-[#0a1128] border border-slate-700/50 text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500/50 focus:border-sky-500/50 shadow-inner transition-all"
+                />
+              </div>
             </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full mt-6 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 text-white font-bold text-sm py-3.5 rounded-xl shadow-lg shadow-sky-500/25 border border-sky-400/30 flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              <span>{loading ? 'অ্যাকাউন্ট তৈরি হচ্ছে...' : 'রেজিস্ট্রেশন সম্পন্ন করুন'}</span>
+              <ArrowRight className="w-4 h-4 drop-shadow-md" />
+            </button>
+          </form>
+
+          {/* Login link */}
+          <div className="text-center pt-3 text-xs text-slate-400 border-t border-white/5 font-medium">
+            ইতিমধ্যে একাউন্ট আছে?{' '}
+            <button
+              onClick={() => onNavigate('login')}
+              className="font-bold text-sky-400 hover:text-sky-300 cursor-pointer transition-colors"
+            >
+              লগইন করুন
+            </button>
           </div>
-
-          {/* Referral Code (optional) */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
-              <span>রেফারেল কোড (ঐচ্ছিক):</span>
-              <span className="text-[11px] text-amber-700 font-semibold">বোনাস কোড</span>
-            </label>
-            <div className="relative">
-              <Gift className="w-4 h-4 text-amber-500 absolute left-3 top-3" />
-              <input
-                type="text"
-                value={referralCode}
-                onChange={(e) => setReferralCode(e.target.value)}
-                placeholder="যেমন: FPB101"
-                className="w-full text-xs font-mono font-bold pl-9 p-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none uppercase"
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm py-2.5 rounded-xl shadow-md flex items-center justify-center gap-2 transition-transform active:scale-98 disabled:opacity-50 mt-2"
-          >
-            <span>{loading ? 'অ্যাকাউন্ট তৈরি হচ্ছে...' : 'রেজিস্ট্রেশন সম্পন্ন করুন'}</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </form>
-
-        {/* Login link */}
-        <div className="text-center pt-2 text-xs text-slate-600 border-t border-slate-100">
-          ইতিমধ্যে একাউন্ট আছে?{' '}
-          <button
-            onClick={() => onNavigate('login')}
-            className="font-bold text-emerald-600 hover:text-emerald-700 underline"
-          >
-            লগইন করুন
-          </button>
         </div>
       </div>
     </div>

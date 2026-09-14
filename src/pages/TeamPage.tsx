@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { fetchApi } from '../lib/api';
-import { Users2, Copy, Share2, Check, Sparkles, Gift, UserCheck } from 'lucide-react';
+import { Users2, Copy, Share2, Check, Sparkles, Gift, UserCheck, Trophy, Crown, Medal } from 'lucide-react';
 
 export const TeamPage: React.FC = () => {
   const { user, settings, showToast } = useApp();
@@ -23,11 +23,25 @@ export const TeamPage: React.FC = () => {
   } | null>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
+  const [leaderboard, setLeaderboard] = useState<Array<{
+    id: string;
+    name: string;
+    successfulReferrals: number;
+    avatar?: string;
+    earnings: number;
+  }>>([]);
   const [copied, setCopied] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchApi('/team')
-      .then((data) => setTeamData(data))
+    setLoading(true);
+    Promise.all([
+      fetchApi('/team'),
+      fetchApi('/team/leaderboard')
+    ])
+      .then(([teamRes, leadRes]) => {
+        setTeamData(teamRes);
+        setLeaderboard(leadRes.leaderboard);
+      })
       .catch((err) => showToast(err.message || 'টিম ডেটা লোড ব্যর্থ হয়েছে', 'error'))
       .finally(() => setLoading(false));
   }, []);
@@ -160,6 +174,51 @@ export const TeamPage: React.FC = () => {
         <p className="text-amber-100/80 leading-relaxed">
           আপনার রেফারেল লিংকের মাধ্যমে কোনো বন্ধু যুক্ত হওয়ার পর তিনি যখন তাঁর <strong>প্রথম বৈধ টাস্কটি</strong> সফলভাবে সম্পন্ন করবেন, তখনই স্বয়ংক্রিয়ভাবে আপনার ব্যালেন্সে <strong>৳৫০ টাকা</strong> ক্রেডিট হবে।
         </p>
+      </div>
+
+      
+      {/* Top 10 Leaderboard */}
+      <div className="bg-slate-900/90 rounded-2xl border border-slate-800 shadow-md overflow-hidden mt-6">
+        <div className="bg-gradient-to-r from-amber-500/10 to-transparent p-4 border-b border-amber-500/20 flex items-center gap-2">
+          <Trophy className="w-5 h-5 text-amber-400" />
+          <h2 className="text-sm font-bold text-white">টপ ১০ রেফারার (লিডারবোর্ড)</h2>
+        </div>
+        
+        {loading ? (
+          <div className="p-4 space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-12 bg-slate-800 border border-slate-700 rounded-xl animate-pulse" />
+            ))}
+          </div>
+        ) : leaderboard.length === 0 ? (
+          <div className="p-6 text-center text-slate-400 text-xs font-medium">
+            এখনও কোনো লিডারবোর্ড ডেটা নেই। বেশি বেশি রেফার করুন!
+          </div>
+        ) : (
+          <div className="divide-y divide-slate-800/60">
+            {leaderboard.map((user, idx) => (
+              <div key={user.id} className="p-3 flex items-center justify-between hover:bg-slate-800/40 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 flex justify-center">
+                    {idx === 0 ? <Crown className="w-5 h-5 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" /> :
+                     idx === 1 ? <Medal className="w-5 h-5 text-slate-300" /> :
+                     idx === 2 ? <Medal className="w-5 h-5 text-amber-700" /> :
+                     <span className="text-sm font-bold text-slate-500">#{idx + 1}</span>}
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors">{user.name}</h4>
+                    <span className="text-[10px] text-slate-400 font-medium">{user.successfulReferrals} টি সফল রেফার</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs font-black text-amber-400 block tracking-wide">
+                    ৳ {user.earnings.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Referred Users List */}

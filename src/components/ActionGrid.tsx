@@ -65,273 +65,275 @@ export const ActionGrid: React.FC<ActionGridProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="space-y-4 text-slate-100 font-['Hind_Siliguri',sans-serif]">
+    <div className="space-y-5 text-slate-100 font-['Hind_Siliguri',sans-serif]">
       {/* 1. SOCIAL BUTTONS (Telegram & YouTube) */}
-      <div className="grid grid-cols-2 gap-2.5">
+      <div className="grid grid-cols-2 gap-3">
         <a
           href={telegramLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-[#0b1329] hover:bg-[#101b38] text-slate-200 border border-slate-800/80 rounded-2xl py-2.5 px-3 flex items-center justify-center gap-2 text-xs font-bold shadow-md active:scale-98 transition-all"
+          className="glass-panel-dark hover:bg-white/5 border border-white/10 rounded-2xl py-3 px-3 flex items-center justify-center gap-2.5 text-xs font-bold shadow-lg shadow-sky-900/10 active:scale-95 transition-all relative overflow-hidden group"
         >
-          <Send className="w-4 h-4 text-sky-400" />
-          <span>Telegram</span>
+          <div className="absolute inset-0 bg-gradient-to-r from-sky-500/0 via-sky-500/10 to-sky-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
+          <Send className="w-4 h-4 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.5)]" />
+          <span className="tracking-wide">Telegram</span>
         </a>
 
         <a
           href={youtubeLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-[#0b1329] hover:bg-[#101b38] text-slate-200 border border-slate-800/80 rounded-2xl py-2.5 px-3 flex items-center justify-center gap-2 text-xs font-bold shadow-md active:scale-98 transition-all"
+          className="glass-panel-dark hover:bg-white/5 border border-white/10 rounded-2xl py-3 px-3 flex items-center justify-center gap-2.5 text-xs font-bold shadow-lg shadow-red-900/10 active:scale-95 transition-all relative overflow-hidden group"
         >
-          <Youtube className="w-4 h-4 text-red-500" />
-          <span>YouTube</span>
+          <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 via-red-500/10 to-red-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
+          <Youtube className="w-4 h-4 text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+          <span className="tracking-wide">YouTube</span>
         </a>
       </div>
 
       {/* 2. SECTION 1: সোশ্যাল সার্ভিস ও কাজ */}
-      <div className="space-y-2.5">
+      <div className="space-y-3">
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-4 rounded-full bg-emerald-400" />
-            <h2 className="text-xs sm:text-sm font-bold text-white">সোশ্যাল সার্ভিস ও কাজ</h2>
-            <span className="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">
+            <span className="w-1.5 h-4 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
+            <h2 className="text-xs sm:text-sm font-extrabold text-white tracking-wide">সোশ্যাল সার্ভিস ও কাজ</h2>
+            <span className="bg-emerald-500/10 text-emerald-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/20 backdrop-blur-md">
               ৩টি সার্ভিস
             </span>
           </div>
-          <span className="text-[11px] text-amber-400 font-medium">ইনস্ট্যান্ট কাজ ও পেমেন্ট</span>
+          <span className="text-[11px] text-amber-400 font-bold tracking-wide animate-pulse-glow bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">ইনস্ট্যান্ট কাজ ও পেমেন্ট</span>
         </div>
 
         {/* 3 Column Cards for Gmail, Facebook, Instagram */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-2.5">
           {/* Gmail Service */}
           <button
             onClick={() => onNavigate('gmail-sell')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center relative group transition-all cursor-pointer shadow-md hover:border-pink-500/40 active:scale-98"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-pink-500/50 rounded-2xl p-3 flex flex-col items-center text-center relative group transition-all cursor-pointer shadow-lg hover:shadow-pink-500/20 active:scale-95"
           >
-            <span className="absolute top-1.5 right-1.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full border border-emerald-500/20">
+            <span className="absolute top-1.5 right-1.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full border border-emerald-500/20 backdrop-blur-md">
               ৳14.00
             </span>
-            <div className="w-9 h-9 rounded-xl bg-pink-500/15 border border-pink-500/30 text-pink-400 flex items-center justify-center mt-2 mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <Mail className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/20 text-pink-400 flex items-center justify-center mt-2 mb-2 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-pink-500/20">
+              <Mail className="w-4.5 h-4.5" />
             </div>
-            <h3 className="text-xs font-bold text-white leading-tight">Gmail Service</h3>
-            <p className="text-[9px] text-slate-400 mt-0.5">জিমেইল সেল ও কাজ</p>
+            <h3 className="text-[11px] font-bold text-white leading-tight">Gmail Service</h3>
+            <p className="text-[9px] text-slate-400 mt-0.5 font-medium">জিমেইল সেল ও কাজ</p>
           </button>
 
           {/* Facebook Service */}
           <button
             onClick={() => onNavigate('facebook-sell')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center relative group transition-all cursor-pointer shadow-md hover:border-blue-500/40 active:scale-98"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-blue-500/50 rounded-2xl p-3 flex flex-col items-center text-center relative group transition-all cursor-pointer shadow-lg hover:shadow-blue-500/20 active:scale-95"
           >
-            <span className="absolute top-1.5 right-1.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full border border-emerald-500/20">
+            <span className="absolute top-1.5 right-1.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full border border-emerald-500/20 backdrop-blur-md">
               ৳4.50
             </span>
-            <div className="w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-400 flex items-center justify-center mt-2 mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <ThumbsUp className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mt-2 mb-2 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-blue-500/20">
+              <ThumbsUp className="w-4.5 h-4.5" />
             </div>
-            <h3 className="text-xs font-bold text-white leading-tight">Facebook Service</h3>
-            <p className="text-[9px] text-slate-400 mt-0.5">ফেসবুক সেল ও কাজ</p>
+            <h3 className="text-[11px] font-bold text-white leading-tight">Facebook Service</h3>
+            <p className="text-[9px] text-slate-400 mt-0.5 font-medium">ফেসবুক সেল ও কাজ</p>
           </button>
 
           {/* Instagram Service */}
           <button
             onClick={() => onNavigate('instagram-sell')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center relative group transition-all cursor-pointer shadow-md hover:border-pink-500/40 active:scale-98"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-pink-500/50 rounded-2xl p-3 flex flex-col items-center text-center relative group transition-all cursor-pointer shadow-lg hover:shadow-pink-500/20 active:scale-95"
           >
-            <span className="absolute top-1.5 right-1.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full border border-emerald-500/20">
+            <span className="absolute top-1.5 right-1.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full border border-emerald-500/20 backdrop-blur-md">
               ৳2.50
             </span>
-            <div className="w-9 h-9 rounded-xl bg-pink-500/15 border border-pink-500/30 text-pink-400 flex items-center justify-center mt-2 mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <Instagram className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/20 text-pink-400 flex items-center justify-center mt-2 mb-2 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-pink-500/20">
+              <Instagram className="w-4.5 h-4.5" />
             </div>
-            <h3 className="text-xs font-bold text-white leading-tight">Instagram Service</h3>
-            <p className="text-[9px] text-slate-400 mt-0.5">ইনস্টাগ্রাম সেল ও কাজ</p>
+            <h3 className="text-[11px] font-bold text-white leading-tight">Instagram Service</h3>
+            <p className="text-[9px] text-slate-400 mt-0.5 font-medium">ইনস্টাগ্রাম সেল ও কাজ</p>
           </button>
         </div>
       </div>
 
       {/* 3. SECTION 2: Easy Earning & Tasks (4 Column Grid) */}
-      <div className="space-y-2.5">
+      <div className="space-y-3">
         <div className="flex items-center gap-2 px-1">
-          <span className="w-1.5 h-4 rounded-full bg-amber-400" />
-          <h2 className="text-xs sm:text-sm font-bold text-white">Easy Earning & Tasks</h2>
+          <span className="w-1.5 h-4 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
+          <h2 className="text-xs sm:text-sm font-extrabold text-white tracking-wide">Easy Earning & Tasks</h2>
         </div>
 
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-4 gap-2.5">
           {/* Micro Job */}
           <button
             onClick={() => onNavigate('tasks')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-sky-500/40 active:scale-95"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-sky-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-sky-500/20 active:scale-95"
           >
-            <div className="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <Briefcase className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-sky-500/20">
+              <Briefcase className="w-4.5 h-4.5" />
             </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Micro Job</span>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors">Micro Job</span>
           </button>
 
           {/* Job Post */}
           <button
             onClick={() => onNavigate('job-post')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-amber-500/40 active:scale-95"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-amber-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-amber-500/20 active:scale-95"
           >
-            <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <Users className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-amber-500/20">
+              <Users className="w-4.5 h-4.5" />
             </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Job Post</span>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors">Job Post</span>
           </button>
 
           {/* Daily Bonus */}
           <button
             onClick={handleDailyBonus}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-yellow-500/40 active:scale-95"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-yellow-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-yellow-500/20 active:scale-95"
           >
-            <div className="w-9 h-9 rounded-xl bg-yellow-500/15 border border-yellow-500/30 text-yellow-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <CalendarCheck className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-yellow-500/20">
+              <CalendarCheck className="w-4.5 h-4.5" />
             </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Daily Bonus</span>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors">Daily Bonus</span>
           </button>
 
           {/* Task Status */}
           <button
             onClick={() => onNavigate('pending-status')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-cyan-500/40 active:scale-95"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-cyan-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-cyan-500/20 active:scale-95"
           >
-            <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <Clock className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-cyan-500/20">
+              <Clock className="w-4.5 h-4.5" />
             </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Task Status</span>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors">Task Status</span>
           </button>
 
           {/* Leaderboard */}
           <button
             onClick={() => onNavigate('leadership')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-amber-500/40 active:scale-95"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-amber-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-amber-500/20 active:scale-95"
           >
-            <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <Trophy className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-amber-500/20">
+              <Trophy className="w-4.5 h-4.5" />
             </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Leaderboard</span>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors">Leaderboard</span>
           </button>
 
           {/* My Team */}
           <button
             onClick={() => onNavigate('team')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-purple-500/40 active:scale-95"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-purple-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-purple-500/20 active:scale-95"
           >
-            <div className="w-9 h-9 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <UserPlus className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-purple-500/20">
+              <UserPlus className="w-4.5 h-4.5" />
             </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">My Team</span>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors">My Team</span>
           </button>
 
           {/* Income History */}
           <button
             onClick={() => onNavigate('income-history')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-emerald-500/40 active:scale-95"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-emerald-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-emerald-500/20 active:scale-95"
           >
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <Banknote className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-emerald-500/20">
+              <Banknote className="w-4.5 h-4.5" />
             </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Income History</span>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors">Income History</span>
           </button>
 
           {/* Withdraw History */}
           <button
             onClick={() => onNavigate('withdraw-history')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-cyan-500/40 active:scale-95"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-cyan-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-cyan-500/20 active:scale-95"
           >
-            <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <History className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-cyan-500/20">
+              <History className="w-4.5 h-4.5" />
             </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white truncate w-full">Withdraw His...</span>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white truncate w-full transition-colors">Withdraw His...</span>
           </button>
         </div>
       </div>
 
       {/* 4. SECTION 3: Services & Rewards (4 Column Grid) */}
-      <div className="space-y-2.5">
+      <div className="space-y-3">
         <div className="flex items-center gap-2 px-1">
-          <span className="w-1.5 h-4 rounded-full bg-amber-400" />
-          <h2 className="text-xs sm:text-sm font-bold text-white">Services & Rewards</h2>
+          <span className="w-1.5 h-4 rounded-full bg-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
+          <h2 className="text-xs sm:text-sm font-extrabold text-white tracking-wide">Services & Rewards</h2>
         </div>
 
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-4 gap-2.5">
           {/* Target */}
           <button
             onClick={() => setActiveModal('target')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-rose-500/40 active:scale-95"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-rose-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-rose-500/20 active:scale-95"
           >
-            <div className="w-9 h-9 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <Target className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-rose-500/20">
+              <Target className="w-4.5 h-4.5" />
             </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Target</span>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors">Target</span>
           </button>
 
           {/* Live Support */}
           <button
             onClick={() => onNavigate('support')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-sky-500/40 active:scale-95"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-sky-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-sky-500/20 active:scale-95"
           >
-            <div className="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <HelpCircle className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-sky-500/20">
+              <HelpCircle className="w-4.5 h-4.5" />
             </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Live Support</span>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors">Live Support</span>
           </button>
 
           {/* Digital Service */}
           <button
             onClick={() => onNavigate('system-closed')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-cyan-500/40 active:scale-95"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-cyan-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-cyan-500/20 active:scale-95"
           >
-            <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <Monitor className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-cyan-500/20">
+              <Monitor className="w-4.5 h-4.5" />
             </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Digital Service</span>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors">Digital Service</span>
           </button>
 
           {/* Paid VPN */}
           <button
             onClick={() => onNavigate('system-closed')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-teal-500/40 active:scale-95"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-teal-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-teal-500/20 active:scale-95"
           >
-            <div className="w-9 h-9 rounded-xl bg-teal-500/15 border border-teal-500/30 text-teal-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <ShieldCheck className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-teal-500/20">
+              <ShieldCheck className="w-4.5 h-4.5" />
             </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Paid VPN</span>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors">Paid VPN</span>
           </button>
 
           {/* Reselling */}
           <button
             onClick={() => onNavigate('system-closed')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-blue-500/40 active:scale-95"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-blue-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-blue-500/20 active:scale-95"
           >
-            <div className="w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <ShoppingCart className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-blue-500/20">
+              <ShoppingCart className="w-4.5 h-4.5" />
             </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Reselling</span>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors">Reselling</span>
           </button>
 
           {/* Love Mall */}
           <button
             onClick={() => onNavigate('system-closed')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-pink-500/40 active:scale-95"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-pink-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-pink-500/20 active:scale-95"
           >
-            <div className="w-9 h-9 rounded-xl bg-pink-500/15 border border-pink-500/30 text-pink-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <Heart className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/20 text-pink-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-pink-500/20">
+              <Heart className="w-4.5 h-4.5" />
             </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white">Love Mall</span>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors">Love Mall</span>
           </button>
 
           {/* Humanitarian */}
           <button
             onClick={() => onNavigate('system-closed')}
-            className="bg-[#0b1329] hover:bg-[#101b38] border border-slate-800/80 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-sm hover:border-amber-500/40 active:scale-95"
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-amber-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-amber-500/20 active:scale-95"
           >
-            <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform shadow-inner">
-              <HeartHandshake className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-amber-500/20">
+              <HeartHandshake className="w-4.5 h-4.5" />
             </div>
-            <span className="text-[11px] font-bold text-slate-200 group-hover:text-white truncate w-full">Humanitarian</span>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white truncate w-full transition-colors">Humanitarian</span>
           </button>
         </div>
       </div>

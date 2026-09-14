@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { fetchApi } from '../lib/api';
 import { Logo } from '../components/Logo';
@@ -152,6 +153,17 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
   >('overview');
 
   // Admin Roles & Permissions management state
+  
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    message: string;
+    onConfirm: () => void;
+  }>({ isOpen: false, message: '', onConfirm: () => {} });
+
+  const requireConfirmation = (message: string, onConfirm: () => void) => {
+    setConfirmDialog({ isOpen: true, message, onConfirm });
+  };
+
   const [adminRolesList, setAdminRolesList] = useState<AdminRoleInfo[]>([]);
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [selectedUserForRole, setSelectedUserForRole] = useState<EnrichedUser | null>(null);
@@ -780,7 +792,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
 
   // Archive / Delete Task
   const handleDeleteTask = async (taskId: string) => {
-    if (!confirm('আপনি কি নিশ্চিত যে এই টাস্কটি মুছে বা আর্কাইভ করতে চান?')) return;
+    requireConfirmation('আপনি কি নিশ্চিত যে এই টাস্কটি মুছে বা আর্কাইভ করতে চান?', async () => {
     try {
       await fetchApi(`/admin/tasks/${taskId}`, { method: 'DELETE' });
       showToast('টাস্ক আর্কাইভ করা হয়েছে।', 'info');
@@ -788,11 +800,12 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
     } catch (err: any) {
       showToast(err.message || 'টাস্ক মুছে ফেলা যায়নি।', 'error');
     }
+  });
   };
 
   // Permanent Delete Task
   const handlePermanentDeleteTask = async (taskId: string) => {
-    if (!confirm('সতর্কতা: এই টাস্কটি ডাটাবেজ থেকে স্থায়ীভাবে মুছে ফেলা হবে। আপনি কি নিশ্চিত?')) return;
+    requireConfirmation('সতর্কতা: এই টাস্কটি ডাটাবেজ থেকে স্থায়ীভাবে মুছে ফেলা হবে। আপনি কি নিশ্চিত?', async () => {
     try {
       await fetchApi(`/admin/tasks/${taskId}?permanent=true`, { method: 'DELETE' });
       showToast('টাস্ক স্থায়ীভাবে মুছে ফেলা হয়েছে।', 'info');
@@ -800,11 +813,12 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
     } catch (err: any) {
       showToast(err.message || 'টাস্ক স্থায়ীভাবে মুছে ফেলা যায়নি।', 'error');
     }
+  });
   };
 
   // Clear All Tasks
   const handleClearAllTasks = async () => {
-    if (!confirm('সতর্কতা: আপনি কি নিশ্চিত যে সমস্ত টাস্ক মুছে ডাটাবেজ খালি করতে চান? এটি করার পর আপনি সম্পূর্ণ নতুনভাবে ম্যানুয়ালি কাজ যুক্ত করতে পারবেন।')) return;
+    requireConfirmation('সতর্কতা: আপনি কি নিশ্চিত যে সমস্ত টাস্ক মুছে ডাটাবেজ খালি করতে চান? এটি করার পর আপনি সম্পূর্ণ নতুনভাবে ম্যানুয়ালি কাজ যুক্ত করতে পারবেন।', async () => {
     try {
       const res = await fetchApi<{ message: string }>('/admin/tasks/clear-all', { method: 'POST' });
       showToast(res.message || 'সকল টাস্ক মুছে ফেলা হয়েছে।', 'info');
@@ -812,6 +826,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
     } catch (err: any) {
       showToast(err.message || 'টাস্ক মুছতে সমস্যা হয়েছে।', 'error');
     }
+  });
   };
 
   // Adjust User Balance (+/-)
@@ -841,6 +856,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
     } catch (err: any) {
       showToast(err.message || 'ব্যালেন্স সমন্বয় ব্যর্থ হয়েছে।', 'error');
     }
+
   };
 
   // Toggle User Status (Active / Suspended)
@@ -918,6 +934,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
     } finally {
       setAdminSendingChat(false);
     }
+
   };
 
   // Change ticket status
@@ -1080,7 +1097,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
       showToast('মূল সুপার অ্যাডমিনের রোল সরানো যাবে না', 'error');
       return;
     }
-    if (!confirm(`আপনি কি নিশ্চিত যে ${userEmail} এর অ্যাডমিন পারমিশন বাতিল করতে চান?`)) return;
+    requireConfirmation(`আপনি কি নিশ্চিত যে ${userEmail} এর অ্যাডমিন পারমিশন বাতিল করতে চান?`, async () => {
 
     try {
       const res = await fetchApi<{ message: string }>('/admin/roles/revoke', {
@@ -1092,6 +1109,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
     } catch (err: any) {
       showToast(err.message || 'অ্যাক্সেস প্রত্যাহার ব্যর্থ হয়েছে', 'error');
     }
+  });
   };
 
   // Delete User handler
@@ -1101,9 +1119,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
       return;
     }
 
-    if (!window.confirm(`আপনি কি নিশ্চিত যে "${u.fullName}"-এর একাউন্ট এবং তার সমস্ত ডাটা মুছে ফেলতে চান?`)) {
-      return;
-    }
+    requireConfirmation(`আপনি কি নিশ্চিত যে "${u.fullName}"-এর একাউন্ট এবং তার সমস্ত ডাটা মুছে ফেলতে চান?`, async () => {
 
     try {
       const res = await fetchApi<{ message: string }>(`/admin/users/${u.id}`, {
@@ -1114,6 +1130,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
     } catch (err: any) {
       showToast(err.message || 'ইউজার মোছা সম্ভব হয়নি।', 'error');
     }
+  });
   };
 
   // Save Site Settings
@@ -1131,6 +1148,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
     } catch (err: any) {
       showToast(err.message || 'সেটিংস আপডেট ব্যর্থ হয়েছে।', 'error');
     }
+
   };
 
   // Instant Toggle for Popup Notice
@@ -1209,6 +1227,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
     } finally {
       setAdminPasswordLoading(false);
     }
+
   };
 
   // Add FAQ Item
@@ -1263,7 +1282,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
   };
 
   const handlePullFromCloud = async () => {
-    if (!window.confirm('আপনি কি নিশ্চিত যে ক্লাউড ফায়ারস্টোর থেকে সর্বশেষ ইউজার ও ডেটা রিস্টোর করতে চান?')) return;
+    requireConfirmation('আপনি কি নিশ্চিত যে ক্লাউড ফায়ারস্টোর থেকে সর্বশেষ ইউজার ও ডেটা রিস্টোর করতে চান?', async () => {
     try {
       setCloudSyncLoading(true);
       const res = await fetchApi<{ success: boolean; message: string }>('/admin/cloud-sync/pull', {
@@ -1276,6 +1295,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
     } finally {
       setCloudSyncLoading(false);
     }
+  });
   };
 
   // Filtered lists
@@ -1398,9 +1418,13 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
   // FULL ADMIN CONTROL PANEL VIEW
   // -------------------------------------------------------------
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 pb-24">
+    <div className="min-h-screen bg-[#060b18] text-slate-100 pb-24 relative overflow-hidden">
+      {/* Background Glow Elements */}
+      <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-sky-500/10 blur-[150px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[400px] h-[400px] bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+
       {/* Admin Top Sticky Bar */}
-      <header className="bg-slate-950 border-b border-slate-800 sticky top-0 z-30 px-4 py-3 shadow-md">
+      <header className="glass-panel-dark border-b border-sky-500/20 sticky top-0 z-30 px-4 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <button
@@ -1505,14 +1529,22 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg whitespace-nowrap font-semibold transition-colors cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl whitespace-nowrap font-bold transition-all cursor-pointer relative overflow-hidden ${
                   isActive
-                    ? 'bg-amber-500 text-slate-950 font-bold shadow-xs'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    ? 'bg-gradient-to-r from-sky-500 to-sky-600 text-white shadow-lg shadow-sky-500/25 border border-sky-400/30'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{tab.label}</span>
+                <Icon className={`w-4 h-4 ${isActive ? 'drop-shadow-md' : ''}`} />
+                <span className="tracking-wide">{tab.label}</span>
+                {isActive && (
+                  <motion.div
+                    layoutId="activeTabIndicator"
+                    className="absolute inset-0 bg-white/10 rounded-xl"
+                    initial={false}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
               </button>
             );
           })}
@@ -1520,86 +1552,110 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
       </header>
 
       {/* Main Content Area */}
-      <main className="max-w-4xl mx-auto px-4 py-4 space-y-4">
-        {/* ========================================================= */}
-        {/* 1. OVERVIEW TAB */}
-        {/* ========================================================= */}
-        {activeTab === 'overview' && (
-          <div className="space-y-4">
+      <main className="max-w-4xl mx-auto px-4 py-6 space-y-6 relative z-10">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.3 }}
+            className="w-full"
+          >
+            {/* ========================================================= */}
+            {/* 1. OVERVIEW TAB */}
+            {/* ========================================================= */}
+            {activeTab === 'overview' && (
+              <div className="space-y-6">
             {/* KPI Cards Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              <div 
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              <motion.div 
+                whileHover={{ scale: 1.02, translateY: -2 }}
                 onClick={() => setActiveTab('users')}
-                className="bg-slate-800/90 rounded-2xl p-4 border border-slate-700/80 shadow-xs cursor-pointer hover:border-blue-500/50 transition-all group"
+                className="glass-panel-dark rounded-2xl p-5 border border-sky-500/20 shadow-xl cursor-pointer hover:border-sky-400/50 hover:shadow-sky-500/10 transition-all group relative overflow-hidden"
               >
-                <div className="flex items-center justify-between text-slate-400 mb-1">
-                  <span className="text-xs group-hover:text-blue-300 transition-colors">মোট ইউজার</span>
-                  <Users className="w-4 h-4 text-blue-400" />
+                <div className="absolute top-0 right-0 w-20 h-20 bg-sky-500/10 rounded-full blur-[20px] pointer-events-none group-hover:bg-sky-400/20 transition-colors" />
+                <div className="flex items-center justify-between text-slate-400 mb-2 relative z-10">
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-sky-300 drop-shadow-sm">মোট ইউজার</span>
+                  <Users className="w-5 h-5 text-sky-400" />
                 </div>
-                <div className="text-2xl font-black text-white">
-                  {stats?.totalUsers ?? users.length} <span className="text-xs font-normal text-slate-400">জন</span>
+                <div className="text-3xl font-black text-white relative z-10 drop-shadow-md">
+                  {stats?.totalUsers ?? users.length} <span className="text-xs font-bold text-slate-400">জন</span>
                 </div>
-                <p className="text-[10px] text-emerald-400 mt-1">
+                <p className="text-[11px] text-sky-400 mt-2 font-medium relative z-10">
                   সক্রিয়: {stats?.activeUsers ?? users.filter((u) => u.status === 'active').length} জন
                 </p>
-              </div>
+              </motion.div>
 
-              <div className="bg-slate-800/90 rounded-2xl p-4 border border-slate-700/80 shadow-xs">
-                <div className="flex items-center justify-between text-slate-400 mb-1">
-                  <span className="text-xs">পেন্ডিং উইথড্র</span>
-                  <ArrowDownCircle className="w-4 h-4 text-amber-400" />
+              <motion.div 
+                whileHover={{ scale: 1.02, translateY: -2 }}
+                className="glass-panel-dark rounded-2xl p-5 border border-amber-500/20 shadow-xl hover:border-amber-400/50 hover:shadow-amber-500/10 transition-all group relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-20 h-20 bg-amber-500/10 rounded-full blur-[20px] pointer-events-none group-hover:bg-amber-400/20 transition-colors" />
+                <div className="flex items-center justify-between text-slate-400 mb-2 relative z-10">
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-amber-300 drop-shadow-sm">পেন্ডিং উইথড্র</span>
+                  <ArrowDownCircle className="w-5 h-5 text-amber-400" />
                 </div>
-                <div className="text-2xl font-black text-amber-400">
-                  {withdrawals.filter((w) => w.status === 'pending').length} <span className="text-xs font-normal text-slate-400">টি</span>
+                <div className="text-3xl font-black text-white relative z-10 drop-shadow-md">
+                  {withdrawals.filter((w) => w.status === 'pending').length} <span className="text-xs font-bold text-slate-400">টি</span>
                 </div>
-                <p className="text-[10px] text-slate-400 mt-1">
+                <p className="text-[11px] text-amber-400 mt-2 font-medium relative z-10">
                   টাকা: ৳{withdrawals.filter((w) => w.status === 'pending').reduce((s, w) => s + w.amount, 0).toFixed(2)}
                 </p>
-              </div>
+              </motion.div>
 
-              <div className="bg-slate-800/90 rounded-2xl p-4 border border-slate-700/80 shadow-xs">
-                <div className="flex items-center justify-between text-slate-400 mb-1">
-                  <span className="text-xs">পেন্ডিং টাস্ক</span>
-                  <CheckSquare className="w-4 h-4 text-sky-400" />
+              <motion.div 
+                whileHover={{ scale: 1.02, translateY: -2 }}
+                className="glass-panel-dark rounded-2xl p-5 border border-indigo-500/20 shadow-xl hover:border-indigo-400/50 hover:shadow-indigo-500/10 transition-all group relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-20 h-20 bg-indigo-500/10 rounded-full blur-[20px] pointer-events-none group-hover:bg-indigo-400/20 transition-colors" />
+                <div className="flex items-center justify-between text-slate-400 mb-2 relative z-10">
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-indigo-300 drop-shadow-sm">পেন্ডিং টাস্ক</span>
+                  <CheckSquare className="w-5 h-5 text-indigo-400" />
                 </div>
-                <div className="text-2xl font-black text-sky-400">
-                  {submissions.filter((s) => s.status === 'pending').length} <span className="text-xs font-normal text-slate-400">টি</span>
+                <div className="text-3xl font-black text-white relative z-10 drop-shadow-md">
+                  {submissions.filter((s) => s.status === 'pending').length} <span className="text-xs font-bold text-slate-400">টি</span>
                 </div>
-                <p className="text-[10px] text-slate-400 mt-1">অনুমোদনের অপেক্ষায়</p>
-              </div>
+                <p className="text-[11px] text-indigo-400 mt-2 font-medium relative z-10">অনুমোদনের অপেক্ষায়</p>
+              </motion.div>
 
-              <div className="bg-slate-800/90 rounded-2xl p-4 border border-slate-700/80 shadow-xs">
-                <div className="flex items-center justify-between text-slate-400 mb-1">
-                  <span className="text-xs">মোট পরিশোধিত</span>
-                  <TrendingUp className="w-4 h-4 text-emerald-400" />
+              <motion.div 
+                whileHover={{ scale: 1.02, translateY: -2 }}
+                className="glass-panel-dark rounded-2xl p-5 border border-emerald-500/20 shadow-xl hover:border-emerald-400/50 hover:shadow-emerald-500/10 transition-all group relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-full blur-[20px] pointer-events-none group-hover:bg-emerald-400/20 transition-colors" />
+                <div className="flex items-center justify-between text-slate-400 mb-2 relative z-10">
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-300 drop-shadow-sm">মোট পরিশোধিত</span>
+                  <TrendingUp className="w-5 h-5 text-emerald-400" />
                 </div>
-                <div className="text-2xl font-black text-emerald-400">
+                <div className="text-2xl font-black text-emerald-400 relative z-10 drop-shadow-md truncate">
                   ৳{(stats?.totalWithdrawn ?? withdrawals.filter((w) => w.status === 'paid').reduce((s, w) => s + w.netAmount, 0)).toFixed(2)}
                 </div>
-                <p className="text-[10px] text-slate-400 mt-1">সফল ক্যাশআউট</p>
-              </div>
+                <p className="text-[11px] text-emerald-400 mt-2 font-medium relative z-10">সফল ক্যাশআউট</p>
+              </motion.div>
             </div>
 
             {/* Quick Actions Card */}
-            <div className="bg-slate-800 rounded-2xl p-4 border border-slate-700 shadow-xs space-y-3">
-              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+            <div className="glass-panel-dark rounded-2xl p-5 border border-white/5 shadow-xl space-y-4">
+              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-400" />
                 জরুরি নিয়ন্ত্রণ ও শর্টকাট
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                 <button
                   onClick={() => {
                     setActiveTab('submissions');
                     setSubFilter('pending');
                   }}
-                  className="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 p-3 rounded-xl text-left flex items-center justify-between group transition-colors"
+                  className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 p-4 rounded-xl text-left flex items-center justify-between group transition-all cursor-pointer shadow-inner"
                 >
                   <div>
-                    <span className="font-bold block">টাস্ক প্রমাণ যাচাই</span>
-                    <span className="text-[11px] opacity-80">
+                    <span className="font-bold block drop-shadow-md text-sm">টাস্ক প্রমাণ যাচাই</span>
+                    <span className="text-[11px] opacity-80 mt-0.5 block">
                       {submissions.filter((s) => s.status === 'pending').length}টি রিভিউ বাকি
                     </span>
                   </div>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
 
                 <button
@@ -1607,15 +1663,15 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                     setActiveTab('withdrawals');
                     setWithFilter('pending');
                   }}
-                  className="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 p-3 rounded-xl text-left flex items-center justify-between group transition-colors"
+                  className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 p-4 rounded-xl text-left flex items-center justify-between group transition-all cursor-pointer shadow-inner"
                 >
                   <div>
-                    <span className="font-bold block">উইথড্র ক্যাশআউট প্রদান</span>
-                    <span className="text-[11px] opacity-80">
+                    <span className="font-bold block drop-shadow-md text-sm">উইথড্র ক্যাশআউট</span>
+                    <span className="text-[11px] opacity-80 mt-0.5 block">
                       {withdrawals.filter((w) => w.status === 'pending').length}টি পেমেন্ট বাকি
                     </span>
                   </div>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
 
                 <button
@@ -1623,37 +1679,37 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                     setActiveTab('tasks');
                     setShowNewTaskModal(true);
                   }}
-                  className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border border-blue-500/40 p-3 rounded-xl text-left flex items-center justify-between group transition-colors"
+                  className="bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/30 p-4 rounded-xl text-left flex items-center justify-between group transition-all cursor-pointer shadow-inner"
                 >
                   <div>
-                    <span className="font-bold block">নতুন টাস্ক তৈরি</span>
-                    <span className="text-[11px] opacity-80">+ অ্যাড মাইক্রো-টাস্ক</span>
+                    <span className="font-bold block drop-shadow-md text-sm">নতুন টাস্ক তৈরি</span>
+                    <span className="text-[11px] opacity-80 mt-0.5 block">+ অ্যাড মাইক্রো-টাস্ক</span>
                   </div>
-                  <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  <Plus className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 </button>
               </div>
             </div>
 
             {/* System Status & Reserves Card */}
-            <div className="bg-slate-800/80 rounded-2xl p-4 border border-slate-700/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <div className="glass-panel-dark rounded-2xl p-5 border border-white/5 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400">
-                  <Wallet className="w-5 h-5" />
+                <div className="p-3 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-inner">
+                  <Wallet className="w-6 h-6" />
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">ব্যবহারকারীদের মোট সংরক্ষিত ব্যালেন্স:</span>
-                  <span className="text-base font-bold text-white font-mono">
+                  <span className="text-slate-400 block text-[11px] font-medium tracking-wide">ব্যবহারকারীদের মোট সংরক্ষিত ব্যালেন্স:</span>
+                  <span className="text-xl font-bold text-white font-mono drop-shadow-md">
                     ৳{(stats?.totalBalance ?? users.reduce((s, u) => s + u.balance, 0)).toFixed(2)}
                   </span>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1 bg-emerald-950 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-800 text-[11px] font-medium">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-full border border-emerald-500/30 text-[11px] font-bold shadow-sm">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse drop-shadow-[0_0_5px_rgba(52,211,153,0.8)]"></span>
                   সার্ভার ইঞ্জিন অনলাইন
                 </span>
-                <span className="inline-flex items-center gap-1 bg-slate-900 text-slate-300 px-2.5 py-1 rounded-full border border-slate-700 text-[11px]">
+                <span className="inline-flex items-center gap-1 bg-white/5 text-slate-300 px-3 py-1.5 rounded-full border border-white/10 text-[11px] font-medium shadow-sm">
                   SSL সুরক্ষিত
                 </span>
               </div>
@@ -6144,7 +6200,39 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
           isOpen={previewNoticeModalOpen}
           onClose={() => setPreviewNoticeModalOpen(false)}
         />
+          </motion.div>
+        </AnimatePresence>
       </main>
-    </div>
+    
+      {/* Generic Confirmation Modal */}
+      {confirmDialog.isOpen && (
+        <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-sm w-full p-5 shadow-2xl animate-in fade-in zoom-in-95">
+            <h3 className="text-lg font-bold text-white mb-2">নিশ্চিত করুন</h3>
+            <p className="text-slate-300 text-sm mb-6 leading-relaxed">
+              {confirmDialog.message}
+            </p>
+            <div className="flex items-center gap-3 justify-end">
+              <button
+                onClick={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
+                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-sm transition-colors"
+              >
+                না, বাতিল করুন
+              </button>
+              <button
+                onClick={() => {
+                  confirmDialog.onConfirm();
+                  setConfirmDialog({ ...confirmDialog, isOpen: false });
+                }}
+                className="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-sm transition-colors shadow-[0_0_15px_rgba(244,63,94,0.3)]"
+              >
+                হ্যাঁ, নিশ্চিত
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+</div>
   );
 };

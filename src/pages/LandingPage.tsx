@@ -121,7 +121,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
   const heroDescription = settings?.heroSubtitle || 'একটি আধুনিক ও নির্ভরযোগ্য ডিজিটাল প্ল্যাটফর্ম যেখানে আপনি সহজে টাস্ক সম্পন্ন করে, রেফারেল প্রোগ্রামে অংশগ্রহণ করে এবং বিভিন্ন অনলাইন কার্যক্রমের মাধ্যমে অতিরিক্ত আয়ের সুযোগ পেতে পারেন। নিরাপদ লেনদেন, দ্রুত পেমেন্ট এবং স্বচ্ছ সিস্টেম আমাদের সেবার প্রধান বৈশিষ্ট্য।';
 
   return (
-    <div className="min-h-screen bg-white text-slate-800 font-['Hind_Siliguri',sans-serif] selection:bg-sky-500 selection:text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#060b18] text-slate-100 font-['Hind_Siliguri',sans-serif] selection:bg-sky-500 selection:text-white overflow-x-hidden">
       {/* Dynamic Popup Notice Alert Modal (controlled from Admin Panel) */}
       <SiteNoticeModal
         isOpen={Boolean(settings?.popupNotice?.enabled && !dismissedNotice)}
@@ -133,7 +133,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.45, ease: 'easeOut' }}
-        className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 transition-all"
+        className="sticky top-0 z-50 glass-panel-dark border-b border-sky-500/20 transition-all shadow-lg shadow-sky-900/20"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           {/* Brand Logo - Earnora */}
@@ -145,34 +145,34 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           </div>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+          <nav className="hidden md:flex items-center gap-8 text-sm font-bold text-slate-300">
             <button
               onClick={() => scrollToSection('home')}
-              className="hover:text-sky-600 transition-colors cursor-pointer"
+              className="hover:text-sky-400 transition-colors cursor-pointer"
             >
               Home
             </button>
             <button
               onClick={() => scrollToSection('services')}
-              className="hover:text-sky-600 transition-colors cursor-pointer"
+              className="hover:text-sky-400 transition-colors cursor-pointer"
             >
               Services
             </button>
             <button
               onClick={() => scrollToSection('features')}
-              className="hover:text-sky-600 transition-colors cursor-pointer"
+              className="hover:text-sky-400 transition-colors cursor-pointer"
             >
               Features
             </button>
             <button
               onClick={() => scrollToSection('reviews')}
-              className="hover:text-sky-600 transition-colors cursor-pointer"
+              className="hover:text-sky-400 transition-colors cursor-pointer"
             >
               Reviews
             </button>
             <button
               onClick={() => scrollToSection('faq')}
-              className="hover:text-sky-600 transition-colors cursor-pointer"
+              className="hover:text-sky-400 transition-colors cursor-pointer"
             >
               FAQ
             </button>
@@ -182,7 +182,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           <div className="hidden sm:flex items-center gap-4">
             <button
               onClick={() => onNavigate('login')}
-              className="text-sm font-bold text-slate-700 hover:text-sky-600 px-3 py-2 transition-colors cursor-pointer"
+              className="text-sm font-bold text-slate-300 hover:text-sky-400 px-3 py-2 transition-colors cursor-pointer"
             >
               Log in
             </button>
@@ -190,7 +190,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
               onClick={() => onNavigate('register')}
-              className="bg-sky-500 hover:bg-sky-600 text-white text-sm font-bold px-6 py-2.5 rounded-full shadow-md shadow-sky-500/25 transition-all cursor-pointer"
+              className="bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 text-white text-sm font-bold px-6 py-2.5 rounded-full shadow-lg shadow-sky-500/20 transition-all cursor-pointer border border-sky-400/30"
             >
               Get Started
             </motion.button>
@@ -200,13 +200,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           <div className="flex sm:hidden items-center gap-2">
             <button
               onClick={() => onNavigate('login')}
-              className="text-xs font-bold text-slate-700 px-2 py-1.5"
+              className="text-xs font-bold text-slate-300 px-2 py-1.5"
             >
               Log in
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100"
+              className="p-2 text-slate-300 hover:text-white rounded-lg hover:bg-slate-800"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -219,42 +219,42 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 space-y-3 shadow-lg"
+            className="md:hidden glass-panel-dark border-b border-sky-500/20 px-4 pt-2 pb-6 space-y-3 shadow-lg"
           >
             <button
               onClick={() => scrollToSection('home')}
-              className="block w-full text-left py-2 text-slate-700 font-semibold text-sm hover:text-sky-600"
+              className="block w-full text-left py-2 text-slate-300 font-bold text-sm hover:text-sky-400"
             >
               Home
             </button>
             <button
               onClick={() => scrollToSection('services')}
-              className="block w-full text-left py-2 text-slate-700 font-semibold text-sm hover:text-sky-600"
+              className="block w-full text-left py-2 text-slate-300 font-bold text-sm hover:text-sky-400"
             >
               Services
             </button>
             <button
               onClick={() => scrollToSection('features')}
-              className="block w-full text-left py-2 text-slate-700 font-semibold text-sm hover:text-sky-600"
+              className="block w-full text-left py-2 text-slate-300 font-bold text-sm hover:text-sky-400"
             >
               Features
             </button>
             <button
               onClick={() => scrollToSection('reviews')}
-              className="block w-full text-left py-2 text-slate-700 font-semibold text-sm hover:text-sky-600"
+              className="block w-full text-left py-2 text-slate-300 font-bold text-sm hover:text-sky-400"
             >
               Reviews
             </button>
             <button
               onClick={() => scrollToSection('faq')}
-              className="block w-full text-left py-2 text-slate-700 font-semibold text-sm hover:text-sky-600"
+              className="block w-full text-left py-2 text-slate-300 font-bold text-sm hover:text-sky-400"
             >
               FAQ
             </button>
             <div className="pt-3 flex flex-col gap-2">
               <button
                 onClick={() => onNavigate('register')}
-                className="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-2.5 rounded-full text-center text-sm shadow-md"
+                className="w-full bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 text-white font-bold py-2.5 rounded-full text-center text-sm shadow-lg shadow-sky-500/20 border border-sky-400/30"
               >
                 Get Started (রেজিস্টার)
               </button>
@@ -265,7 +265,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
 
       {/* 2. Hero Section */}
       <section id="home" className="pt-10 sm:pt-16 pb-14 sm:pb-20 overflow-hidden relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Background glow effects */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-sky-500/10 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-500/5 blur-[100px] rounded-full pointer-events-none" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             {/* Left Content */}
             <motion.div
@@ -277,16 +281,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             >
               {/* Badge */}
               <motion.div variants={fadeInUp} className="inline-flex">
-                <div className="inline-flex items-center gap-2 bg-sky-50 text-sky-700 border border-sky-200/70 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide shadow-sm">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Trusted Digital Earning Platform</span>
+                <div className="inline-flex items-center gap-2 bg-sky-500/10 border border-sky-500/30 px-4 py-2 rounded-full text-xs font-bold tracking-wide shadow-[0_0_15px_rgba(14,165,233,0.15)] backdrop-blur-md">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+                  <span className="text-sky-300">Trusted Digital Earning Platform</span>
                 </div>
               </motion.div>
 
               {/* Main Headline */}
               <motion.h1
                 variants={fadeInUp}
-                className="text-4xl sm:text-5xl lg:text-[56px] font-black text-slate-900 tracking-tight leading-[1.15]"
+                className="text-4xl sm:text-5xl lg:text-[56px] font-black text-white tracking-tight leading-[1.15] drop-shadow-lg"
               >
                 {heroHeadline}
               </motion.h1>
@@ -294,7 +298,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
               {/* Description in Bengali */}
               <motion.p
                 variants={fadeInUp}
-                className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-xl font-normal"
+                className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl font-medium"
               >
                 {heroDescription}
               </motion.p>
@@ -305,19 +309,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.96 }}
                   onClick={() => onNavigate('register')}
-                  className="inline-flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm sm:text-base px-7 py-3.5 rounded-full shadow-lg shadow-sky-500/25 transition-all cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 text-white font-bold text-sm sm:text-base px-8 py-4 rounded-full shadow-lg shadow-sky-500/25 transition-all cursor-pointer border border-sky-400/30"
                 >
                   <span>Start Earning Now</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-5 h-5 drop-shadow-md" />
                 </motion.button>
 
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.96 }}
                   onClick={() => onNavigate('login')}
-                  className="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm sm:text-base px-6 py-3.5 rounded-full border border-slate-200 shadow-sm transition-all cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 glass-panel-dark hover:bg-white/10 text-white font-bold text-sm sm:text-base px-8 py-4 rounded-full border border-white/10 shadow-lg shadow-black/20 transition-all cursor-pointer"
                 >
-                  <User className="w-4 h-4 text-slate-500" />
+                  <User className="w-5 h-5 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.5)]" />
                   <span>Member Login</span>
                 </motion.button>
               </motion.div>
@@ -329,8 +333,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
               whileInView={{ opacity: 1, scale: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-              className="lg:col-span-6 flex justify-center lg:justify-end"
+              className="lg:col-span-6 flex justify-center lg:justify-end relative"
             >
+              <div className="absolute inset-0 bg-gradient-to-br from-sky-500/20 to-transparent rounded-full blur-[80px] -z-10" />
               <HeroIllustration />
             </motion.div>
           </div>
@@ -338,7 +343,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
       </section>
 
       {/* 3. Stats Counter Banner */}
-      <section className="pb-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="pb-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -348,40 +353,40 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
         >
           <motion.div
             variants={scaleIn}
-            className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-sm text-center"
+            className="glass-panel-dark rounded-2xl p-6 sm:p-8 border border-sky-500/20 shadow-lg shadow-black/20 text-center hover:border-sky-500/40 transition-colors"
           >
-            <h3 className="text-2xl sm:text-3xl font-black text-sky-500">20K+</h3>
-            <p className="text-xs font-bold text-slate-500 tracking-wider mt-1 uppercase">
+            <h3 className="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-sky-500 drop-shadow-[0_0_8px_rgba(56,189,248,0.4)]">20K+</h3>
+            <p className="text-xs font-bold text-slate-400 tracking-wider mt-2 uppercase">
               Active Earners
             </p>
           </motion.div>
 
           <motion.div
             variants={scaleIn}
-            className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-sm text-center"
+            className="glass-panel-dark rounded-2xl p-6 sm:p-8 border border-emerald-500/20 shadow-lg shadow-black/20 text-center hover:border-emerald-500/40 transition-colors"
           >
-            <h3 className="text-2xl sm:text-3xl font-black text-sky-500">1M+</h3>
-            <p className="text-xs font-bold text-slate-500 tracking-wider mt-1 uppercase">
+            <h3 className="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-emerald-500 drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]">1M+</h3>
+            <p className="text-xs font-bold text-slate-400 tracking-wider mt-2 uppercase">
               Total Payout (BDT)
             </p>
           </motion.div>
 
           <motion.div
             variants={scaleIn}
-            className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-sm text-center"
+            className="glass-panel-dark rounded-2xl p-6 sm:p-8 border border-amber-500/20 shadow-lg shadow-black/20 text-center hover:border-amber-500/40 transition-colors"
           >
-            <h3 className="text-2xl sm:text-3xl font-black text-sky-500">24/7</h3>
-            <p className="text-xs font-bold text-slate-500 tracking-wider mt-1 uppercase">
+            <h3 className="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-500 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]">24/7</h3>
+            <p className="text-xs font-bold text-slate-400 tracking-wider mt-2 uppercase">
               Live Support
             </p>
           </motion.div>
 
           <motion.div
             variants={scaleIn}
-            className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-sm text-center"
+            className="glass-panel-dark rounded-2xl p-6 sm:p-8 border border-purple-500/20 shadow-lg shadow-black/20 text-center hover:border-purple-500/40 transition-colors"
           >
-            <h3 className="text-2xl sm:text-3xl font-black text-sky-500">100%</h3>
-            <p className="text-xs font-bold text-slate-500 tracking-wider mt-1 uppercase">
+            <h3 className="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-purple-500 drop-shadow-[0_0_8px_rgba(168,85,247,0.4)]">100%</h3>
+            <p className="text-xs font-bold text-slate-400 tracking-wider mt-2 uppercase">
               Secured System
             </p>
           </motion.div>
@@ -393,34 +398,34 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-40px' }}
           transition={{ duration: 0.5, delay: 0.15 }}
-          className="mt-10 text-center space-y-3"
+          className="mt-12 text-center space-y-4"
         >
-          <p className="text-[11px] sm:text-xs font-bold text-slate-400 tracking-widest uppercase">
+          <p className="text-[11px] sm:text-xs font-bold text-slate-500 tracking-[0.2em] uppercase">
             Supported Payment Methods
           </p>
           <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10">
             {/* bKash */}
-            <div className="flex items-center gap-2 font-bold text-slate-700 text-sm hover:scale-105 transition-transform">
-              <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none">
+            <div className="flex items-center gap-2 font-black text-slate-300 text-sm hover:scale-110 transition-transform cursor-default">
+              <svg viewBox="0 0 24 24" className="w-5 h-5 drop-shadow-[0_0_8px_rgba(226,19,110,0.5)]" fill="none">
                 <path d="M4 4L12 12L20 4M4 20L12 12L20 20" stroke="#E2136E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span>bKash</span>
             </div>
             {/* Nagad */}
-            <div className="flex items-center gap-2 font-bold text-slate-700 text-sm hover:scale-105 transition-transform">
-              <div className="w-3.5 h-3.5 rounded bg-[#F7941D]" />
+            <div className="flex items-center gap-2 font-black text-slate-300 text-sm hover:scale-110 transition-transform cursor-default">
+              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-[#F7941D] to-orange-600 drop-shadow-[0_0_8px_rgba(247,148,29,0.5)]" />
               <span>Nagad</span>
             </div>
             {/* Rocket */}
-            <div className="flex items-center gap-2 font-bold text-slate-700 text-sm hover:scale-105 transition-transform">
-              <svg viewBox="0 0 24 24" className="w-4 h-4 fill-[#00A19D]" xmlns="http://www.w3.org/2000/svg">
+            <div className="flex items-center gap-2 font-black text-slate-300 text-sm hover:scale-110 transition-transform cursor-default">
+              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-[#8C1B74] drop-shadow-[0_0_8px_rgba(140,27,116,0.5)]" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2L4 7v10l8 5 8-5V7l-8-5zm0 2.5l5.5 3.5-5.5 3.5-5.5-3.5L12 4.5z" />
               </svg>
               <span>Rocket</span>
             </div>
             {/* Upay */}
-            <div className="flex items-center gap-2 font-bold text-slate-700 text-sm hover:scale-105 transition-transform">
-              <div className="w-3.5 h-3.5 rounded-full bg-[#00A19D]" />
+            <div className="flex items-center gap-2 font-black text-slate-300 text-sm hover:scale-110 transition-transform cursor-default">
+              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-[#00A19D] to-teal-600 drop-shadow-[0_0_8px_rgba(0,161,157,0.5)]" />
               <span>Upay</span>
             </div>
           </div>
@@ -428,20 +433,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
       </section>
 
       {/* 4. Our Premium Services */}
-      <section id="services" className="py-16 sm:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="services" className="py-16 sm:py-24 relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-slate-800/20 rounded-full blur-[120px] pointer-events-none -z-10" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-40px' }}
             variants={fadeInUp}
-            className="text-center space-y-2 mb-12"
+            className="text-center space-y-3 mb-16"
           >
-            <span className="text-xs font-extrabold text-sky-600 tracking-widest uppercase">
+            <span className="text-xs font-black text-sky-400 tracking-[0.2em] uppercase">
               What We Offer
             </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-              Our Premium <span className="text-sky-500">Services</span>
+            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight drop-shadow-md">
+              Our Premium <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-sky-600">Services</span>
             </h2>
           </motion.div>
 
@@ -456,12 +462,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             <motion.div
               variants={scaleIn}
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+              className="glass-panel-dark rounded-3xl p-8 border border-sky-500/20 shadow-lg hover:shadow-sky-500/20 hover:border-sky-500/40 transition-all flex flex-col justify-between group"
             >
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center shadow-sm">
+              <div className="space-y-5">
+                <div className="w-14 h-14 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-300">
                   {/* Google G Logo */}
-                  <svg viewBox="0 0 24 24" className="w-6 h-6">
+                  <svg viewBox="0 0 24 24" className="w-7 h-7 drop-shadow-md">
                     <path
                       d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                       fill="#4285F4"
@@ -480,8 +486,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900">Gmail Account Sales</h3>
-                <p className="text-slate-600 text-sm leading-relaxed">
+                <h3 className="text-xl font-bold text-white tracking-wide">Gmail Account Sales</h3>
+                <p className="text-slate-400 text-sm leading-relaxed font-medium">
                   নতুন জিমেইল অ্যাকাউন্ট তৈরি করে আমাদের কাছে পাইকারি রেটে সেল করুন। কাজ করার কোনো
                   লিমিট নেই।
                 </p>
@@ -492,19 +498,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             <motion.div
               variants={scaleIn}
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+              className="glass-panel-dark rounded-3xl p-8 border border-pink-500/20 shadow-lg hover:shadow-pink-500/20 hover:border-pink-500/40 transition-all flex flex-col justify-between group"
             >
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-pink-50 border border-pink-100 flex items-center justify-center shadow-sm">
+              <div className="space-y-5">
+                <div className="w-14 h-14 rounded-2xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-300">
                   {/* Instagram Logo */}
-                  <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
+                  <svg viewBox="0 0 24 24" className="w-7 h-7 drop-shadow-md" fill="none">
                     <rect x="2" y="2" width="20" height="20" rx="6" stroke="#E1306C" strokeWidth="2" />
                     <circle cx="12" cy="12" r="4.5" stroke="#E1306C" strokeWidth="2" />
                     <circle cx="17.5" cy="6.5" r="1.5" fill="#E1306C" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900">Social Media Tasks</h3>
-                <p className="text-slate-600 text-sm leading-relaxed">
+                <h3 className="text-xl font-bold text-white tracking-wide">Social Media Tasks</h3>
+                <p className="text-slate-400 text-sm leading-relaxed font-medium">
                   ফেসবুক, ইনস্টাগ্রাম, টুইটার লাইক, ফলো এবং সাবস্ক্রাইবের মতো সহজ মাইক্রো টাস্ক সম্পন্ন
                   করে প্রতিদিন আয় করুন।
                 </p>
@@ -515,19 +521,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             <motion.div
               variants={scaleIn}
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+              className="glass-panel-dark rounded-3xl p-8 border border-emerald-500/20 shadow-lg hover:shadow-emerald-500/20 hover:border-emerald-500/40 transition-all flex flex-col justify-between group"
             >
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm">
-                  <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2">
+              <div className="space-y-5">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                  <svg viewBox="0 0 24 24" className="w-7 h-7 drop-shadow-md" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                     <circle cx="9" cy="7" r="4" />
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
                     <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900">Referral Program</h3>
-                <p className="text-slate-600 text-sm leading-relaxed">
+                <h3 className="text-xl font-bold text-white tracking-wide">Referral Program</h3>
+                <p className="text-slate-400 text-sm leading-relaxed font-medium">
                   বন্ধুদের ইনভাইট করুন এবং তাদের কাজের উপর ভিত্তি করে লাইফটাইম এফিলিয়েট কমিশন উপভোগ
                   করুন।
                 </p>
@@ -538,8 +544,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
       </section>
 
       {/* 5. Why Choose Us (The Most Reliable Earning Platform) */}
-      <section id="features" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <section id="features" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
           {/* Left Text & Features */}
           <motion.div
             initial="hidden"
@@ -548,21 +554,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             variants={staggerContainer}
             className="lg:col-span-6 space-y-6"
           >
-            <motion.div variants={fadeInUp} className="inline-flex items-center gap-1.5 bg-sky-50 text-sky-700 border border-sky-200/80 px-3 py-1 rounded-full text-xs font-bold">
-              <Star className="w-3.5 h-3.5 fill-sky-500 text-sky-500" />
+            <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 bg-sky-500/10 text-sky-400 border border-sky-500/30 px-4 py-2 rounded-full text-xs font-bold tracking-widest backdrop-blur-md">
+              <Star className="w-4 h-4 fill-amber-400 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
               <span>WHY CHOOSE US</span>
             </motion.div>
 
             <motion.h2
               variants={fadeInUp}
-              className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight"
+              className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight drop-shadow-md"
             >
-              The Most <span className="text-sky-500">Reliable</span> Earning Platform
+              The Most <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-sky-600">Reliable</span> Earning Platform
             </motion.h2>
 
             <motion.p
               variants={fadeInUp}
-              className="text-slate-600 text-sm sm:text-base leading-relaxed"
+              className="text-slate-300 text-sm sm:text-base leading-relaxed font-medium"
             >
               আমরা দিচ্ছি এমন কিছু অত্যাধুনিক ফিচার যা আপনার আয়ের পথকে করবে আরও সহজ, দ্রুত এবং
               সম্পূর্ণ নিরাপদ।
@@ -571,53 +577,53 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             <motion.div variants={staggerContainer} className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               <motion.div
                 variants={scaleIn}
-                className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 flex items-start gap-3.5 shadow-sm"
+                className="glass-panel-dark rounded-2xl p-5 border border-amber-500/20 flex items-start gap-4 shadow-lg hover:border-amber-500/40 transition-colors"
               >
-                <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
-                  <Zap className="w-5 h-5 fill-amber-500" />
+                <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20 shadow-inner">
+                  <Zap className="w-6 h-6 fill-amber-400 drop-shadow-md" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-sm">Fast Payouts</h4>
-                  <p className="text-xs text-slate-500 mt-0.5">দ্রুত পেমেন্ট সরাসরি অ্যাকাউন্টে।</p>
+                  <h4 className="font-bold text-white text-sm">Fast Payouts</h4>
+                  <p className="text-xs text-slate-400 mt-1 font-medium">দ্রুত পেমেন্ট সরাসরি অ্যাকাউন্টে।</p>
                 </div>
               </motion.div>
 
               <motion.div
                 variants={scaleIn}
-                className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 flex items-start gap-3.5 shadow-sm"
+                className="glass-panel-dark rounded-2xl p-5 border border-emerald-500/20 flex items-start gap-4 shadow-lg hover:border-emerald-500/40 transition-colors"
               >
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                  <ShieldCheck className="w-5 h-5" />
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/20 shadow-inner">
+                  <ShieldCheck className="w-6 h-6 drop-shadow-md" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-sm">100% Secure</h4>
-                  <p className="text-xs text-slate-500 mt-0.5">উন্নত সিকিউরিটিতে ডাটা নিরাপদ।</p>
+                  <h4 className="font-bold text-white text-sm">100% Secure</h4>
+                  <p className="text-xs text-slate-400 mt-1 font-medium">উন্নত সিকিউরিটিতে ডাটা নিরাপদ।</p>
                 </div>
               </motion.div>
 
               <motion.div
                 variants={scaleIn}
-                className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 flex items-start gap-3.5 shadow-sm"
+                className="glass-panel-dark rounded-2xl p-5 border border-sky-500/20 flex items-start gap-4 shadow-lg hover:border-sky-500/40 transition-colors"
               >
-                <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-500 flex items-center justify-center shrink-0">
-                  <Headphones className="w-5 h-5" />
+                <div className="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center shrink-0 border border-sky-500/20 shadow-inner">
+                  <Headphones className="w-6 h-6 drop-shadow-md" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-sm">24/7 Support</h4>
-                  <p className="text-xs text-slate-500 mt-0.5">যেকোনো দরকারে লাইভ সাপোর্ট।</p>
+                  <h4 className="font-bold text-white text-sm">24/7 Support</h4>
+                  <p className="text-xs text-slate-400 mt-1 font-medium">যেকোনো দরকারে লাইভ সাপোর্ট।</p>
                 </div>
               </motion.div>
 
               <motion.div
                 variants={scaleIn}
-                className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 flex items-start gap-3.5 shadow-sm"
+                className="glass-panel-dark rounded-2xl p-5 border border-rose-500/20 flex items-start gap-4 shadow-lg hover:border-rose-500/40 transition-colors"
               >
-                <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center shrink-0">
-                  <Video className="w-5 h-5" />
+                <div className="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center shrink-0 border border-rose-500/20 shadow-inner">
+                  <Video className="w-6 h-6 drop-shadow-md" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-sm">Video Guides</h4>
-                  <p className="text-xs text-slate-500 mt-0.5">কাজের নিয়ম বুঝতে সহজ ভিডিও।</p>
+                  <h4 className="font-bold text-white text-sm">Video Guides</h4>
+                  <p className="text-xs text-slate-400 mt-1 font-medium">কাজের নিয়ম বুঝতে সহজ ভিডিও।</p>
                 </div>
               </motion.div>
             </motion.div>
@@ -629,28 +635,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.65, ease: 'easeOut' }}
-            className="lg:col-span-6 flex justify-center lg:justify-end"
+            className="lg:col-span-6 flex justify-center lg:justify-end relative"
           >
+            <div className="absolute inset-0 bg-gradient-to-br from-sky-500/20 to-transparent rounded-full blur-[80px] -z-10" />
             <FeaturesIllustration />
           </motion.div>
         </div>
       </section>
 
       {/* 6. How It Works (Process Section) */}
-      <section className="py-16 sm:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 sm:py-24 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-sky-500/5 rounded-full blur-[100px] pointer-events-none -z-10" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-40px' }}
             variants={fadeInUp}
-            className="text-center space-y-2 mb-14"
+            className="text-center space-y-3 mb-16"
           >
-            <span className="text-xs font-extrabold text-sky-600 tracking-widest uppercase">
+            <span className="text-xs font-black text-sky-400 tracking-[0.2em] uppercase">
               Process
             </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-              How It <span className="text-sky-500">Works?</span>
+            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight drop-shadow-md">
+              How It <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-sky-600">Works?</span>
             </h2>
           </motion.div>
 
@@ -664,76 +672,84 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             {/* Step 1 */}
             <motion.div
               variants={scaleIn}
-              className="text-center space-y-3 p-4"
+              className="glass-panel-dark rounded-3xl p-8 border border-sky-500/20 shadow-lg text-center space-y-4 hover:border-sky-500/40 transition-colors relative"
             >
-              <div className="w-12 h-12 mx-auto rounded-full bg-sky-500 text-white font-black text-lg flex items-center justify-center shadow-md shadow-sky-500/20">
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-gradient-to-br from-sky-400 to-sky-600 text-white font-black text-lg flex items-center justify-center shadow-lg shadow-sky-500/30 border-4 border-[#060b18]">
                 1
               </div>
-              <h3 className="font-bold text-slate-900 text-base">Register</h3>
-              <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
-                সঠিক তথ্য দিয়ে খুব সহজেই ফ্রি অ্যাকাউন্ট খুলুন।
-              </p>
+              <div className="pt-4">
+                <h3 className="font-bold text-white text-lg tracking-wide">Register</h3>
+                <p className="text-slate-400 text-sm leading-relaxed mt-2 font-medium">
+                  সঠিক তথ্য দিয়ে খুব সহজেই ফ্রি অ্যাকাউন্ট খুলুন।
+                </p>
+              </div>
             </motion.div>
 
             {/* Step 2 */}
             <motion.div
               variants={scaleIn}
-              className="text-center space-y-3 p-4"
+              className="glass-panel-dark rounded-3xl p-8 border border-sky-500/20 shadow-lg text-center space-y-4 hover:border-sky-500/40 transition-colors relative mt-8 sm:mt-0"
             >
-              <div className="w-12 h-12 mx-auto rounded-full bg-sky-500 text-white font-black text-lg flex items-center justify-center shadow-md shadow-sky-500/20">
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-gradient-to-br from-sky-400 to-sky-600 text-white font-black text-lg flex items-center justify-center shadow-lg shadow-sky-500/30 border-4 border-[#060b18]">
                 2
               </div>
-              <h3 className="font-bold text-slate-900 text-base">Select Task</h3>
-              <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
-                ড্যাশবোর্ড থেকে জিমেইল বা সোশ্যাল টাস্ক বেছে নিন।
-              </p>
+              <div className="pt-4">
+                <h3 className="font-bold text-white text-lg tracking-wide">Select Task</h3>
+                <p className="text-slate-400 text-sm leading-relaxed mt-2 font-medium">
+                  ড্যাশবোর্ড থেকে জিমেইল বা সোশ্যাল টাস্ক বেছে নিন।
+                </p>
+              </div>
             </motion.div>
 
             {/* Step 3 */}
             <motion.div
               variants={scaleIn}
-              className="text-center space-y-3 p-4"
+              className="glass-panel-dark rounded-3xl p-8 border border-sky-500/20 shadow-lg text-center space-y-4 hover:border-sky-500/40 transition-colors relative mt-8 lg:mt-0"
             >
-              <div className="w-12 h-12 mx-auto rounded-full bg-sky-500 text-white font-black text-lg flex items-center justify-center shadow-md shadow-sky-500/20">
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-gradient-to-br from-sky-400 to-sky-600 text-white font-black text-lg flex items-center justify-center shadow-lg shadow-sky-500/30 border-4 border-[#060b18]">
                 3
               </div>
-              <h3 className="font-bold text-slate-900 text-base">Submit Proof</h3>
-              <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
-                সঠিকভাবে কাজ শেষ করে নির্দেশিকা অনুযায়ী প্রুফ দিন।
-              </p>
+              <div className="pt-4">
+                <h3 className="font-bold text-white text-lg tracking-wide">Submit Proof</h3>
+                <p className="text-slate-400 text-sm leading-relaxed mt-2 font-medium">
+                  সঠিকভাবে কাজ শেষ করে নির্দেশিকা অনুযায়ী প্রুফ দিন।
+                </p>
+              </div>
             </motion.div>
 
             {/* Step 4 */}
             <motion.div
               variants={scaleIn}
-              className="text-center space-y-3 p-4"
+              className="glass-panel-dark rounded-3xl p-8 border border-sky-500/20 shadow-lg text-center space-y-4 hover:border-sky-500/40 transition-colors relative mt-8 lg:mt-0"
             >
-              <div className="w-12 h-12 mx-auto rounded-full bg-sky-500 text-white font-black text-lg flex items-center justify-center shadow-md shadow-sky-500/20">
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 text-white font-black text-lg flex items-center justify-center shadow-lg shadow-emerald-500/30 border-4 border-[#060b18]">
                 4
               </div>
-              <h3 className="font-bold text-slate-900 text-base">Get Paid</h3>
-              <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
-                কাজ অ্যাপ্রুভ হলেই বিকাশ বা নগদে টাকা নিয়ে নিন।
-              </p>
+              <div className="pt-4">
+                <h3 className="font-bold text-emerald-400 text-lg tracking-wide">Get Paid</h3>
+                <p className="text-slate-400 text-sm leading-relaxed mt-2 font-medium">
+                  কাজ অ্যাপ্রুভ হলেই বিকাশ বা নগদে টাকা নিয়ে নিন।
+                </p>
+              </div>
             </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* 7. What Our Users Say (Testimonials) */}
-      <section id="reviews" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="reviews" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-40px' }}
           variants={fadeInUp}
-          className="text-center space-y-2 mb-14"
+          className="text-center space-y-3 mb-16"
         >
-          <span className="text-xs font-extrabold text-sky-600 tracking-widest uppercase">
+          <span className="text-xs font-black text-sky-400 tracking-[0.2em] uppercase">
             Testimonials
           </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-            What Our <span className="text-sky-500">Users Say</span>
+          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight drop-shadow-md">
+            What Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-sky-600">Users Say</span>
           </h2>
         </motion.div>
 
@@ -747,26 +763,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           {/* Testimonial 1 */}
           <motion.div
             variants={scaleIn}
-            className="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-6"
+            className="glass-panel-dark rounded-3xl p-8 border border-sky-500/20 shadow-lg flex flex-col justify-between space-y-6 hover:border-sky-500/40 transition-colors"
           >
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center gap-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-amber-400" />
+                  <Star key={i} className="w-4 h-4 fill-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
                 ))}
               </div>
-              <p className="text-slate-600 text-sm leading-relaxed italic">
+              <p className="text-slate-300 text-sm leading-relaxed italic font-medium">
                 "খুবই ট্রাস্টেড একটি সাইট। আমি গত ২ মাস ধরে জিমেইল সেল দিচ্ছি। পেমেন্ট নিয়ে কোনো ঝামেলা
                 নেই, খুব দ্রুত পেমেন্ট করে দেয়।"
               </p>
             </div>
-            <div className="flex items-center gap-3 pt-2">
-              <div className="w-10 h-10 rounded-full bg-sky-50 text-sky-500 flex items-center justify-center">
-                <User className="w-5 h-5" />
+            <div className="flex items-center gap-4 pt-4 border-t border-white/5">
+              <div className="w-12 h-12 rounded-full bg-sky-500/20 border border-sky-500/30 text-sky-400 flex items-center justify-center shadow-inner">
+                <User className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="font-bold text-slate-900 text-sm">Rahim Uddin</h4>
-                <p className="text-xs text-slate-400">Student</p>
+                <h4 className="font-bold text-white text-sm tracking-wide">Rahim Uddin</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Student</p>
               </div>
             </div>
           </motion.div>
@@ -774,26 +790,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           {/* Testimonial 2 */}
           <motion.div
             variants={scaleIn}
-            className="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-6"
+            className="glass-panel-dark rounded-3xl p-8 border border-sky-500/20 shadow-lg flex flex-col justify-between space-y-6 hover:border-sky-500/40 transition-colors"
           >
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center gap-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-amber-400" />
+                  <Star key={i} className="w-4 h-4 fill-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
                 ))}
               </div>
-              <p className="text-slate-600 text-sm leading-relaxed italic">
+              <p className="text-slate-300 text-sm leading-relaxed italic font-medium">
                 "সোশ্যাল মিডিয়া টাস্কগুলো করা অনেক সহজ। আমি প্রতিদিন ২-৩ ঘণ্টা সময় দিয়ে ভালো একটা
                 অ্যামাউন্ট পকেট মানি বের করতে পারছি।"
               </p>
             </div>
-            <div className="flex items-center gap-3 pt-2">
-              <div className="w-10 h-10 rounded-full bg-sky-50 text-sky-500 flex items-center justify-center">
-                <User className="w-5 h-5" />
+            <div className="flex items-center gap-4 pt-4 border-t border-white/5">
+              <div className="w-12 h-12 rounded-full bg-pink-500/20 border border-pink-500/30 text-pink-400 flex items-center justify-center shadow-inner">
+                <User className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="font-bold text-slate-900 text-sm">Sumaiya Akter</h4>
-                <p className="text-xs text-slate-400">Freelancer</p>
+                <h4 className="font-bold text-white text-sm tracking-wide">Sumaiya Akter</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Freelancer</p>
               </div>
             </div>
           </motion.div>
@@ -801,26 +817,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           {/* Testimonial 3 */}
           <motion.div
             variants={scaleIn}
-            className="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-6"
+            className="glass-panel-dark rounded-3xl p-8 border border-sky-500/20 shadow-lg flex flex-col justify-between space-y-6 hover:border-sky-500/40 transition-colors"
           >
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center gap-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-amber-400" />
+                  <Star key={i} className="w-4 h-4 fill-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
                 ))}
               </div>
-              <p className="text-slate-600 text-sm leading-relaxed italic">
+              <p className="text-slate-300 text-sm leading-relaxed italic font-medium">
                 "সাপোর্ট সিস্টেমটা আমার খুব ভালো লেগেছে। কোনো কাজ বুঝতে সমস্যা হলে এডমিনরা টেলিগ্রামে
                 খুব দ্রুত রেসপন্স করে বুঝিয়ে দেয়।"
               </p>
             </div>
-            <div className="flex items-center gap-3 pt-2">
-              <div className="w-10 h-10 rounded-full bg-sky-50 text-sky-500 flex items-center justify-center">
-                <User className="w-5 h-5" />
+            <div className="flex items-center gap-4 pt-4 border-t border-white/5">
+              <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shadow-inner">
+                <User className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="font-bold text-slate-900 text-sm">Abrar Sakib</h4>
-                <p className="text-xs text-slate-400">Part-time Worker</p>
+                <h4 className="font-bold text-white text-sm tracking-wide">Abrar Sakib</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Part-time Worker</p>
               </div>
             </div>
           </motion.div>
@@ -828,7 +844,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
       </section>
 
       {/* 8. Frequently Asked Questions (FAQ) */}
-      <section id="faq" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="faq" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Left FAQ Info */}
           <motion.div
@@ -838,14 +854,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             variants={fadeInUp}
             className="lg:col-span-5 space-y-4 text-left"
           >
-            <span className="text-xs font-extrabold text-sky-600 tracking-widest uppercase">
+            <span className="text-xs font-black text-sky-400 tracking-[0.2em] uppercase">
               FAQ
             </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight drop-shadow-md">
               Frequently Asked <br />
-              <span className="text-sky-500">Questions</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-sky-600">Questions</span>
             </h2>
-            <p className="text-slate-600 text-sm leading-relaxed">
+            <p className="text-slate-300 text-sm leading-relaxed font-medium">
               আপনার মনে থাকা সাধারণ কিছু প্রশ্নের উত্তর এখানে দেওয়া হলো। আরও কিছু জানার থাকলে
               আমাদের সাপোর্টে মেসেজ দিন।
             </p>
@@ -854,7 +870,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                 href={settings?.supportTelegram || 'https://t.me/fahimpaybd'}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs px-5 py-2.5 rounded-full border border-slate-200 shadow-sm transition-all"
+                className="inline-flex items-center gap-2 glass-panel-dark hover:bg-white/10 text-white font-bold text-xs px-6 py-3 rounded-full border border-sky-500/30 shadow-lg shadow-sky-500/10 transition-all cursor-pointer"
               >
                 <span>Contact Support</span>
               </a>
@@ -876,22 +892,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                   key={index}
                   variants={fadeInUp}
                   className={`border rounded-2xl overflow-hidden transition-all ${
-                    isOpen ? 'bg-sky-50/70 border-sky-200' : 'bg-white border-slate-200/80'
+                    isOpen ? 'glass-panel-dark border-sky-500/40 shadow-lg shadow-sky-500/10' : 'glass-panel-dark border-white/5 hover:border-sky-500/20 shadow-md'
                   }`}
                 >
                   <button
                     onClick={() => setOpenFaqIndex(isOpen ? null : index)}
-                    className="w-full text-left px-6 py-4 flex items-center justify-between gap-4 font-bold text-slate-900 text-sm cursor-pointer"
+                    className="w-full text-left px-6 py-4 flex items-center justify-between gap-4 font-bold text-white text-sm cursor-pointer"
                   >
                     <span>{faq.q}</span>
                     {isOpen ? (
-                      <ChevronUp className="w-4 h-4 text-sky-500 shrink-0" />
+                      <ChevronUp className="w-5 h-5 text-sky-400 shrink-0 drop-shadow-md" />
                     ) : (
-                      <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
+                      <ChevronDown className="w-5 h-5 text-slate-400 shrink-0" />
                     )}
                   </button>
                   {isOpen && (
-                    <div className="px-6 pb-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    <div className="px-6 pb-4 text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
                       {faq.a}
                     </div>
                   )}
@@ -903,72 +919,75 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
       </section>
 
       {/* 9. Call To Action (CTA) Banner */}
-      <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: '-40px' }}
           transition={{ duration: 0.5 }}
-          className="bg-gradient-to-r from-sky-900 via-sky-800 to-sky-900 rounded-3xl p-8 sm:p-14 text-center text-white shadow-xl space-y-6 relative overflow-hidden"
+          className="bg-gradient-to-r from-sky-900 via-slate-800 to-sky-900 rounded-3xl p-8 sm:p-14 text-center text-white shadow-[0_0_40px_rgba(14,165,233,0.15)] space-y-6 relative overflow-hidden border border-sky-500/30"
         >
-          <div className="space-y-3 max-w-2xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight">
+          {/* Internal Glow for CTA */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-sky-500/20 blur-[100px] pointer-events-none rounded-full" />
+          
+          <div className="space-y-4 max-w-2xl mx-auto relative z-10">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white drop-shadow-md">
               Ready to Start Earning?
             </h2>
-            <p className="text-sky-100 text-xs sm:text-sm leading-relaxed">
+            <p className="text-sky-100 text-sm leading-relaxed font-medium">
               আর দেরি কেন? আজই আমাদের প্ল্যাটফর্মে যুক্ত হোন এবং আপনার স্মার্টফোনেই বানান আয়ের হাতিয়ার।
             </p>
           </div>
 
-          <div className="pt-2">
+          <div className="pt-2 relative z-10">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => onNavigate('register')}
-              className="inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-sky-800 font-bold text-sm px-8 py-3.5 rounded-full shadow-lg transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 text-white font-bold text-sm px-8 py-4 rounded-full shadow-[0_0_20px_rgba(14,165,233,0.4)] transition-all cursor-pointer border border-sky-400/30"
             >
               <span>Join Now For Free</span>
-              <Send className="w-4 h-4 text-sky-600" />
+              <Send className="w-5 h-5 drop-shadow-md" />
             </motion.button>
           </div>
         </motion.div>
       </section>
 
       {/* 10. Footer */}
-      <footer className="bg-white border-t border-slate-100 pt-14 pb-8 text-xs text-slate-500">
+      <footer className="glass-panel-dark border-t border-sky-500/20 pt-16 pb-8 text-xs text-slate-400 mt-10 relative z-10 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-12 border-b border-slate-100">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-12 border-b border-white/5">
             {/* Brand column */}
-            <div className="md:col-span-4 space-y-3">
+            <div className="md:col-span-4 space-y-4">
               <div className="flex items-center gap-2">
                 <Logo variant="full" size={32} />
               </div>
-              <p className="text-xs text-slate-500 leading-relaxed max-w-sm">
+              <p className="text-xs text-slate-400 leading-relaxed max-w-sm font-medium">
                 বাংলাদেশের সবচেয়ে আধুনিক এবং বিশ্বস্ত মাইক্রো টাস্ক প্ল্যাটফর্ম। ঘরে বসে নিরাপদ আয়ের সেরা মাধ্যম।
               </p>
             </div>
 
             {/* Quick links */}
-            <div className="md:col-span-3 space-y-3">
-              <h4 className="font-bold text-slate-900 text-sm">Quick Links</h4>
-              <ul className="space-y-2">
+            <div className="md:col-span-3 space-y-4">
+              <h4 className="font-bold text-white text-sm tracking-wide">Quick Links</h4>
+              <ul className="space-y-3 font-medium">
                 <li>
-                  <button onClick={() => scrollToSection('home')} className="hover:text-sky-600">
+                  <button onClick={() => scrollToSection('home')} className="hover:text-sky-400 transition-colors">
                     Home
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => scrollToSection('services')} className="hover:text-sky-600">
+                  <button onClick={() => scrollToSection('services')} className="hover:text-sky-400 transition-colors">
                     Services
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => onNavigate('login')} className="hover:text-sky-600">
+                  <button onClick={() => onNavigate('login')} className="hover:text-sky-400 transition-colors">
                     Login
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => onNavigate('register')} className="hover:text-sky-600">
+                  <button onClick={() => onNavigate('register')} className="hover:text-sky-400 transition-colors">
                     Register
                   </button>
                 </li>
@@ -976,26 +995,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             </div>
 
             {/* Legal */}
-            <div className="md:col-span-2 space-y-3">
-              <h4 className="font-bold text-slate-900 text-sm">Legal</h4>
-              <ul className="space-y-2">
+            <div className="md:col-span-2 space-y-4">
+              <h4 className="font-bold text-white text-sm tracking-wide">Legal</h4>
+              <ul className="space-y-3 font-medium">
                 <li>
-                  <button onClick={() => onNavigate('dashboard')} className="hover:text-sky-600">
+                  <button onClick={() => onNavigate('dashboard')} className="hover:text-sky-400 transition-colors">
                     Terms of Service
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => onNavigate('dashboard')} className="hover:text-sky-600">
+                  <button onClick={() => onNavigate('dashboard')} className="hover:text-sky-400 transition-colors">
                     Privacy Policy
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => onNavigate('dashboard')} className="hover:text-sky-600">
+                  <button onClick={() => onNavigate('dashboard')} className="hover:text-sky-400 transition-colors">
                     Refund Policy
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => scrollToSection('faq')} className="hover:text-sky-600">
+                  <button onClick={() => scrollToSection('faq')} className="hover:text-sky-400 transition-colors">
                     FAQ
                   </button>
                 </li>
@@ -1003,15 +1022,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             </div>
 
             {/* Connect With Us */}
-            <div className="md:col-span-3 space-y-3">
-              <h4 className="font-bold text-slate-900 text-sm">Connect With Us</h4>
-              <p className="text-xs text-slate-500">যেকোনো সাপোর্টের জন্য যুক্ত হোন</p>
-              <div className="flex items-center gap-3 pt-1">
+            <div className="md:col-span-3 space-y-4">
+              <h4 className="font-bold text-white text-sm tracking-wide">Connect With Us</h4>
+              <p className="text-xs text-slate-400 font-medium">যেকোনো সাপোর্টের জন্য যুক্ত হোন</p>
+              <div className="flex items-center gap-3 pt-2">
                 <a
                   href={settings?.supportTelegram || 'https://t.me/fahimpaybd'}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-8 h-8 rounded-full bg-slate-100 hover:bg-sky-500 hover:text-white text-slate-600 flex items-center justify-center transition-colors"
+                  className="w-10 h-10 rounded-full bg-white/5 hover:bg-sky-500 hover:text-white text-sky-400 flex items-center justify-center transition-all border border-white/10 hover:border-sky-400 hover:shadow-[0_0_15px_rgba(14,165,233,0.5)]"
                 >
                   <Send className="w-4 h-4" />
                 </a>
@@ -1019,7 +1038,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                   href={settings?.supportWhatsapp || 'https://wa.me/8801700000000'}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-8 h-8 rounded-full bg-slate-100 hover:bg-emerald-500 hover:text-white text-slate-600 flex items-center justify-center transition-colors"
+                  className="w-10 h-10 rounded-full bg-white/5 hover:bg-emerald-500 hover:text-white text-emerald-400 flex items-center justify-center transition-all border border-white/10 hover:border-emerald-400 hover:shadow-[0_0_15px_rgba(16,185,129,0.5)]"
                 >
                   <MessageCircle className="w-4 h-4" />
                 </a>
@@ -1027,7 +1046,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                   href="https://facebook.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-8 h-8 rounded-full bg-slate-100 hover:bg-blue-600 hover:text-white text-slate-600 flex items-center justify-center transition-colors"
+                  className="w-10 h-10 rounded-full bg-white/5 hover:bg-blue-600 hover:text-white text-blue-400 flex items-center justify-center transition-all border border-white/10 hover:border-blue-500 hover:shadow-[0_0_15px_rgba(37,99,235,0.5)]"
                 >
                   <Facebook className="w-4 h-4" />
                 </a>
@@ -1036,10 +1055,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           </div>
 
           {/* Bottom copyright line */}
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-400">
+          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 font-medium">
             <p>© {new Date().getFullYear()} {brandName.toUpperCase()}. All rights reserved.</p>
             <p className="flex items-center gap-1">
-              Developed with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> by <span className="font-bold text-slate-600">Fahim</span>
+              Developed with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> by <span className="font-bold text-sky-400">Fahim</span>
             </p>
           </div>
         </div>

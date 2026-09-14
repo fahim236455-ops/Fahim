@@ -906,6 +906,35 @@ apiRouter.post('/user-jobs/:id/toggle-status', requireAuth, (req: AuthenticatedR
 // 5. REFERRAL / TEAM ENDPOINT
 // ==========================================
 
+
+// ==========================================
+// 8. TEAM & REFERRALS ENDPOINTS
+// ==========================================
+apiRouter.get('/team/leaderboard', requireAuth, (req, res) => {
+  const db = getDatabase();
+  
+  const referralCounts = {};
+  for (const ref of db.referrals) {
+    if (ref.status === 'rewarded') {
+      referralCounts[ref.referrerId] = (referralCounts[ref.referrerId] || 0) + 1;
+    }
+  }
+
+  const leaderboard = db.profiles
+    .map(p => ({
+      id: p.id,
+      name: p.fullName,
+      successfulReferrals: referralCounts[p.id] || 0,
+      avatar: p.avatar,
+      earnings: (referralCounts[p.id] || 0) * (db.site_settings.referralReward ?? 50)
+    }))
+    .filter(p => p.successfulReferrals > 0)
+    .sort((a, b) => b.successfulReferrals - a.successfulReferrals)
+    .slice(0, 10);
+
+  res.json({ leaderboard });
+});
+
 apiRouter.get('/team', requireAuth, (req: AuthenticatedRequest, res: Response) => {
   const db = getDatabase();
   const userId = req.user!.userId;

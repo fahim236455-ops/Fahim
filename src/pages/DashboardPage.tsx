@@ -4,8 +4,7 @@ import {
   Volume2,
   Wallet,
   ArrowDownCircle,
-  Sparkles,
-  CheckCircle2,
+  CheckCircle2
 } from 'lucide-react';
 import { ActionGrid } from '../components/ActionGrid';
 import { SiteNoticeModal } from '../components/SiteNoticeModal';
@@ -43,72 +42,65 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
     settings?.announcement ||
     'আমাদের ওয়েবসাইটে স্বাগতম! সঠিকভাবে কাজ সম্পন্ন করুন এবং প্রতিদিন ২০০-৫০০ টাকা আয় করুন। যেকোনো প্রয়োজনে হেল্প সেন্টারে যোগাযোগ করুন।';
 
-  const balance = user?.balance ?? 39.0;
+  const balance = user?.balance ?? 0.00;
 
   return (
-    <div className="max-w-md mx-auto px-4 py-3.5 space-y-3.5 pb-24 font-['Hind_Siliguri',sans-serif] text-slate-100">
-      {/* 0. Dynamic Popup Notice Modal (Exact match to screenshot & configured by admin) */}
+    <div className="max-w-md mx-auto px-4 py-4 space-y-4 pb-24 font-['Hind_Siliguri',sans-serif] text-slate-100">
       <SiteNoticeModal
         isOpen={Boolean(settings?.popupNotice?.enabled && showNotice)}
         onClose={() => setShowNotice(false)}
       />
 
-      {/* 1. TOP NOTICE / MARQUEE TICKER */}
-      <div className="bg-[#0b1329] rounded-full px-4 py-2 border border-slate-800 shadow-md flex items-center gap-2.5 overflow-hidden">
+      {/* 1. ANNOUNCEMENT MARQUEE PILL */}
+      <div className="bg-[#0f172a] border border-[#1e293b] rounded-full px-4 py-2.5 flex items-center gap-2.5 overflow-hidden">
         <Volume2 className="w-4 h-4 text-sky-400 shrink-0" />
         <div className="overflow-hidden whitespace-nowrap flex-1">
-          <div className="inline-block animate-marquee text-xs font-semibold text-slate-300">
+          <div className="inline-block animate-marquee text-[11px] font-semibold text-slate-300">
             {announcementText}
           </div>
         </div>
       </div>
 
-      {/* 2. HERO BANNER CARD (Exact match to screenshot) */}
-      <div className="rounded-2xl bg-gradient-to-r from-[#0d162c] via-[#091124] to-[#0d162c] border border-amber-500/40 p-4 shadow-xl relative overflow-hidden flex items-center justify-between gap-3">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl pointer-events-none" />
-
+      {/* 2. HERO BANNER CARD (Premium Glass & Glow) */}
+      <div className="rounded-[16px] bg-[#0c1222] border border-[#1e293b] p-4 relative overflow-hidden flex items-center justify-between gap-3">
         {/* Left Content */}
         <div className="space-y-1.5 flex-1 z-10">
-          <div className="flex items-center gap-1.5">
-            <span className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+          <div className="flex items-center gap-2">
+            <span className="bg-amber-500 text-slate-900 text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
               {brandName}
             </span>
-            <span className="text-[10px] text-slate-400 font-medium">Trusted Digital Platform</span>
+            <span className="text-[9px] text-slate-400 font-medium tracking-wide">Trusted Digital Platform</span>
           </div>
-
-          <h2 className="text-sm sm:text-base font-black text-amber-400 leading-tight">
+          <h2 className="text-sm font-black text-amber-400 leading-tight">
             প্রতিদিন ৪০০-৫০০৳ ইনকাম করুন!
           </h2>
-
-          <p className="text-[11px] text-slate-300 leading-snug">
+          <p className="text-[10px] text-slate-300 leading-snug">
             ছোট ছোট কাজ করে, প্রতিদিন ঘরে বসেই গড়ে তুলুন আপনার বাড়তি আয়!
           </p>
-
-          <div className="flex items-center gap-3 pt-0.5 text-[10px] text-emerald-400 font-semibold">
+          <div className="flex items-center gap-3 pt-1 text-[9px] text-emerald-400 font-medium">
             <span className="flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+              <CheckCircle2 className="w-3 h-3" />
               100% Secure
             </span>
-            <span>•</span>
             <span className="flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+              <CheckCircle2 className="w-3 h-3" />
               Fast Payment
             </span>
           </div>
         </div>
 
         {/* Right Mini Card */}
-        <div className="w-28 shrink-0 bg-[#060b18]/90 border border-amber-500/40 rounded-xl p-2.5 text-center space-y-1 shadow-lg z-10">
-          <span className="text-[9px] text-amber-400 font-bold uppercase tracking-wider block">
+        <div className="w-[100px] shrink-0 bg-[#060b14] border border-[#1e293b] rounded-xl p-2.5 text-center space-y-1 z-10">
+          <span className="text-[9px] text-amber-500 font-black uppercase tracking-wider block">
             {brandName}
           </span>
-          <span className="text-[10px] text-slate-400 block font-medium">Your Balance</span>
-          <div className="text-xs font-black text-amber-400">
+          <span className="text-[9px] text-slate-400 block">Your Balance</span>
+          <div className="text-sm font-black text-amber-400">
             ৳ {balance.toFixed(2)}
           </div>
           <button
             onClick={() => onNavigate('tasks')}
-            className="w-full mt-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 text-[10px] font-bold py-1 px-1 rounded-lg shadow-sm transition-transform active:scale-95 cursor-pointer block truncate"
+            className="w-full mt-1 bg-amber-500 hover:bg-amber-600 text-slate-900 text-[9px] font-bold py-1.5 rounded-lg active:scale-95 cursor-pointer block truncate transition-colors"
           >
             আজকের আয় করুন
           </button>
@@ -116,29 +108,24 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
       </div>
 
       {/* 3. WALLET CARD (আমার ওয়ালেট) */}
-      <div className="bg-[#0b1329] rounded-2xl p-3.5 border border-slate-800 shadow-xl space-y-3">
-        <div className="flex items-center justify-between">
+      <div className="bg-[#0c1222] rounded-[16px] p-4 border border-[#1e293b] space-y-3 relative">
+        <div className="flex items-center justify-between z-10 relative">
           {/* Left Title */}
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center text-amber-400 shadow-inner">
-              <Wallet className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-lg bg-[#1e293b] border border-[#334155] flex items-center justify-center text-amber-400">
+              <Wallet className="w-4.5 h-4.5" />
             </div>
             <div>
-              <h3 className="text-xs sm:text-sm font-bold text-white tracking-tight">আমার ওয়ালেট</h3>
-              <p className="text-[10px] text-slate-400 font-medium">কারেন্ট ব্যালেন্স</p>
+              <h3 className="text-sm font-bold text-white">আমার ওয়ালেট</h3>
+              <p className="text-[10px] text-slate-400">কারেন্ট ব্যালেন্স</p>
             </div>
           </div>
-
           {/* Right Button: ব্যালেন্স দেখতে ট্যাপ করুন */}
           <button
             onClick={toggleBalance}
-            className={`rounded-full py-1.5 px-3.5 text-xs font-bold flex items-center gap-1.5 shadow-md transition-all active:scale-95 cursor-pointer ${
-              showBalance
-                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                : 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black'
-            }`}
+            className="bg-amber-500 hover:bg-amber-600 text-slate-900 rounded-lg py-1.5 px-3 text-[10px] font-bold flex items-center gap-1.5 active:scale-95 cursor-pointer transition-colors"
           >
-            <span className="text-xs">💰</span>
+            <span>💰</span>
             <span>
               {showBalance ? `৳ ${balance.toFixed(2)}` : 'ব্যালেন্স দেখতে ট্যাপ করুন'}
             </span>
@@ -146,41 +133,40 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         </div>
 
         {/* Bottom Row: বিকাশ • নগদ • রকেট and উইথড্র বাটন */}
-        <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between">
-          <div className="text-[11px] text-slate-300 flex items-center gap-1.5 font-medium">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+        <div className="pt-3 border-t border-[#1e293b] flex items-center justify-between z-10 relative">
+          <div className="text-[10px] text-slate-300 flex items-center gap-1.5 font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             <span>বিকাশ • নগদ • রকেট</span>
           </div>
-
           <button
             onClick={() => onNavigate('withdraw')}
-            className="bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-slate-950 text-xs font-black py-1.5 px-3 rounded-full flex items-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer"
+            className="bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-bold py-1.5 px-3 rounded-lg flex items-center gap-1 active:scale-95 transition-colors cursor-pointer"
           >
-            <ArrowDownCircle className="w-3.5 h-3.5 text-slate-950 stroke-[2.5]" />
+            <ArrowDownCircle className="w-3.5 h-3.5" />
             <span>উইথড্র করুন (Withdraw)</span>
           </button>
         </div>
       </div>
 
-      {/* 4. ACTION GRID (Social, Services, Easy Earning, Rewards) */}
+      {/* 5. ACTION GRID */}
       <ActionGrid onNavigate={onNavigate} />
 
-      {/* 5. BRAND FOOTER */}
-      <footer className="pt-4 pb-2 text-center space-y-1.5">
-        <h4 className="text-xs font-black tracking-widest uppercase text-slate-400">
+      {/* 6. BRAND FOOTER */}
+      <footer className="pt-4 pb-4 text-center space-y-1.5">
+        <h4 className="text-[10px] font-black tracking-[0.2em] uppercase text-slate-400">
           {brandName}
         </h4>
-        <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500">
+        <div className="flex items-center justify-center gap-3 text-[10px] text-slate-500 font-medium">
           <button
             onClick={() => onNavigate('support')}
-            className="hover:text-amber-400 transition-colors underline cursor-pointer"
+            className="hover:text-amber-400 transition-colors cursor-pointer underline underline-offset-2"
           >
             Privacy Policy
           </button>
-          <span>|</span>
+          <span className="text-slate-700">|</span>
           <button
             onClick={() => onNavigate('support')}
-            className="hover:text-amber-400 transition-colors underline cursor-pointer"
+            className="hover:text-amber-400 transition-colors cursor-pointer underline underline-offset-2"
           >
             Terms & Condition
           </button>
