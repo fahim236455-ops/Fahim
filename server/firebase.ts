@@ -66,9 +66,12 @@ export async function saveCloudState(data: any): Promise<boolean> {
   if (!db) return false;
 
   try {
+    // Sanitize data to remove any `undefined` values which Firestore rejects
+    const sanitizedData = JSON.parse(JSON.stringify(data));
+
     const stateDocRef = doc(db, 'app_state', 'earnora_primary');
     await setDoc(stateDocRef, {
-      data,
+      data: sanitizedData,
       syncedAt: new Date().toISOString(),
       version: Date.now(),
     });

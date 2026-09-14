@@ -145,6 +145,36 @@ export interface Task {
   updatedAt: string;
   completedToday?: boolean;
   submissionStatus?: 'pending' | 'approved' | 'rejected' | null;
+  userJobId?: string;
+  createdByUserId?: string;
+  createdByUserName?: string;
+  totalSlots?: number;
+  slotsRemaining?: number;
+  workersCompleted?: number;
+}
+
+export interface UserPostedJob {
+  id: string;
+  userId: string;
+  userEmail: string;
+  userFullName: string;
+  mainCategory: string;
+  subCategory: string;
+  title: string;
+  instructions: string;
+  targetUrl?: string;
+  thumbnailUrl?: string;
+  proofRequirements: { id: string; title: string; type: 'text' | 'screenshot' }[];
+  workersNeeded: number;
+  workersCompleted: number;
+  costPerWorker: number;
+  netAmount: number;
+  systemFee: number;
+  totalPayable: number;
+  status: 'pending' | 'active' | 'paused' | 'completed' | 'cancelled' | 'rejected';
+  linkedTaskId?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type SubmissionStatus = 'pending' | 'approved' | 'rejected';

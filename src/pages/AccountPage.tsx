@@ -20,6 +20,8 @@ import {
   Loader2,
   UploadCloud,
   X,
+  Sun,
+  Moon,
 } from 'lucide-react';
 
 interface AccountPageProps {
@@ -27,7 +29,7 @@ interface AccountPageProps {
 }
 
 export const AccountPage: React.FC<AccountPageProps> = ({ onNavigate }) => {
-  const { user, showToast, isAdmin, refreshUser, settings } = useApp();
+  const { user, showToast, isAdmin, refreshUser, settings, isDarkMode, toggleDarkMode } = useApp();
 
   const [fullName, setFullName] = useState(user?.fullName || '');
   const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || '');
@@ -223,7 +225,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({ onNavigate }) => {
   const userInitial = fullName?.trim()?.charAt(0)?.toUpperCase() || user?.fullName?.trim()?.charAt(0)?.toUpperCase() || 'F';
 
   return (
-    <div className="min-h-screen bg-[#060b18] text-slate-100 pb-24 font-['Hind_Siliguri',sans-serif]">
+    <div className="min-h-screen bg-transparent pb-24 font-['Hind_Siliguri',sans-serif]">
       {/* Hidden file input for avatar upload */}
       <input
         type="file"
@@ -304,6 +306,38 @@ export const AccountPage: React.FC<AccountPageProps> = ({ onNavigate }) => {
               </button>
             </div>
           </div>
+        </div>
+
+        {/* 1.5 THEME SELECTION CARD */}
+        <div className="bg-[#0b1329] border border-slate-700/80 rounded-2xl p-4 shadow-xl flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              {isDarkMode ? <Moon className="w-5 h-5 text-indigo-400" /> : <Sun className="w-5 h-5 text-amber-400" />}
+            </div>
+            <div>
+              <h3 className="text-xs sm:text-sm font-bold text-white">অ্যাপস কালার থিম (Theme)</h3>
+              <p className="text-[11px] text-slate-300 font-medium">
+                {isDarkMode ? 'বর্তমান: ডার্ক মোড (Dark Mode)' : 'বর্তমান: লাইট মোড (Light Mode)'}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={toggleDarkMode}
+            className="px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-slate-800 hover:bg-slate-750 text-amber-300 border border-slate-700 cursor-pointer shadow-sm active:scale-95"
+          >
+            {isDarkMode ? (
+              <>
+                <Sun className="w-3.5 h-3.5 text-amber-400" />
+                <span>Light Mode</span>
+              </>
+            ) : (
+              <>
+                <Moon className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Dark Mode</span>
+              </>
+            )}
+          </button>
         </div>
 
         {/* 2. MAIN EDIT PROFILE CARD */}

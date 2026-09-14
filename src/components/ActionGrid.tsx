@@ -161,9 +161,20 @@ export const ActionGrid: React.FC<ActionGridProps> = ({ onNavigate }) => {
         </div>
 
         <div className="grid grid-cols-4 gap-2.5">
-          {/* Micro Job */}
+          {/* Task Center */}
           <button
             onClick={() => onNavigate('tasks')}
+            className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-emerald-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-emerald-500/20 active:scale-95"
+          >
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-emerald-500/20">
+              <CheckCircle2 className="w-4.5 h-4.5" />
+            </div>
+            <span className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors">Tasks</span>
+          </button>
+
+          {/* Micro Job */}
+          <button
+            onClick={() => onNavigate('micro-jobs')}
             className="glass-panel-dark hover:bg-slate-800/60 border border-slate-700/50 hover:border-sky-500/50 rounded-2xl p-2.5 flex flex-col items-center text-center group transition-all cursor-pointer shadow-md hover:shadow-sky-500/20 active:scale-95"
           >
             <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform duration-300 shadow-inner group-hover:bg-sky-500/20">

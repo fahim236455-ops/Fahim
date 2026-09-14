@@ -474,6 +474,13 @@ apiRouter.get('/tasks', requireAuth, (req: AuthenticatedRequest, res: Response) 
       };
     });
 
+  // Sort so daily_checkin stays on top, then newest created tasks first
+  tasksWithStatus.sort((a, b) => {
+    if (a.category === 'daily_checkin') return -1;
+    if (b.category === 'daily_checkin') return 1;
+    return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+  });
+
   res.json(tasksWithStatus);
 });
 
@@ -714,6 +721,7 @@ apiRouter.post('/user-jobs', requireAuth, (req: AuthenticatedRequest, res: Respo
       subCategory,
       title,
       instructions,
+      targetUrl,
       thumbnailUrl,
       proofRequirements,
       workersNeeded,
@@ -750,31 +758,41 @@ apiRouter.post('/user-jobs', requireAuth, (req: AuthenticatedRequest, res: Respo
         throw new Error('ব্যবহারকারী পাওয়া যায়নি।');
       }
 
-      if (user.balance < totalPayable) {
-        throw new Error(
-          `আপনার ওয়ালেটে পর্যাপ্ত ব্যালেন্স নেই। মোট খরচ ৳${totalPayable.toFixed(2)}, আপনার বর্তমান ব্যালেন্স ৳${user.balance.toFixed(2)}`
-        );
-      }
+      // Check if user is admin
+      const isAdmin =
+        db.user_roles.some((r) => r.userId === userId && r.role === 'admin') ||
+        user.email === 'fahim236455@gmail.com';
 
+      // Balance check: if user has balance, deduct it. If user is an admin testing/posting without balance, allow them free creation
+      let chargedAmount = 0;
       const now = new Date().toISOString();
       const jobId = generateId();
       const taskId = generateId();
 
-      // Deduct balance from user
-      user.balance = Number((user.balance - totalPayable).toFixed(2));
-      user.updatedAt = now;
+      if (user.balance >= totalPayable) {
+        chargedAmount = totalPayable;
+        user.balance = Number((user.balance - totalPayable).toFixed(2));
+        user.updatedAt = now;
 
-      // Add transaction
-      db.transactions.push({
-        id: generateId(),
-        userId: user.id,
-        type: 'withdrawal_hold',
-        amount: totalPayable,
-        balanceAfter: user.balance,
-        description: `জব পোস্ট ফি কর্তন (${title.slice(0, 30)} - ${numWorkers} জন ওয়ার্কার)`,
-        referenceId: jobId,
-        createdAt: now,
-      });
+        // Add transaction
+        db.transactions.push({
+          id: generateId(),
+          userId: user.id,
+          type: 'withdrawal_hold',
+          amount: totalPayable,
+          balanceAfter: user.balance,
+          description: `জব পোস্ট ফি কর্তন (${title.slice(0, 30)} - ${numWorkers} জন ওয়ার্কার)`,
+          referenceId: jobId,
+          createdAt: now,
+        });
+      } else if (isAdmin) {
+        // Admin privilege: allow test posting without balance
+        chargedAmount = 0;
+      } else {
+        throw new Error(
+          `আপনার ওয়ালেটে পর্যাপ্ত ব্যালেন্স নেই। মোট খরচ ৳${totalPayable.toFixed(2)}, আপনার বর্তমান ব্যালেন্স ৳${user.balance.toFixed(2)}`
+        );
+      }
 
       // Prepare proof requirements
       const formattedProofs = Array.isArray(proofRequirements) && proofRequirements.length > 0
@@ -792,6 +810,7 @@ apiRouter.post('/user-jobs', requireAuth, (req: AuthenticatedRequest, res: Respo
           ];
 
       // Save user posted job record
+      const cleanTargetUrl = typeof targetUrl === 'string' ? targetUrl.trim() : '';
       const newJob = {
         id: jobId,
         userId: user.id,
@@ -801,6 +820,7 @@ apiRouter.post('/user-jobs', requireAuth, (req: AuthenticatedRequest, res: Respo
         subCategory,
         title,
         instructions,
+        targetUrl: cleanTargetUrl,
         thumbnailUrl: thumbnailUrl || '',
         proofRequirements: formattedProofs,
         workersNeeded: numWorkers,
@@ -808,44 +828,17 @@ apiRouter.post('/user-jobs', requireAuth, (req: AuthenticatedRequest, res: Respo
         costPerWorker: cost,
         netAmount,
         systemFee,
-        totalPayable,
-        status: 'active' as const,
+        totalPayable: chargedAmount,
+        status: 'pending' as const,
+        linkedTaskId: taskId,
         createdAt: now,
         updatedAt: now,
       };
 
       if (!db.user_posted_jobs) db.user_posted_jobs = [];
-      db.user_posted_jobs.push(newJob);
+      db.user_posted_jobs.unshift(newJob);
 
-      // Also publish to active public tasks so other workers can do the job!
-      // Map main category to task category
-      let taskCat: any = 'general';
-      const catLower = mainCategory.toLowerCase();
-      if (catLower.includes('youtube')) taskCat = 'youtube';
-      else if (catLower.includes('facebook')) taskCat = 'facebook';
-      else if (catLower.includes('instagram')) taskCat = 'instagram';
-      else if (catLower.includes('telegram')) taskCat = 'telegram';
-      else if (catLower.includes('app')) taskCat = 'app';
-      else if (catLower.includes('web')) taskCat = 'website';
-      else if (catLower.includes('gmail')) taskCat = 'gmail';
-
-      const publicTask = {
-        id: taskId,
-        title: `[মাইক্রো জব] ${title}`,
-        description: `${instructions}\n\nক্যাটাগরি: ${mainCategory} > ${subCategory}\nনিয়োগদাতা: ${user.fullName}`,
-        category: taskCat,
-        rewardAmount: cost,
-        taskType: 'manual' as const,
-        proofType: 'screenshot_and_username' as const,
-        proofInstruction: formattedProofs.map((p: any) => p.title).join(', '),
-        targetUrl: '',
-        dailyLimit: numWorkers,
-        status: 'active' as const,
-        createdAt: now,
-        updatedAt: now,
-      };
-
-      db.tasks.push(publicTask);
+      // Do NOT publish to public tasks immediately. Wait for admin approval.
 
       // Audit log
       db.audit_logs.push({
@@ -859,7 +852,7 @@ apiRouter.post('/user-jobs', requireAuth, (req: AuthenticatedRequest, res: Respo
           title,
           numWorkers,
           cost,
-          totalPayable,
+          totalPayable: chargedAmount,
         },
         createdAt: now,
       });
@@ -876,7 +869,7 @@ apiRouter.post('/user-jobs', requireAuth, (req: AuthenticatedRequest, res: Respo
   }
 });
 
-// Toggle Job Status (Pause / Resume)
+// Toggle Job Status (Pause / Resume) & sync linked task
 apiRouter.post('/user-jobs/:id/toggle-status', requireAuth, (req: AuthenticatedRequest, res: Response) => {
   try {
     const jobId = req.params.id;
@@ -890,6 +883,16 @@ apiRouter.post('/user-jobs/:id/toggle-status', requireAuth, (req: AuthenticatedR
 
       targetJob.status = targetJob.status === 'active' ? 'paused' : 'active';
       targetJob.updatedAt = new Date().toISOString();
+
+      // Also toggle status of the linked public task in db.tasks!
+      const linkedTask = (db.tasks || []).find(
+        (t) => (t as any).userJobId === targetJob.id || t.id === targetJob.linkedTaskId
+      );
+      if (linkedTask) {
+        linkedTask.status = targetJob.status === 'active' ? 'active' : 'paused';
+        linkedTask.updatedAt = targetJob.updatedAt;
+      }
+
       return targetJob;
     });
 
@@ -899,6 +902,67 @@ apiRouter.post('/user-jobs/:id/toggle-status', requireAuth, (req: AuthenticatedR
     });
   } catch (err: any) {
     res.status(400).json({ error: err.message || 'স্ট্যাটাস আপডেট ব্যর্থ হয়েছে।' });
+  }
+});
+
+// Cancel / Delete User Job & Refund remaining worker budget
+apiRouter.delete('/user-jobs/:id', requireAuth, (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const jobId = req.params.id;
+    const userId = req.user!.userId;
+
+    const result = mutateLedger((db) => {
+      const targetJob = (db.user_posted_jobs || []).find((j) => j.id === jobId && j.userId === userId);
+      if (!targetJob) {
+        throw new Error('জব পাওয়া যায়নি বা আপনার অনুমতি নেই।');
+      }
+
+      const now = new Date().toISOString();
+      const completed = targetJob.workersCompleted || 0;
+      const remainingSlots = Math.max(0, targetJob.workersNeeded - completed);
+      const refundAmount = Number((remainingSlots * targetJob.costPerWorker).toFixed(2));
+
+      targetJob.status = 'cancelled';
+      targetJob.updatedAt = now;
+
+      // Archive linked public task
+      const linkedTask = (db.tasks || []).find(
+        (t) => (t as any).userJobId === targetJob.id || t.id === targetJob.linkedTaskId
+      );
+      if (linkedTask) {
+        linkedTask.status = 'archived';
+        linkedTask.updatedAt = now;
+      }
+
+      // Refund remaining worker cost if user paid for it
+      if (refundAmount > 0 && targetJob.totalPayable > 0) {
+        const user = db.profiles.find((p) => p.id === userId);
+        if (user) {
+          user.balance = Number((user.balance + refundAmount).toFixed(2));
+          user.updatedAt = now;
+
+          db.transactions.push({
+            id: generateId(),
+            userId: user.id,
+            type: 'withdrawal_refund',
+            amount: refundAmount,
+            balanceAfter: user.balance,
+            description: `জব বাতিল রিফান্ড (${targetJob.title.slice(0, 30)} - ${remainingSlots} টি স্লট)`,
+            referenceId: targetJob.id,
+            createdAt: now,
+          });
+        }
+      }
+
+      return { refundAmount, remainingSlots };
+    });
+
+    res.json({
+      message: `জবটি সফলভাবে বাতিল করা হয়েছে${result.refundAmount > 0 ? ` এবং অব্যবহৃত ৳${result.refundAmount.toFixed(2)} আপনার ওয়ালেটে রিফান্ড করা হয়েছে` : ''}।`,
+      refundAmount: result.refundAmount,
+    });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message || 'জব বাতিল করতে ব্যর্থ হয়েছে।' });
   }
 });
 
@@ -1153,9 +1217,9 @@ apiRouter.get('/support/tickets', optionalAuth, (req: AuthenticatedRequest, res:
 
 apiRouter.post('/support/tickets', optionalAuth, (req: AuthenticatedRequest, res: Response) => {
   try {
-    const { subject, message, category, guestId, userName, userPhone, userEmail } = req.body;
-    if (!subject || !message || subject.trim().length < 2 || message.trim().length < 2) {
-      res.status(400).json({ error: 'বিষয় ও বার্তা সঠিকভাবে লিখুন।' });
+    const { subject, message, category, guestId, userName, userPhone, userEmail, attachmentUrl } = req.body;
+    if ((!message || message.trim().length < 1) && !attachmentUrl) {
+      res.status(400).json({ error: 'বিষয় ও বার্তা বা ছবি সংযুক্ত করুন।' });
       return;
     }
 
@@ -1181,15 +1245,16 @@ apiRouter.post('/support/tickets', optionalAuth, (req: AuthenticatedRequest, res
         userName: resolvedName,
         userPhone: resolvedPhone,
         userEmail: resolvedEmail,
-        subject: subject.trim(),
-        message: message.trim(),
+        subject: (subject || 'লাইভ চ্যাট সাপোর্ট').trim(),
+        message: (message || 'ছবি সংযুক্ত করা হয়েছে').trim(),
         category: category || 'other',
         status: 'open' as const,
         messages: [
           {
             id: generateId(),
             sender: 'user' as const,
-            text: message.trim(),
+            text: (message || '').trim(),
+            attachmentUrl: attachmentUrl || undefined,
             timestamp: now,
           }
         ],
@@ -1699,6 +1764,96 @@ apiRouter.delete('/admin/users/:id', requirePermission('canManageUsers'), (req: 
 });
 
 // Admin Tasks Management
+
+apiRouter.get('/admin/user-jobs', requireAdmin, requirePermission('canManageTasks'), (req, res) => {
+  const db = getDatabase();
+  res.json(db.user_posted_jobs || []);
+});
+
+apiRouter.post('/admin/user-jobs/:id/review', requireAdmin, requirePermission('canManageTasks'), (req, res) => {
+  try {
+    const { status } = req.body; // 'active' or 'rejected'
+    const jobId = req.params.id;
+    const now = new Date().toISOString();
+    
+    mutateLedger((db) => {
+      if (!db.user_posted_jobs) db.user_posted_jobs = [];
+      const job = db.user_posted_jobs.find(j => j.id === jobId);
+      if (!job) throw new Error('জবটি পাওয়া যায়নি।');
+      if (job.status !== 'pending') throw new Error('এই জবটি ইতিমধ্যে রিভিউ করা হয়েছে।');
+      
+      if (status === 'active') {
+        job.status = 'active';
+        job.updatedAt = now;
+        
+        // Map main category to task category
+        let taskCat: "telegram" | "youtube" | "facebook" | "gmail" | "instagram" | "app" | "daily_checkin" | "website" | "general" = 'general';
+        const catLower = (job.mainCategory || '').toLowerCase();
+        if (catLower.includes('youtube')) taskCat = 'youtube';
+        else if (catLower.includes('facebook')) taskCat = 'facebook';
+        else if (catLower.includes('instagram')) taskCat = 'instagram';
+        else if (catLower.includes('telegram')) taskCat = 'telegram';
+        else if (catLower.includes('app')) taskCat = 'app';
+        else if (catLower.includes('web')) taskCat = 'website';
+        else if (catLower.includes('gmail')) taskCat = 'gmail';
+
+        const publicTask = {
+          id: job.linkedTaskId,
+          userJobId: job.id,
+          createdByUserId: job.userId,
+          createdByUserName: job.userFullName,
+          title: job.title.startsWith('[মাইক্রো জব]') ? job.title : `[মাইক্রো জব] ${job.title}`,
+          description: `${job.instructions}\n\nক্যাটাগরি: ${job.mainCategory} > ${job.subCategory}\nনিয়োগদাতা: ${job.userFullName}`,
+          category: taskCat,
+          rewardAmount: job.costPerWorker,
+          taskType: 'manual' as const,
+          proofType: 'screenshot_and_username' as const,
+          proofInstruction: (job.proofRequirements || []).map((p) => p.title).join(', '),
+          targetUrl: job.targetUrl || '',
+          dailyLimit: 1,
+          totalSlots: job.workersNeeded,
+          slotsRemaining: job.workersNeeded,
+          workersCompleted: 0,
+          status: 'active' as const,
+          createdAt: now,
+          updatedAt: now,
+        };
+
+        if (!db.tasks) db.tasks = [];
+        db.tasks.unshift(publicTask);
+        
+      } else if (status === 'rejected') {
+        job.status = 'rejected';
+        job.updatedAt = now;
+        
+        // Refund user
+        const user = db.profiles.find((p) => p.id === job.userId);
+        if (user && job.totalPayable > 0) {
+          user.balance = Number((user.balance + job.totalPayable).toFixed(2));
+          user.updatedAt = now;
+          
+          db.transactions.push({
+            id: generateId(),
+            userId: user.id,
+            type: 'withdrawal_refund',
+            amount: job.totalPayable,
+            balanceAfter: user.balance,
+            description: `জব পোস্ট বাতিল হওয়ায় রিফান্ড (${job.title.slice(0, 30)})`,
+            referenceId: job.id,
+            createdAt: now,
+          });
+        }
+      } else {
+        throw new Error('অবৈধ স্ট্যাটাস');
+      }
+    });
+    
+    res.json({ message: 'জব স্ট্যাটাস আপডেট করা হয়েছে।' });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 apiRouter.get('/admin/tasks', requirePermission('canManageTasks'), (req: AuthenticatedRequest, res: Response) => {
   const db = getDatabase();
   
@@ -1983,6 +2138,27 @@ apiRouter.post('/admin/submissions/:id/review', requirePermission('canReviewTask
 
         // Trigger referral reward if first approved task
         handleFirstTaskReferralReward(db, user, now);
+
+        // If this task is linked to a user-posted job, increment workersCompleted
+        if (task && ((task as any).userJobId || (task as any).linkedTaskId)) {
+          const userJobId = (task as any).userJobId;
+          const userJob = (db.user_posted_jobs || []).find(
+            (j) => j.id === userJobId || j.linkedTaskId === task.id
+          );
+          if (userJob) {
+            userJob.workersCompleted = (userJob.workersCompleted || 0) + 1;
+            userJob.updatedAt = now;
+            (task as any).workersCompleted = userJob.workersCompleted;
+            (task as any).slotsRemaining = Math.max(0, userJob.workersNeeded - userJob.workersCompleted);
+
+            // Automatically complete job if all slots are filled
+            if (userJob.workersCompleted >= userJob.workersNeeded) {
+              userJob.status = 'completed';
+              task.status = 'archived';
+              task.updatedAt = now;
+            }
+          }
+        }
       } else {
         sub.status = 'rejected';
         sub.rejectionReason = rejectionReason || 'প্রদত্ত তথ্য বা প্রুফ সঠিক নয়।';

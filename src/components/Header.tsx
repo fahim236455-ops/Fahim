@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { Menu, Bell, User, Trophy, Headphones, Power } from 'lucide-react';
+import { Menu, Bell, User, Trophy, Headphones, Power, Sun, Moon } from 'lucide-react';
 import { NavigationDrawer } from './NavigationDrawer';
 import { Logo } from './Logo';
 
@@ -10,7 +10,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onNavigate, currentRoute }) => {
-  const { user, logout } = useApp();
+  const { user, logout, isDarkMode, toggleDarkMode } = useApp();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -39,7 +39,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate, currentRoute }) => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-[#060b18]/95 backdrop-blur-md border-b border-slate-800/80 shadow-md">
+      <header className="sticky top-0 z-40 bg-[#060b18]/95 backdrop-blur-md border-b border-slate-800/80 shadow-md transition-colors">
         <div className="max-w-md mx-auto px-4 py-2.5 flex items-center justify-between relative">
           {/* Left: Hamburger Menu (Cyan/Sky) */}
           <button
@@ -55,11 +55,20 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate, currentRoute }) => {
             onClick={() => onNavigate('dashboard')}
             className="focus:outline-none flex items-center justify-center gap-1.5 cursor-pointer"
           >
-            <Logo variant="full" size={26} theme="dark" />
+            <Logo variant="full" size={26} theme={isDarkMode ? 'dark' : 'light'} />
           </button>
 
-          {/* Right: Notifications & Profile Avatar */}
-          <div className="flex items-center gap-2">
+          {/* Right: Theme Toggle, Notifications & Profile Avatar */}
+          <div className="flex items-center gap-1.5">
+            {/* Sun/Moon Light-Dark Mode Toggle */}
+            <button
+              onClick={toggleDarkMode}
+              className="w-8 h-8 rounded-full bg-slate-900/90 border border-slate-800 hover:border-amber-400/50 text-amber-400 flex items-center justify-center transition-colors cursor-pointer shadow-inner"
+              title={isDarkMode ? 'লাইট মোড চালুকরণ (Light Mode)' : 'ডার্ক মোড চালুকরণ (Dark Mode)'}
+            >
+              {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-400" />}
+            </button>
+
             {/* Notification Bell */}
             <button
               onClick={() => onNavigate('pending-status')}
@@ -113,6 +122,21 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate, currentRoute }) => {
                   >
                     <Headphones className="w-4 h-4 text-sky-400" />
                     <span>Support Chat</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      toggleDarkMode();
+                      setProfileDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-2.5 hover:bg-slate-800/60 flex items-center justify-between text-xs text-slate-200 font-medium transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-400" />}
+                      <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
+                    </div>
+                    <span className="text-[10px] bg-slate-800 px-2 py-0.5 rounded-full font-bold text-amber-400">
+                      {isDarkMode ? 'Dark' : 'Light'}
+                    </span>
                   </button>
                   <button
                     onClick={handleLogout}

@@ -27,7 +27,7 @@ import { JobPostPage } from './pages/JobPostPage';
 import { Logo } from './components/Logo';
 
 function AppContent() {
-  const { user, isLoading, isAdmin, settings } = useApp();
+  const { user, isLoading, isAdmin, settings, isDarkMode } = useApp();
 
   // Route state
   const getInitialRoute = () => {
@@ -42,6 +42,7 @@ function AppContent() {
     if (effective === 'register') return 'register';
     if (effective === 'forgot-password') return 'forgot-password';
     if (effective === 'tasks') return 'tasks';
+    if (effective === 'micro-jobs') return 'micro-jobs';
     if (effective === 'job-post' || effective === 'post-job') return 'job-post';
     if (effective === 'withdraw') return 'withdraw';
     if (effective === 'team') return 'team';
@@ -84,12 +85,29 @@ function AppContent() {
   // Show loading spinner while initial session check is ongoing
   if (isLoading) {
     return (
+      
+      
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
-        <div className="animate-pulse flex flex-col items-center">
-          <Logo size={68} variant="stacked" />
+        {/* SKELETON LOADER UI */}
+        <div className="w-full max-w-md space-y-4 animate-pulse">
+          <div className="flex items-center gap-3 mb-8 px-2">
+            <div className="w-12 h-12 bg-slate-800 rounded-full" />
+            <div className="space-y-2">
+              <div className="h-4 w-24 bg-slate-800 rounded" />
+              <div className="h-3 w-16 bg-slate-800 rounded" />
+            </div>
+          </div>
+          <div className="h-32 bg-slate-800 rounded-2xl w-full" />
+          <div className="h-24 bg-slate-800 rounded-2xl w-full" />
+          <div className="grid grid-cols-2 gap-3 mt-4">
+             <div className="h-20 bg-slate-800 rounded-2xl w-full" />
+             <div className="h-20 bg-slate-800 rounded-2xl w-full" />
+             <div className="h-20 bg-slate-800 rounded-2xl w-full" />
+             <div className="h-20 bg-slate-800 rounded-2xl w-full" />
+          </div>
         </div>
-        <p className="mt-4 text-xs font-semibold text-slate-400 font-sans tracking-wide">লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</p>
       </div>
+
     );
   }
 
@@ -171,14 +189,15 @@ function AppContent() {
 
   // Authenticated App Shell with Header and Bottom Navigation
   return (
-    <div className="min-h-screen bg-slate-950 font-['Hind_Siliguri',sans-serif] text-slate-100 selection:bg-amber-500 selection:text-black">
+    <div className={`min-h-screen font-['Hind_Siliguri',sans-serif] selection:bg-amber-500 selection:text-black transition-colors ${isDarkMode ? 'bg-[#060b18] text-slate-100' : 'bg-slate-100 text-slate-900'}`}>
       <ToastContainer />
 
       <Header onNavigate={navigate} currentRoute={currentRoute} />
 
       <main className="min-h-[calc(100vh-130px)] pb-16">
         {currentRoute === 'dashboard' && <DashboardPage onNavigate={navigate} />}
-        {currentRoute === 'tasks' && <TasksPage onNavigate={navigate} />}
+        {currentRoute === 'tasks' && <TasksPage onNavigate={navigate} pageMode="tasks" />}
+        {currentRoute === 'micro-jobs' && <TasksPage onNavigate={navigate} pageMode="micro-jobs" />}
         {currentRoute === 'job-post' && <JobPostPage onNavigate={navigate} />}
         {currentRoute === 'withdraw' && <WithdrawPage onNavigate={navigate} />}
         {currentRoute === 'team' && <TeamPage />}

@@ -1,0 +1,251 @@
+const fs = require('fs');
+let code = fs.readFileSync('src/pages/SupportPage.tsx', 'utf8');
+
+// Replace the Support page entirely with a new Whatsapp/Telegram like Premium design based on the images
+const fullRegex = /export const SupportPage: React\.FC<SupportPageProps> = \(\{ onNavigate \}\) => \{[\s\S]*?\};\n/;
+
+const newSupportPage = `
+export const SupportPage: React.FC<SupportPageProps> = ({ onNavigate }) => {
+  const { user, showToast } = useApp();
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [tickets, setTickets] = useState<SupportTicket[]>([]);
+  const [loadingTickets, setLoadingTickets] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  const loadTickets = async () => {
+    try {
+      const data = await fetchApi<SupportTicket[]>('/support/tickets');
+      setTickets(data);
+    } catch (err: any) {
+      console.error(err);
+    } finally {
+      setLoadingTickets(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isChatOpen) {
+      loadTickets();
+      // Optional polling every 10 seconds
+      const interval = setInterval(loadTickets, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [isChatOpen]);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [tickets, isChatOpen]);
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!message.trim()) return;
+    
+    try {
+      setSubmitting(true);
+      const text = message;
+      setMessage('');
+      await fetchApi('/support/tickets', {
+        method: 'POST',
+        body: JSON.stringify({ subject: 'লাইভ চ্যাট', message: text, category: 'general' })
+      });
+      await loadTickets();
+    } catch (err: any) {
+      showToast(err.message, 'error');
+      setMessage(message); // restore
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (isChatOpen) {
+    return (
+      <div className="max-w-3xl mx-auto h-[calc(100vh-130px)] flex flex-col bg-[#efeae2] relative overflow-hidden font-sans">
+        {/* WhatsApp-style Header */}
+        <div className="bg-[#008069] text-white px-4 py-3 flex items-center justify-between shrink-0 shadow-md z-10">
+          <div className="flex items-center gap-3">
+            <button onClick={() => setIsChatOpen(false)} className="p-1 hover:bg-white/10 rounded-full transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div className="relative">
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center p-1">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=SupportTeam&backgroundColor=008069" alt="Support" className="w-full h-full rounded-full" />
+              </div>
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-[#008069] rounded-full"></div>
+            </div>
+            <div>
+              <h2 className="font-bold text-[15px] flex items-center gap-1">
+                Support Team <CheckCircle2 className="w-3.5 h-3.5 text-white bg-[#008069] rounded-full" />
+              </h2>
+              <p className="text-[11px] text-white/90">online</p>
+            </div>
+          </div>
+          <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
+             <div className="w-1 h-5 flex flex-col justify-between items-center py-0.5">
+               <div className="w-1 h-1 bg-white rounded-full"></div>
+               <div className="w-1 h-1 bg-white rounded-full"></div>
+               <div className="w-1 h-1 bg-white rounded-full"></div>
+             </div>
+          </button>
+        </div>
+
+        {/* WhatsApp-style Info Bar */}
+        <div className="bg-white/80 px-4 py-2 flex items-center justify-between text-[10px] font-bold shadow-sm shrink-0 z-10 backdrop-blur-sm">
+           <span className="bg-emerald-100 text-[#008069] px-2 py-0.5 rounded-md border border-emerald-200">Ticket #3746</span>
+           <span className="text-[#008069] flex items-center gap-1">
+             <div className="w-1.5 h-1.5 bg-[#008069] rounded-full"></div>
+             Typically replies instantly
+           </span>
+        </div>
+
+        {/* Chat Area */}
+        <div 
+          ref={chatContainerRef}
+          className="flex-1 overflow-y-auto p-4 space-y-4 relative"
+          style={{ 
+            backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 1px)', 
+            backgroundSize: '20px 20px' 
+          }}
+        >
+           {/* Date Badge */}
+           <div className="flex justify-center my-4">
+             <span className="bg-white shadow-sm text-slate-500 text-[10px] font-bold px-3 py-1 rounded-lg">
+               TODAY
+             </span>
+           </div>
+
+           {/* Initial Welcome Message Box */}
+           {tickets.length === 0 && !loadingTickets && (
+             <div className="flex justify-center mb-6">
+               <div className="bg-white shadow-md rounded-2xl p-6 text-center max-w-[280px]">
+                 <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                   <MessageSquare className="w-6 h-6 text-[#008069]" />
+                 </div>
+                 <h3 className="text-sm font-bold text-slate-800 mb-1">Start Conversation</h3>
+                 <p className="text-[11px] text-slate-500">আমাদের সাপোর্ট টিম অনলাইনে আছে। আপনার প্রশ্ন এখানে লিখুন।</p>
+               </div>
+             </div>
+           )}
+
+           {loadingTickets ? (
+             <div className="text-center text-xs text-slate-500 bg-white/80 py-2 px-4 rounded-full w-max mx-auto shadow-sm">Loading chats...</div>
+           ) : (
+             [...tickets].reverse().map((t, idx) => (
+                <div key={t.id || idx} className="space-y-3">
+                  {/* User Message (Right Side) */}
+                  <div className="flex justify-end">
+                    <div className="bg-[#d9fdd3] text-slate-800 px-3 py-2 rounded-lg rounded-tr-none shadow-sm max-w-[85%] relative group">
+                      <p className="text-[13px] leading-relaxed whitespace-pre-wrap pr-12">{t.message}</p>
+                      <span className="text-[9.5px] text-slate-500 absolute bottom-1 right-2 flex items-center gap-1">
+                        {new Date(t.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        <CheckCircle2 className="w-3 h-3 text-[#53bdeb]" />
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Admin Message (Left Side) */}
+                  {t.adminReply && (
+                    <div className="flex justify-start">
+                      <div className="bg-white text-slate-800 px-3 py-2 rounded-lg rounded-tl-none shadow-sm max-w-[85%] relative">
+                        <p className="text-[13px] leading-relaxed whitespace-pre-wrap pr-12">{t.adminReply}</p>
+                        <span className="text-[9.5px] text-slate-500 absolute bottom-1 right-2">
+                          {new Date(t.repliedAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+             ))
+           )}
+        </div>
+
+        {/* WhatsApp-style Input Area */}
+        <div className="bg-[#f0f2f5] p-2.5 shrink-0 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+           <form onSubmit={handleSendMessage} className="flex items-center gap-2 max-w-3xl mx-auto">
+             <div className="flex-1 bg-white rounded-full flex items-center px-4 py-2 shadow-sm border border-slate-200">
+               <input 
+                 type="text" 
+                 value={message}
+                 onChange={(e) => setMessage(e.target.value)}
+                 placeholder="Message"
+                 className="flex-1 bg-transparent border-none outline-none text-sm text-slate-800 placeholder-slate-400 py-1"
+                 autoComplete="off"
+               />
+               <button type="button" className="p-1 text-slate-400 hover:text-slate-600 transition-colors ml-2">
+                 <Paperclip className="w-5 h-5 transform -rotate-45" />
+               </button>
+             </div>
+             <button 
+               type="submit" 
+               disabled={submitting || !message.trim()}
+               className="w-12 h-12 bg-[#00a884] rounded-full flex items-center justify-center text-white shrink-0 shadow-md hover:bg-[#008f6f] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+             >
+               <Send className="w-5 h-5 ml-1" />
+             </button>
+           </form>
+        </div>
+      </div>
+    );
+  }
+
+  // Initial Entry Page (Like image 2)
+  return (
+    <div className="max-w-md mx-auto px-4 py-8 space-y-4 pb-24 text-slate-100 font-sans h-full flex flex-col items-center justify-center">
+      <div className="w-full bg-white rounded-[24px] p-6 text-center shadow-xl border border-slate-100 relative overflow-hidden">
+        {/* Top gradient border accent */}
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+        
+        {/* Logo/Icon */}
+        <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4 relative shadow-sm border border-indigo-100">
+           <MessageSquare className="w-8 h-8 text-indigo-500" />
+           <div className="absolute bottom-1 right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-white"></div>
+        </div>
+
+        <h1 className="text-xl font-black text-slate-800 mb-1">Live Support Team</h1>
+        <p className="text-[11px] text-slate-500 font-bold mb-5">২৪/৭ হেল্পডেস্ক ও কাস্টমার কেয়ার সার্ভিস</p>
+
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-5">
+           <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 px-3 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 shadow-sm">
+             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+             সাপোর্ট টিম সক্রিয় আছে
+           </span>
+           <span className="bg-indigo-50 text-indigo-600 border border-indigo-200 px-3 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 shadow-sm">
+             <Clock className="w-3 h-3" />
+             গড় উত্তর ১-২ মিনিট
+           </span>
+        </div>
+
+        <div className="flex items-center justify-center gap-1.5 text-[10px] font-bold text-slate-500 mb-6 bg-slate-50 py-1.5 px-3 rounded-full w-max mx-auto border border-slate-200">
+          <Clock className="w-3 h-3" />
+          সকাল ৯টা - রাত ১২টা
+        </div>
+
+        <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-[11px] text-slate-600 leading-relaxed mb-6 shadow-inner text-left font-medium">
+          টাস্ক জমা, ডিপোজিট, উইথড্র কিংবা অ্যাকাউন্ট সংক্রান্ত যেকোনো জটিলতায় সরাসরি আমাদের অফিসিয়াল সাপোর্ট এজেন্টের সাথে কথা বলুন।
+        </div>
+
+        <button 
+          onClick={() => setIsChatOpen(true)}
+          className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-3.5 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/30 transition-all active:scale-[0.98]"
+        >
+          <MessageSquare className="w-4 h-4" />
+          সরাসরি চ্যাট শুরু করুন
+        </button>
+
+        <p className="text-[9px] font-bold text-slate-400 mt-4 flex items-center justify-center gap-1">
+          <CheckCircle2 className="w-3 h-3" />
+          আপনার তথ্য সম্পূর্ণ নিরাপদ ও গোপনীয়
+        </p>
+      </div>
+    </div>
+  );
+};
+`;
+
+code = code.replace(fullRegex, newSupportPage);
+fs.writeFileSync('src/pages/SupportPage.tsx', code);
+console.log("Updated SupportPage to Premium Chat");

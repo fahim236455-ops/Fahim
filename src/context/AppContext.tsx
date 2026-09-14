@@ -42,18 +42,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('theme') === 'dark';
+      const saved = localStorage.getItem('theme');
+      if (saved === 'light') return false;
+      if (saved === 'dark') return true;
     }
-    return false;
+    return true; // Default to dark mode for Earnora
   });
 
   useEffect(() => {
     const root = window.document.documentElement;
+    const body = window.document.body;
     if (isDarkMode) {
       root.classList.add('dark');
+      root.classList.remove('light');
+      body.classList.add('dark');
+      body.classList.remove('light');
       localStorage.setItem('theme', 'dark');
     } else {
       root.classList.remove('dark');
+      root.classList.add('light');
+      body.classList.remove('dark');
+      body.classList.add('light');
       localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);

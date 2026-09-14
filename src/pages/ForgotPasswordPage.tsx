@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Mail, ArrowLeft, Send, CheckCircle2 } from 'lucide-react';
+import { Mail, ArrowLeft, Send, CheckCircle2, Sun, Moon } from 'lucide-react';
 
 interface ForgotPasswordPageProps {
   onNavigate: (route: string) => void;
 }
 
 export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({ onNavigate }) => {
-  const { showToast } = useApp();
+  const { showToast, isDarkMode, toggleDarkMode } = useApp();
   const [emailOrPhone, setEmailOrPhone] = useState('');
   const [sent, setSent] = useState(false);
 
@@ -22,19 +22,31 @@ export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({ onNaviga
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center px-4 py-8 max-w-md mx-auto">
-      <div className="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-md space-y-4">
-        <button
-          onClick={() => onNavigate('login')}
-          className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 font-bold"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>লগইনে ফিরে যান</span>
-        </button>
+    <div className={`min-h-screen flex flex-col justify-center px-4 py-8 max-w-md mx-auto transition-colors ${
+      isDarkMode ? 'bg-[#060b18] text-slate-100' : 'bg-slate-100 text-slate-900'
+    }`}>
+      <div className="bg-white dark:bg-[#0c1222] rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xl space-y-4">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => onNavigate('login')}
+            className="text-xs text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 flex items-center gap-1 font-bold transition-colors cursor-pointer"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>লগইনে ফিরে যান</span>
+          </button>
+
+          <button
+            onClick={toggleDarkMode}
+            className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer"
+            title={isDarkMode ? 'Light Mode' : 'Dark Mode'}
+          >
+            {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-sky-600" />}
+          </button>
+        </div>
 
         <div className="space-y-1">
-          <h1 className="text-lg font-bold text-slate-900">পাসওয়ার্ড রিসেট করুন</h1>
-          <p className="text-xs text-slate-500">
+          <h1 className="text-lg font-bold text-slate-900 dark:text-white">পাসওয়ার্ড রিসেট করুন</h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             আপনার রেজিস্টার্ড মোবাইল নম্বর বা ইমেইল লিখুন। আমরা রিকভারি সহায়তা প্রদান করব।
           </p>
         </div>
@@ -56,16 +68,16 @@ export const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({ onNaviga
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700 block">ইমেইল বা মোবাইল নম্বর:</label>
+              <label className="text-xs font-bold text-slate-800 dark:text-slate-200 block">ইমেইল বা মোবাইল নম্বর:</label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
+                <Mail className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-3" />
                 <input
                   type="text"
                   required
                   value={emailOrPhone}
                   onChange={(e) => setEmailOrPhone(e.target.value)}
                   placeholder="01712345678 অথবা name@example.com"
-                  className="w-full text-xs font-medium pl-9 p-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  className="w-full text-xs font-semibold pl-9 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-[#0a1128] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
               </div>
             </div>

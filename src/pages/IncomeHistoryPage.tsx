@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchApi } from '../lib/api';
 import { Transaction } from '../types';
-import { History, TrendingUp, TrendingDown, Calendar, ArrowLeft } from 'lucide-react';
+import {  History, TrendingUp, TrendingDown, Calendar, ArrowLeft , Inbox } from 'lucide-react';
 
 interface IncomeHistoryPageProps {
   onNavigate: (route: string) => void;
@@ -111,9 +111,17 @@ export const IncomeHistoryPage: React.FC<IncomeHistoryPageProps> = ({ onNavigate
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-slate-900 rounded-2xl p-8 text-center border border-slate-800 text-slate-400 text-sm shadow-md">
-          কোনো লেনদেনের রেকর্ড পাওয়া যায়নি। টাস্ক পূরণ করে প্রথম আয় শুরু করুন!
+        
+        <div className="bg-slate-900/50 rounded-2xl p-10 text-center border border-slate-800 border-dashed flex flex-col items-center shadow-sm">
+          <div className="w-16 h-16 rounded-full bg-slate-800/80 flex items-center justify-center mb-3">
+            <Inbox className="w-8 h-8 text-slate-500" />
+          </div>
+          <h3 className="text-white font-bold text-sm mb-1">কোনো লেনদেন পাওয়া যায়নি</h3>
+          <p className="text-slate-400 text-xs max-w-[200px] leading-relaxed">
+            টাস্ক পূরণ করে প্রথম আয় শুরু করুন এবং আপনার ব্যালেন্স বৃদ্ধি করুন।
+          </p>
         </div>
+
       ) : (
         <div className="space-y-2">
           {filtered.map((t) => {

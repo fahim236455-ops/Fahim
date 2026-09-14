@@ -1,374 +1,951 @@
 {
-  "profiles": [
-    {
-      "id": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "email": "fahim236455@gmail.com",
-      "fullName": "Fahim (Founder & Admin)",
-      "phoneNumber": "01700000000",
-      "referralCode": "FPBADMIN",
-      "referredBy": null,
-      "balance": 34,
-      "totalEarned": 34,
-      "totalWithdrawn": 0,
-      "totalReferrals": 2,
-      "status": "active",
-      "createdAt": "2026-09-12T13:19:40.803Z",
-      "updatedAt": "2026-09-13T07:33:09.145Z"
-    }
-  ],
   "user_roles": [
     {
-      "id": "af47c29f-8178-4830-8d84-aac459ddd840",
-      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "role": "admin",
-      "createdAt": "2026-09-12T13:19:40.803Z",
-      "isSuperAdmin": true,
       "title": "সুপার অ্যাডমিন (Founder & Admin)",
+      "id": "af47c29f-8178-4830-8d84-aac459ddd840",
+      "isSuperAdmin": true,
+      "createdAt": "2026-09-12T13:19:40.803Z",
       "permissions": {
-        "canManageTasks": true,
-        "canReviewTaskProofs": true,
-        "canManageSocialJobs": true,
         "canReviewSocialSubmissions": true,
-        "canManageWithdrawals": true,
-        "canManageUsers": true,
         "canManageSupport": true,
+        "canReviewTaskProofs": true,
         "canEditSiteSettings": true,
+        "canManageWithdrawals": true,
+        "canManageTasks": true,
         "canViewAuditLogs": true,
-        "canManageAdmins": true
-      }
+        "canManageUsers": true,
+        "canManageAdmins": true,
+        "canManageSocialJobs": true
+      },
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "role": "admin"
+    },
+    {
+      "createdAt": "2026-09-13T13:43:34.727Z",
+      "userId": "1e4a2fb9-f99e-4b4e-b664-b638796b0e9b",
+      "role": "user",
+      "id": "2e5720c4-dcad-4b40-bf36-0403ddf66839"
+    },
+    {
+      "userId": "ec932609-8164-4e28-8cf4-1d55d23bed4b",
+      "role": "user",
+      "id": "a02fed39-be68-4195-902e-bcf484dad3d1",
+      "createdAt": "2026-09-13T14:26:50.971Z"
     }
   ],
-  "auth_credentials": [
+  "profiles": [
+    {
+      "createdAt": "2026-09-12T13:19:40.803Z",
+      "totalReferrals": 2,
+      "updatedAt": "2026-09-14T07:13:23.520Z",
+      "phoneNumber": "01302864995",
+      "email": "fahim236455@gmail.com",
+      "referralCode": "FPBADMIN",
+      "totalWithdrawn": 0,
+      "balance": 5,
+      "referredBy": null,
+      "status": "active",
+      "totalEarned": 44,
+      "id": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "fullName": "Fahim"
+    },
+    {
+      "phoneNumber": "01575875226",
+      "balance": 0,
+      "totalWithdrawn": 0,
+      "email": "fahimmaruf63@gmail.com",
+      "referralCode": "FPBMCWMS",
+      "status": "active",
+      "id": "1e4a2fb9-f99e-4b4e-b664-b638796b0e9b",
+      "totalReferrals": 0,
+      "totalEarned": 0,
+      "referredBy": null,
+      "fullName": "Niloy",
+      "createdAt": "2026-09-13T13:43:34.727Z",
+      "updatedAt": "2026-09-13T13:43:34.727Z"
+    },
+    {
+      "totalWithdrawn": 0,
+      "status": "active",
+      "fullName": "Fahi.",
+      "createdAt": "2026-09-13T14:26:50.971Z",
+      "totalEarned": 0,
+      "referredBy": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "updatedAt": "2026-09-13T14:26:50.971Z",
+      "email": "fahimmaruf@gmail.com",
+      "id": "ec932609-8164-4e28-8cf4-1d55d23bed4b",
+      "totalReferrals": 0,
+      "phoneNumber": "01586548638",
+      "referralCode": "FPB4DWLQ",
+      "balance": 0
+    }
+  ],
+  "support_tickets": [
+    {
+      "userName": "Fahim (Founder & Admin)",
+      "messages": [
+        {
+          "text": "na",
+          "timestamp": "2026-09-13T15:20:26.662Z",
+          "id": "f9bc8c18-4582-47d0-aa1d-0334170a180e",
+          "sender": "user"
+        }
+      ],
+      "category": "withdrawal",
+      "id": "f199fff7-ec57-45b5-ba49-6fd87fcd4ca8",
+      "status": "answered",
+      "userPhone": "01700000000",
+      "createdAt": "2026-09-13T15:20:26.662Z",
+      "userEmail": "fahim236455@gmail.com",
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "updatedAt": "2026-09-13T16:03:11.510Z",
+      "message": "na",
+      "subject": "ki koro"
+    },
+    {
+      "updatedAt": "2026-09-14T14:37:37.590Z",
+      "createdAt": "2026-09-14T14:37:37.590Z",
+      "userEmail": "fahim236455@gmail.com",
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "userPhone": "01302864995",
+      "category": "general",
+      "messages": [
+        {
+          "text": "hi",
+          "timestamp": "2026-09-14T14:37:37.590Z",
+          "id": "ca93db01-4ad9-4b18-b4b6-3201475b156b",
+          "sender": "user"
+        }
+      ],
+      "subject": "লাইভ চ্যাট",
+      "status": "open",
+      "userName": "Fahim",
+      "message": "hi",
+      "id": "44fa783a-1b25-45e2-9cac-8da916eb8695"
+    },
     {
       "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "passwordHash": "$2b$10$zEax/6kQuu6lesqxZFgzbOoRR1j2e2/wQ6ATOH21YwkHxHTzniqYO",
-      "updatedAt": "2026-09-12T13:19:40.803Z"
+      "repliedAt": "2026-09-14T14:47:18.760Z",
+      "subject": "লাইভ চ্যাট",
+      "message": "hi",
+      "category": "general",
+      "status": "answered",
+      "adminReply": "🔍 আপনার বিষয়টি খতিয়ে দেখা হচ্ছে। অনুগ্রহ করে ২ মিনিট অপেক্ষা করুন।",
+      "userPhone": "01302864995",
+      "id": "6d601063-9e8f-4d1a-b068-7428615a959d",
+      "messages": [
+        {
+          "sender": "user",
+          "timestamp": "2026-09-14T14:46:59.178Z",
+          "text": "hi",
+          "id": "46ec5684-4604-4713-a3d7-9e713c1fe95f"
+        },
+        {
+          "timestamp": "2026-09-14T14:47:18.760Z",
+          "id": "f5a5ef58-3adf-41d5-a72c-96d42dbb7874",
+          "sender": "agent",
+          "text": "🔍 আপনার বিষয়টি খতিয়ে দেখা হচ্ছে। অনুগ্রহ করে ২ মিনিট অপেক্ষা করুন।"
+        }
+      ],
+      "updatedAt": "2026-09-14T14:47:18.760Z",
+      "userName": "Fahim",
+      "createdAt": "2026-09-14T14:46:59.178Z",
+      "userEmail": "fahim236455@gmail.com"
+    }
+  ],
+  "social_account_sales": [
+    {
+      "service": "gmail",
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "userEmail": "fahim236455@gmail.com",
+      "createdAt": "2026-09-13T07:22:30.464Z",
+      "id": "c2728e2a-2b01-4bdb-8fc2-abbf2860c178",
+      "reviewedAt": "2026-09-13T07:25:02.190Z",
+      "accountIdentifier": "test@gmail.com",
+      "password": "password123",
+      "reviewedBy": "fahim236455@gmail.com",
+      "taskId": "test1234",
+      "rate": 14,
+      "status": "approved"
+    }
+  ],
+  "user_posted_jobs": [],
+  "audit_logs": [
+    {
+      "details": {
+        "message": "Earnora clean production database initialized."
+      },
+      "action": "system_initialized",
+      "createdAt": "2026-09-12T13:19:40.803Z",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "id": "652429cc-042a-47f1-87a9-915273c70cb9",
+      "actorEmail": "fahim236455@gmail.com"
     },
     {
-      "userId": "e2a1b9c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
-      "passwordHash": "$2b$10$zEax/6kQuu6lesqxZFgzbOoRR1j2e2/wQ6ATOH21YwkHxHTzniqYO",
-      "updatedAt": "2026-09-13T05:00:00.000Z"
+      "details": {
+        "targetEmail": "test456@gmail.com",
+        "targetUserId": "aecfe8fc-832d-43f9-b07b-acc9bd4294ff"
+      },
+      "actorEmail": "fahim236455@gmail.com",
+      "createdAt": "2026-09-13T06:27:38.043Z",
+      "action": "user_suspended",
+      "id": "15739992-6db9-4373-ad4c-84f94ab2ccc6",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be"
     },
     {
-      "userId": "f3b2c1d0-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
-      "passwordHash": "$2b$10$zEax/6kQuu6lesqxZFgzbOoRR1j2e2/wQ6ATOH21YwkHxHTzniqYO",
-      "updatedAt": "2026-09-13T05:15:00.000Z"
+      "details": {
+        "targetUserId": "aecfe8fc-832d-43f9-b07b-acc9bd4294ff",
+        "targetEmail": "test456@gmail.com"
+      },
+      "id": "9bf1a0b6-1143-4c0d-97ce-405f6b59a9d3",
+      "actorEmail": "fahim236455@gmail.com",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "createdAt": "2026-09-13T06:27:39.515Z",
+      "action": "user_reactivated"
     },
     {
-      "userId": "aecfe8fc-832d-43f9-b07b-acc9bd4294ff",
-      "passwordHash": "$2b$10$dNZjE6EQGgxiyHEjgNIUIe0uJ5hdC43wWkPZbj6A5THsSzgCGduXq",
-      "updatedAt": "2026-09-13T06:17:46.702Z"
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "createdAt": "2026-09-13T06:57:36.767Z",
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "task_created",
+      "details": {
+        "title": "Test Task",
+        "rewardAmount": 10,
+        "category": "telegram",
+        "taskId": "c7f7b65f-d2ee-4f9c-9c3d-d6c6df689093"
+      },
+      "id": "0fcea33c-15d2-4ce3-a20f-49b5d3704caa"
     },
     {
-      "userId": "d8fdd5e3-26c1-4ddc-b2dd-adfca157c984",
-      "passwordHash": "$2b$10$j01xeJumnpQIwTj3JfhKxOGWp7YQ/lNBRMQrvTi5af3Ju6hPxOy4e",
-      "updatedAt": "2026-09-13T06:18:37.022Z"
+      "actorEmail": "fahim236455@gmail.com",
+      "createdAt": "2026-09-13T07:12:52.690Z",
+      "id": "65b7c436-bfaa-4176-a8e8-f518e35726be",
+      "action": "task_submission_approved",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "details": {
+        "reward": 10,
+        "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+        "submissionId": "ed265fbf-2066-49f7-880d-f59680011e64"
+      }
     },
     {
-      "userId": "cf33c95b-0202-4059-8488-eae82ff98d72",
-      "passwordHash": "$2b$10$8a3VTB/NZVLlz.TAP31IgOauo8/Upc31jiF0cHyFzt24tP6XahTNa",
-      "updatedAt": "2026-09-13T06:29:45.735Z"
+      "createdAt": "2026-09-13T07:21:59.972Z",
+      "id": "46586a1a-38be-41b9-895c-93b99eb7bdbd",
+      "details": {
+        "category": "telegram",
+        "rewardAmount": 10,
+        "taskId": "b749fc07-349b-454a-9d71-a6fe86e35ae3",
+        "title": "Test Task 2"
+      },
+      "actorEmail": "fahim236455@gmail.com",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "action": "task_created"
     },
     {
-      "userId": "da5f424e-7ff8-4c09-8748-7882ac9b7e6f",
-      "passwordHash": "$2b$10$6y.HUvWe4H7B5wZs9DrEBOjJAfJJFHBvX8mF4jJ24RWT07qv.SiOe",
-      "updatedAt": "2026-09-13T06:33:04.366Z"
+      "action": "task_submission_approved",
+      "details": {
+        "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+        "reward": 10,
+        "submissionId": "559d27f8-2a99-4a91-85a9-6f7ffd305dc1"
+      },
+      "createdAt": "2026-09-13T07:33:09.145Z",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "id": "6faaf30c-2ef0-45be-915c-82ecf367808d",
+      "actorEmail": "fahim236455@gmail.com"
     },
     {
-      "userId": "849c6177-6a8d-43fe-b2fa-262a79563f62",
-      "passwordHash": "$2b$10$rZ5Tbt3FG3rfsVgYF4ZqrufTuDCvNHTy3exZdYegK.3ab8sEs3W4a",
-      "updatedAt": "2026-09-13T06:34:37.473Z"
+      "action": "social_job_config_updated",
+      "actorEmail": "fahim236455@gmail.com",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "createdAt": "2026-09-13T08:19:41.172Z",
+      "details": {
+        "todayPassword": "sgwteam1@21A",
+        "active": true,
+        "service": "gmail",
+        "rate": 14
+      },
+      "id": "550c0412-d35a-4d42-b555-29eed669c2cf"
     },
     {
-      "userId": "4677bd99-390e-4a93-afd3-b70fcb0ce4b5",
-      "passwordHash": "$2b$10$s.KnT4PrWeegsJzbv19gnODTsnkt7OYmiOPuF92xNrLeUAndFGiHu",
-      "updatedAt": "2026-09-13T06:36:49.579Z"
+      "details": {
+        "permissions": {
+          "canReviewSocialSubmissions": true,
+          "canManageAdmins": false,
+          "canManageUsers": false,
+          "canEditSiteSettings": false,
+          "canReviewTaskProofs": true,
+          "canViewAuditLogs": false,
+          "canManageTasks": true,
+          "canManageWithdrawals": false,
+          "canManageSupport": true,
+          "canManageSocialJobs": false
+        },
+        "title": "টাস্ক ও প্রুফ মডারেটর",
+        "isSuperAdmin": false,
+        "targetUserId": "1e4a2fb9-f99e-4b4e-b664-b638796b0e9b",
+        "targetEmail": "fahimmaruf63@gmail.com"
+      },
+      "actorEmail": "fahim236455@gmail.com",
+      "id": "5a0aebe9-f156-47a4-b5c9-f4e1f64ee988",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "action": "admin_role_assigned_or_updated",
+      "createdAt": "2026-09-13T13:48:09.311Z"
+    },
+    {
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "id": "d02989e0-ebaf-4d97-95b0-202e347d1def",
+      "details": {
+        "targetEmail": "fahimmaruf63@gmail.com",
+        "targetUserId": "1e4a2fb9-f99e-4b4e-b664-b638796b0e9b"
+      },
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "admin_role_revoked",
+      "createdAt": "2026-09-13T13:51:57.246Z"
+    },
+    {
+      "details": {
+        "ip": "103.133.201.64, 104.23.160.157, 10.196.46.1"
+      },
+      "id": "b1854b57-055e-4c57-9425-cecc43ef6904",
+      "createdAt": "2026-09-13T13:52:05.502Z",
+      "ipAddress": "103.133.201.64, 104.23.160.157, 10.196.46.1",
+      "actorId": "1e4a2fb9-f99e-4b4e-b664-b638796b0e9b",
+      "action": "admin_login_rejected_no_role",
+      "actorEmail": "fahimmaruf63@gmail.com"
+    },
+    {
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "actorEmail": "fahim236455@gmail.com",
+      "id": "0f18f35d-eef0-4d71-a6c1-01ed8a48fe94",
+      "createdAt": "2026-09-13T14:40:46.968Z",
+      "details": {
+        "supportWhatsapp": "+880 1700-000000",
+        "supportPhone": "+880 1700-000000",
+        "brandName": "Earnora",
+        "supportTelegram": "@earnora_official"
+      },
+      "action": "settings_updated"
+    },
+    {
+      "id": "9a2cfd84-b370-4d0c-a1fa-fa0e0e2e1295",
+      "details": {
+        "supportWhatsapp": "+880 1700-000000",
+        "supportPhone": "+880 1700-000000",
+        "brandName": "Earnora",
+        "supportTelegram": "@earnora_official"
+      },
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "action": "settings_updated",
+      "createdAt": "2026-09-13T14:40:46.998Z",
+      "actorEmail": "fahim236455@gmail.com"
+    },
+    {
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "createdAt": "2026-09-13T14:41:17.078Z",
+      "id": "b4e986cd-9075-4180-add3-ca5059e87b4d",
+      "action": "settings_updated",
+      "details": {
+        "supportWhatsapp": "+880 1700-000000",
+        "supportPhone": "+880 1700-000000",
+        "brandName": "Earnora",
+        "supportTelegram": "@earnora_official"
+      },
+      "actorEmail": "fahim236455@gmail.com"
+    },
+    {
+      "actorEmail": "fahim236455@gmail.com",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "details": {
+        "supportPhone": "+880 1700-000000",
+        "supportTelegram": "@earnora_official",
+        "brandName": "Earnora",
+        "supportWhatsapp": "+880 1700-000000"
+      },
+      "action": "settings_updated",
+      "createdAt": "2026-09-13T14:41:40.624Z",
+      "id": "ba098d79-584a-434d-8e07-fd8b8467939d"
+    },
+    {
+      "actorEmail": "fahim236455@gmail.com",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "action": "settings_updated",
+      "createdAt": "2026-09-13T14:41:42.150Z",
+      "details": {
+        "supportPhone": "+880 1700-000000",
+        "brandName": "Earnora",
+        "supportTelegram": "@earnora_official",
+        "supportWhatsapp": "+880 1700-000000"
+      },
+      "id": "6dbada46-2814-40ef-9b2c-5d1044ffa8e4"
+    },
+    {
+      "id": "913a7d2b-803c-4fa1-8724-78527acd6135",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "createdAt": "2026-09-13T14:41:42.340Z",
+      "actorEmail": "fahim236455@gmail.com",
+      "details": {
+        "supportWhatsapp": "+880 1700-000000",
+        "supportPhone": "+880 1700-000000",
+        "brandName": "Earnora",
+        "supportTelegram": "@earnora_official"
+      },
+      "action": "settings_updated"
+    },
+    {
+      "actorEmail": "fahim236455@gmail.com",
+      "createdAt": "2026-09-13T14:41:42.689Z",
+      "action": "settings_updated",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "id": "5c8f9b94-affa-4666-92a3-47ab9f1ae82b",
+      "details": {
+        "brandName": "Earnora",
+        "supportWhatsapp": "+880 1700-000000",
+        "supportPhone": "+880 1700-000000",
+        "supportTelegram": "@earnora_official"
+      }
+    },
+    {
+      "actorEmail": "fahim236455@gmail.com",
+      "details": {
+        "supportWhatsapp": "+880 1700-000000",
+        "supportTelegram": "@earnora_official",
+        "brandName": "Earnora",
+        "supportPhone": "+880 1700-000000"
+      },
+      "id": "cdfd895a-65d5-4618-9caf-5e1e6b61e29e",
+      "action": "settings_updated",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "createdAt": "2026-09-13T14:42:46.181Z"
+    },
+    {
+      "details": {
+        "supportTelegram": "@earnora_official",
+        "brandName": "Earnora",
+        "supportPhone": "+880 1700-000000",
+        "supportWhatsapp": "+880 1700-000000"
+      },
+      "action": "settings_updated",
+      "id": "474491bb-8d6a-4c52-86a3-6911d55665ed",
+      "actorEmail": "fahim236455@gmail.com",
+      "createdAt": "2026-09-13T14:48:25.995Z",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be"
+    },
+    {
+      "createdAt": "2026-09-13T15:17:21.243Z",
+      "details": {
+        "brandName": "Earnora",
+        "supportPhone": "+880 1700-000000",
+        "supportWhatsapp": "+880 1700-000000",
+        "supportTelegram": "@earnora_official"
+      },
+      "action": "settings_updated",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "id": "513c3d99-6cc0-4883-a5c5-8883d8483674",
+      "actorEmail": "fahim236455@gmail.com"
+    },
+    {
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "actorEmail": "fahim236455@gmail.com",
+      "id": "8efec72c-160f-44ef-840e-2e80f664a1ff",
+      "action": "settings_updated",
+      "details": {
+        "supportWhatsapp": "+880 1700-000000",
+        "brandName": "Earnora",
+        "supportPhone": "+880 1700-000000",
+        "supportTelegram": "@earnora_official"
+      },
+      "createdAt": "2026-09-13T15:17:35.970Z"
+    },
+    {
+      "details": {
+        "supportTelegram": "@earnora_official",
+        "supportPhone": "+880 1700-000000",
+        "supportWhatsapp": "+880 1700-000000",
+        "brandName": "Earnora"
+      },
+      "createdAt": "2026-09-13T15:17:57.299Z",
+      "id": "b9a59935-7e38-4f0e-bb34-db98291737c2",
+      "action": "settings_updated",
+      "actorEmail": "fahim236455@gmail.com",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be"
+    },
+    {
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "settings_updated",
+      "createdAt": "2026-09-13T15:30:23.607Z",
+      "details": {
+        "supportWhatsapp": "+880 1700-000000",
+        "brandName": "Earnora",
+        "supportPhone": "+880 1700-000000",
+        "supportTelegram": "@earnora_official"
+      },
+      "id": "42ccfdaa-b5b6-4c60-a57f-85297e11c849"
+    },
+    {
+      "id": "616d4053-4221-4361-bcf2-88a102af6a00",
+      "createdAt": "2026-09-13T15:30:24.723Z",
+      "details": {
+        "supportPhone": "+880 1700-000000",
+        "supportWhatsapp": "+880 1700-000000",
+        "brandName": "Earnora",
+        "supportTelegram": "@earnora_official"
+      },
+      "actorEmail": "fahim236455@gmail.com",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "action": "settings_updated"
+    },
+    {
+      "id": "77934ebb-2171-40a9-ad8c-12140ee80faa",
+      "details": {
+        "active": true,
+        "todayPassword": "ern@21A",
+        "rate": 14,
+        "service": "gmail"
+      },
+      "createdAt": "2026-09-13T16:04:24.844Z",
+      "actorEmail": "fahim236455@gmail.com",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "action": "social_job_config_updated"
+    },
+    {
+      "id": "6257da6c-9f84-494f-ae7c-4d6a19e224f3",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "social_tasks_1000_generated",
+      "details": {
+        "count": 1000,
+        "service": "gmail"
+      },
+      "createdAt": "2026-09-13T16:04:52.053Z"
+    },
+    {
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "createdAt": "2026-09-14T03:48:54.019Z",
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "settings_updated",
+      "id": "a59aeca2-a0ca-4178-9a90-8bd6ad890af0",
+      "details": {
+        "supportWhatsapp": "+880 1700-000000",
+        "brandName": "Earnora",
+        "supportPhone": "+880 1700-000000",
+        "supportTelegram": "@earnora_official"
+      }
+    },
+    {
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "id": "6d0a676c-9eb3-4399-8697-7bfa3bf74ed8",
+      "createdAt": "2026-09-14T03:48:55.516Z",
+      "actorEmail": "fahim236455@gmail.com",
+      "details": {
+        "supportWhatsapp": "+880 1700-000000",
+        "brandName": "Earnora",
+        "supportTelegram": "@earnora_official",
+        "supportPhone": "+880 1700-000000"
+      },
+      "action": "settings_updated"
+    },
+    {
+      "createdAt": "2026-09-14T03:49:25.378Z",
+      "actorEmail": "fahim236455@gmail.com",
+      "details": {
+        "supportWhatsapp": "+880 1700-000000",
+        "supportTelegram": "@earnora_official",
+        "brandName": "Earnora",
+        "supportPhone": "+880 1700-000000"
+      },
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "action": "settings_updated",
+      "id": "b3597ad8-f854-4dbe-a2ed-dd5490f07f6a"
+    },
+    {
+      "actorEmail": "fahim236455@gmail.com",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "createdAt": "2026-09-14T03:49:31.806Z",
+      "details": {
+        "brandName": "Earnora",
+        "supportTelegram": "@earnora_official",
+        "supportPhone": "+880 1700-000000",
+        "supportWhatsapp": "+880 1700-000000"
+      },
+      "action": "settings_updated",
+      "id": "65dd5f8d-99a4-44dc-ae6f-d2ae62cdfccf"
+    },
+    {
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "actorEmail": "fahim236455@gmail.com",
+      "id": "59b4de5b-860f-4c96-a019-2fbe078742d2",
+      "action": "settings_updated",
+      "details": {
+        "brandName": "Earnora",
+        "supportTelegram": "@earnora_official",
+        "supportPhone": "+880 1700-000000",
+        "supportWhatsapp": "+880 1700-000000"
+      },
+      "createdAt": "2026-09-14T03:49:57.079Z"
+    },
+    {
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "actorEmail": "fahim236455@gmail.com",
+      "id": "f5d1920d-d3cc-4c2d-9542-ec46e63bd090",
+      "createdAt": "2026-09-14T03:50:35.882Z",
+      "action": "settings_updated",
+      "details": {
+        "supportPhone": "+880 1700-000000",
+        "supportWhatsapp": "+880 1700-000000",
+        "brandName": "Earnora",
+        "supportTelegram": ""
+      }
+    },
+    {
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "createdAt": "2026-09-14T03:50:58.037Z",
+      "actorEmail": "fahim236455@gmail.com",
+      "id": "38c6b439-eec7-4177-8886-3688d973e2d5",
+      "action": "settings_updated",
+      "details": {
+        "supportPhone": "013028764995",
+        "brandName": "Earnora",
+        "supportWhatsapp": "01302864995",
+        "supportTelegram": ""
+      }
+    },
+    {
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "createdAt": "2026-09-14T06:05:56.376Z",
+      "id": "66cc158c-0b74-4bfe-a4ea-73ff64845b5f",
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "user_balance_debited",
+      "details": {
+        "targetUserId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+        "type": "debit",
+        "reason": "অ্যাডমিন ব্যালেন্স সমন্বয়",
+        "targetEmail": "fahim236455@gmail.com",
+        "amount": 39
+      }
+    },
+    {
+      "details": {
+        "isSuperAdmin": false,
+        "targetEmail": "fahimmaruf@gmail.com",
+        "title": "সাব-অ্যাডমিন / মডারেটর",
+        "permissions": {
+          "canReviewSocialSubmissions": true,
+          "canManageAdmins": false,
+          "canManageSocialJobs": false,
+          "canViewAuditLogs": false,
+          "canManageWithdrawals": false,
+          "canManageTasks": true,
+          "canReviewTaskProofs": true,
+          "canEditSiteSettings": false,
+          "canManageUsers": false,
+          "canManageSupport": true
+        },
+        "targetUserId": "ec932609-8164-4e28-8cf4-1d55d23bed4b"
+      },
+      "createdAt": "2026-09-14T06:23:08.909Z",
+      "action": "admin_role_assigned_or_updated",
+      "id": "a49dbcd6-a9fa-4d4f-8129-0963f4c4b2d8",
+      "actorEmail": "fahim236455@gmail.com",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be"
+    },
+    {
+      "details": {
+        "targetUserId": "ec932609-8164-4e28-8cf4-1d55d23bed4b",
+        "permissions": {
+          "canReviewSocialSubmissions": false,
+          "canManageAdmins": false,
+          "canManageSupport": false,
+          "canEditSiteSettings": false,
+          "canReviewTaskProofs": false,
+          "canViewAuditLogs": false,
+          "canManageTasks": false,
+          "canManageSocialJobs": false,
+          "canManageWithdrawals": false,
+          "canManageUsers": false
+        },
+        "title": "সাব-অ্যাডমিন / মডারেটর",
+        "isSuperAdmin": false,
+        "targetEmail": "fahimmaruf@gmail.com"
+      },
+      "id": "573d5375-004c-4f40-bb3c-b91a9ecf8fb3",
+      "createdAt": "2026-09-14T06:24:28.077Z",
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "admin_role_assigned_or_updated",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be"
+    },
+    {
+      "actorEmail": "fahim236455@gmail.com",
+      "details": {
+        "brandName": "Earnora",
+        "supportTelegram": "",
+        "supportPhone": "013028764995",
+        "supportWhatsapp": "01302864995"
+      },
+      "action": "settings_updated",
+      "id": "13a83af9-d12e-42b6-9004-abd932523024",
+      "createdAt": "2026-09-14T06:24:44.441Z",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be"
+    },
+    {
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "id": "0b422738-3181-4ce8-b77f-a34cad9b5e9a",
+      "action": "settings_updated",
+      "actorEmail": "fahim236455@gmail.com",
+      "details": {
+        "supportPhone": "013028764995",
+        "supportTelegram": "",
+        "supportWhatsapp": "01302864995",
+        "brandName": "Earnora"
+      },
+      "createdAt": "2026-09-14T06:24:47.996Z"
+    },
+    {
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "id": "c455742c-f861-4e42-8646-3ab6af702be5",
+      "createdAt": "2026-09-14T07:07:34.678Z",
+      "actorEmail": "fahim236455@gmail.com",
+      "action": "admin_role_revoked",
+      "details": {
+        "targetUserId": "ec932609-8164-4e28-8cf4-1d55d23bed4b",
+        "targetEmail": "fahimmaruf@gmail.com"
+      }
+    },
+    {
+      "actorEmail": "fahim236455@gmail.com",
+      "details": {
+        "count": 3
+      },
+      "action": "all_tasks_cleared",
+      "createdAt": "2026-09-14T13:24:21.750Z",
+      "id": "1f3dfd9b-f714-40d0-94d5-7b073fcb694a",
+      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be"
     }
   ],
   "site_settings": {
-    "id": "f9ac8b12-cb2c-4bc0-a66d-a530aef71641",
-    "brandName": "Earnora",
-    "referralReward": 50,
+    "faqs": [],
+    "heroTitle": "",
+    "nagadNumber": "",
+    "supportEmail": "",
     "minWithdrawal": 500,
+    "telegramGroupUrl": "",
+    "maintenanceMode": {
+      "enabled": false,
+      "message": "সিস্টেম আপগ্রেডের কাজ চলছে, কিছুক্ষণ পর আবার চেষ্টা করুন।"
+    },
+    "popupNotice": {
+      "facebookUrl": "",
+      "youtubeUrl": "",
+      "instagramUrl": "",
+      "groupUrl": "",
+      "groupButtonText": "",
+      "showEveryVisit": true,
+      "channelButtonText": "",
+      "enabled": false,
+      "channelUrl": "",
+      "title": "জরুরি বিজ্ঞপ্তি",
+      "message": "সকল ইউজারদের অবগতির জন্য জানানো যাচ্ছে যে কাজ সঠিকভাবে সম্পন্ন করুন।"
+    },
+    "referralReward": 50,
     "withdrawalFeePercent": 2,
+    "bkashNumber": "",
+    "supportTelegram": "",
+    "telegramChannelUrl": "",
+    "rocketNumber": "",
+    "supportWhatsapp": "01302864995",
+    "brandName": "Earnora",
+    "heroSubtitle": "",
+    "heroVideoUrl": "",
+    "updatedAt": "2026-09-14T06:24:47.996Z",
     "withdrawalMethods": [
       "bKash",
       "Nagad",
       "Rocket"
     ],
-    "supportPhone": "+880 1700-000000",
-    "supportWhatsapp": "+880 1700-000000",
-    "supportTelegram": "@earnora_official",
     "announcement": "📢 স্বাগতম! Earnora-তে প্রতিটি টাস্ক সম্পূর্ণ করে এবং বন্ধুদের রেফার করে নিশ্চিত আয় করুন। উইথড্র রিকোয়েস্ট ১২-২৪ ঘণ্টার মধ্যে সফলভাবে বিকাশ, নগদ ও রকেটে পরিশোধ করা হয়।",
-    "updatedAt": "2026-09-12T13:19:40.803Z"
+    "signupBonus": 10,
+    "dailyCheckinReward": 1,
+    "id": "f9ac8b12-cb2c-4bc0-a66d-a530aef71641",
+    "maxWithdrawal": 50000,
+    "supportPhone": "013028764995"
   },
-  "tasks": [
+  "auth_credentials": [
     {
-      "id": "51f2f403-0c5b-42f0-be2a-6a1bb7ae7346",
-      "title": "দৈনিক উপস্থিতি বোনাস (Daily Login Bonus)",
-      "description": "প্রতিদিন লগইন করে ইনস্ট্যান্ট ফ্রি বোনাস টাকা সংগ্রহ করুন।",
-      "category": "daily_checkin",
-      "rewardAmount": 5,
-      "taskType": "auto",
-      "proofType": "none",
-      "proofInstruction": "স্বয়ংক্রিয়ভাবে ব্যালেন্সে যুক্ত হবে।",
-      "targetUrl": "",
-      "dailyLimit": 1,
-      "status": "active",
-      "createdAt": "2026-09-13T04:27:04.116Z",
-      "updatedAt": "2026-09-13T04:27:04.116Z"
+      "passwordHash": "$2b$10$MSvxNZWgNu5jaOHniK7eAuvdTQUUVrMLdj2djBcpiT9AnGHipOrmm",
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "updatedAt": "2026-09-13T16:00:54.486Z"
     },
     {
-      "id": "c7f7b65f-d2ee-4f9c-9c3d-d6c6df689093",
-      "title": "Test Task",
-      "description": "Test",
-      "category": "telegram",
-      "rewardAmount": 10,
-      "taskType": "manual",
-      "proofType": "text",
-      "proofInstruction": "Send username",
-      "targetUrl": "https://t.me/test",
-      "dailyLimit": 1,
-      "status": "active",
-      "createdAt": "2026-09-13T06:57:36.767Z",
-      "updatedAt": "2026-09-13T06:57:36.767Z"
+      "userId": "e2a1b9c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
+      "updatedAt": "2026-09-13T05:00:00.000Z",
+      "passwordHash": "$2b$10$zEax/6kQuu6lesqxZFgzbOoRR1j2e2/wQ6ATOH21YwkHxHTzniqYO"
     },
     {
-      "id": "b749fc07-349b-454a-9d71-a6fe86e35ae3",
-      "title": "Test Task 2",
-      "description": "Test",
-      "category": "telegram",
-      "rewardAmount": 10,
-      "taskType": "manual",
-      "proofType": "text",
-      "proofInstruction": "Send username",
-      "targetUrl": "https://t.me/test",
-      "dailyLimit": 10,
-      "status": "active",
-      "createdAt": "2026-09-13T07:21:59.972Z",
-      "updatedAt": "2026-09-13T07:21:59.972Z"
+      "updatedAt": "2026-09-13T05:15:00.000Z",
+      "passwordHash": "$2b$10$zEax/6kQuu6lesqxZFgzbOoRR1j2e2/wQ6ATOH21YwkHxHTzniqYO",
+      "userId": "f3b2c1d0-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
+    },
+    {
+      "passwordHash": "$2b$10$dNZjE6EQGgxiyHEjgNIUIe0uJ5hdC43wWkPZbj6A5THsSzgCGduXq",
+      "userId": "aecfe8fc-832d-43f9-b07b-acc9bd4294ff",
+      "updatedAt": "2026-09-13T06:17:46.702Z"
+    },
+    {
+      "passwordHash": "$2b$10$j01xeJumnpQIwTj3JfhKxOGWp7YQ/lNBRMQrvTi5af3Ju6hPxOy4e",
+      "updatedAt": "2026-09-13T06:18:37.022Z",
+      "userId": "d8fdd5e3-26c1-4ddc-b2dd-adfca157c984"
+    },
+    {
+      "passwordHash": "$2b$10$8a3VTB/NZVLlz.TAP31IgOauo8/Upc31jiF0cHyFzt24tP6XahTNa",
+      "updatedAt": "2026-09-13T06:29:45.735Z",
+      "userId": "cf33c95b-0202-4059-8488-eae82ff98d72"
+    },
+    {
+      "updatedAt": "2026-09-13T06:33:04.366Z",
+      "userId": "da5f424e-7ff8-4c09-8748-7882ac9b7e6f",
+      "passwordHash": "$2b$10$6y.HUvWe4H7B5wZs9DrEBOjJAfJJFHBvX8mF4jJ24RWT07qv.SiOe"
+    },
+    {
+      "updatedAt": "2026-09-13T06:34:37.473Z",
+      "userId": "849c6177-6a8d-43fe-b2fa-262a79563f62",
+      "passwordHash": "$2b$10$rZ5Tbt3FG3rfsVgYF4ZqrufTuDCvNHTy3exZdYegK.3ab8sEs3W4a"
+    },
+    {
+      "passwordHash": "$2b$10$s.KnT4PrWeegsJzbv19gnODTsnkt7OYmiOPuF92xNrLeUAndFGiHu",
+      "userId": "4677bd99-390e-4a93-afd3-b70fcb0ce4b5",
+      "updatedAt": "2026-09-13T06:36:49.579Z"
+    },
+    {
+      "userId": "1e4a2fb9-f99e-4b4e-b664-b638796b0e9b",
+      "updatedAt": "2026-09-13T13:43:34.727Z",
+      "passwordHash": "$2b$10$oNOLk4AxyResucSJcRobgOhTWmXm1/n0oz2riJ2XJSyp4cFP1Qfha"
+    },
+    {
+      "userId": "ec932609-8164-4e28-8cf4-1d55d23bed4b",
+      "passwordHash": "$2b$10$eJJ00iP9PHg5W0p34GkiAOYccIkko17xr.Xo9AvedBh5GIkhdNe7K",
+      "updatedAt": "2026-09-13T14:26:50.971Z"
     }
   ],
-  "task_submissions": [
-    {
-      "id": "ed265fbf-2066-49f7-880d-f59680011e64",
-      "taskId": "c7f7b65f-d2ee-4f9c-9c3d-d6c6df689093",
-      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "proofData": "my_username",
-      "status": "approved",
-      "rewardAmount": 10,
-      "createdAt": "2026-09-13T06:57:42.698Z",
-      "reviewedBy": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "reviewedAt": "2026-09-13T07:12:52.690Z"
-    },
-    {
-      "id": "559d27f8-2a99-4a91-85a9-6f7ffd305dc1",
-      "taskId": "b749fc07-349b-454a-9d71-a6fe86e35ae3",
-      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "proofData": "my_new_submission_test",
-      "status": "approved",
-      "rewardAmount": 10,
-      "createdAt": "2026-09-13T07:22:04.937Z",
-      "reviewedBy": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "reviewedAt": "2026-09-13T07:33:09.145Z"
-    }
-  ],
+  "withdrawal_requests": [],
+  "social_tasks_queue": [],
+  "task_submissions": [],
   "referrals": [
     {
-      "id": "r1a2b3c4-5d6e-7f8a-9b0c-1d2e3f4a5b6c",
-      "referrerId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "createdAt": "2026-09-13T05:00:00.000Z",
       "referredUserId": "e2a1b9c3-4d5e-6f7a-8b9c-0d1e2f3a4b5c",
-      "rewardAmount": 50,
+      "referrerId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
       "status": "rewarded",
-      "createdAt": "2026-09-13T05:00:00.000Z"
+      "rewardAmount": 50,
+      "id": "r1a2b3c4-5d6e-7f8a-9b0c-1d2e3f4a5b6c"
+    },
+    {
+      "referredUserId": "ec932609-8164-4e28-8cf4-1d55d23bed4b",
+      "id": "07f9f1a2-2864-4e7a-a4c8-b6056be99a10",
+      "status": "registered",
+      "createdAt": "2026-09-13T14:26:50.971Z",
+      "referrerId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "rewardAmount": 50
     }
   ],
   "transactions": [
     {
-      "id": "2bb03f17-f9c3-43a5-bd71-93b2a3c3a807",
-      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "type": "task_reward",
-      "amount": 10,
-      "balanceAfter": 10,
       "description": "টাস্ক সম্পন্ন: Test Task",
+      "amount": 10,
+      "createdAt": "2026-09-13T07:12:52.690Z",
+      "balanceAfter": 10,
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
       "referenceId": "ed265fbf-2066-49f7-880d-f59680011e64",
-      "createdAt": "2026-09-13T07:12:52.690Z"
+      "type": "task_reward",
+      "id": "2bb03f17-f9c3-43a5-bd71-93b2a3c3a807"
     },
     {
-      "id": "0bcb98ef-7463-443a-9995-82f6736d9f90",
-      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
       "type": "task_reward",
-      "amount": 14,
-      "balanceAfter": 24,
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
       "description": "GMAIL অ্যাকাউন্ট সেল পেমেন্ট (test@gmail.com)",
-      "referenceId": "c2728e2a-2b01-4bdb-8fc2-abbf2860c178",
-      "createdAt": "2026-09-13T07:25:02.190Z"
+      "id": "0bcb98ef-7463-443a-9995-82f6736d9f90",
+      "amount": 14,
+      "createdAt": "2026-09-13T07:25:02.190Z",
+      "balanceAfter": 24,
+      "referenceId": "c2728e2a-2b01-4bdb-8fc2-abbf2860c178"
     },
     {
       "id": "b6343b66-94fa-422a-a414-a4d1ac3a6100",
-      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
       "type": "task_reward",
+      "referenceId": "559d27f8-2a99-4a91-85a9-6f7ffd305dc1",
       "amount": 10,
       "balanceAfter": 34,
-      "description": "টাস্ক সম্পন্ন: Test Task 2",
-      "referenceId": "559d27f8-2a99-4a91-85a9-6f7ffd305dc1",
-      "createdAt": "2026-09-13T07:33:09.145Z"
-    }
-  ],
-  "withdrawal_requests": [],
-  "support_tickets": [],
-  "audit_logs": [
-    {
-      "id": "652429cc-042a-47f1-87a9-915273c70cb9",
-      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "actorEmail": "fahim236455@gmail.com",
-      "action": "system_initialized",
-      "details": {
-        "message": "Earnora clean production database initialized."
-      },
-      "createdAt": "2026-09-12T13:19:40.803Z"
-    },
-    {
-      "id": "15739992-6db9-4373-ad4c-84f94ab2ccc6",
-      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "actorEmail": "fahim236455@gmail.com",
-      "action": "user_suspended",
-      "details": {
-        "targetUserId": "aecfe8fc-832d-43f9-b07b-acc9bd4294ff",
-        "targetEmail": "test456@gmail.com"
-      },
-      "createdAt": "2026-09-13T06:27:38.043Z"
-    },
-    {
-      "id": "9bf1a0b6-1143-4c0d-97ce-405f6b59a9d3",
-      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "actorEmail": "fahim236455@gmail.com",
-      "action": "user_reactivated",
-      "details": {
-        "targetUserId": "aecfe8fc-832d-43f9-b07b-acc9bd4294ff",
-        "targetEmail": "test456@gmail.com"
-      },
-      "createdAt": "2026-09-13T06:27:39.515Z"
-    },
-    {
-      "id": "0fcea33c-15d2-4ce3-a20f-49b5d3704caa",
-      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "actorEmail": "fahim236455@gmail.com",
-      "action": "task_created",
-      "details": {
-        "taskId": "c7f7b65f-d2ee-4f9c-9c3d-d6c6df689093",
-        "title": "Test Task",
-        "rewardAmount": 10,
-        "category": "telegram"
-      },
-      "createdAt": "2026-09-13T06:57:36.767Z"
-    },
-    {
-      "id": "65b7c436-bfaa-4176-a8e8-f518e35726be",
-      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "actorEmail": "fahim236455@gmail.com",
-      "action": "task_submission_approved",
-      "details": {
-        "submissionId": "ed265fbf-2066-49f7-880d-f59680011e64",
-        "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-        "reward": 10
-      },
-      "createdAt": "2026-09-13T07:12:52.690Z"
-    },
-    {
-      "id": "46586a1a-38be-41b9-895c-93b99eb7bdbd",
-      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "actorEmail": "fahim236455@gmail.com",
-      "action": "task_created",
-      "details": {
-        "taskId": "b749fc07-349b-454a-9d71-a6fe86e35ae3",
-        "title": "Test Task 2",
-        "rewardAmount": 10,
-        "category": "telegram"
-      },
-      "createdAt": "2026-09-13T07:21:59.972Z"
-    },
-    {
-      "id": "6faaf30c-2ef0-45be-915c-82ecf367808d",
-      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "actorEmail": "fahim236455@gmail.com",
-      "action": "task_submission_approved",
-      "details": {
-        "submissionId": "559d27f8-2a99-4a91-85a9-6f7ffd305dc1",
-        "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-        "reward": 10
-      },
-      "createdAt": "2026-09-13T07:33:09.145Z"
-    },
-    {
-      "id": "550c0412-d35a-4d42-b555-29eed669c2cf",
-      "actorId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "actorEmail": "fahim236455@gmail.com",
-      "action": "social_job_config_updated",
-      "details": {
-        "service": "gmail",
-        "rate": 14,
-        "active": true,
-        "todayPassword": "sgwteam1@21A"
-      },
-      "createdAt": "2026-09-13T08:19:41.172Z"
-    }
-  ],
-  "social_account_sales": [
-    {
-      "id": "c2728e2a-2b01-4bdb-8fc2-abbf2860c178",
       "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
-      "userEmail": "fahim236455@gmail.com",
-      "service": "gmail",
-      "taskId": "test1234",
-      "accountIdentifier": "test@gmail.com",
-      "password": "password123",
-      "rate": 14,
-      "status": "approved",
-      "createdAt": "2026-09-13T07:22:30.464Z",
-      "reviewedAt": "2026-09-13T07:25:02.190Z",
-      "reviewedBy": "fahim236455@gmail.com"
+      "description": "টাস্ক সম্পন্ন: Test Task 2",
+      "createdAt": "2026-09-13T07:33:09.145Z"
+    },
+    {
+      "amount": 5,
+      "type": "daily_checkin",
+      "createdAt": "2026-09-13T15:29:23.393Z",
+      "description": "দৈনিক উপস্থিতি বোনাস গ্রহণ",
+      "id": "cefb5c00-bbe9-42db-8f46-fb4536f818b7",
+      "balanceAfter": 39,
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "referenceId": "1b7e2d78-2a19-4905-870f-230b933b49bf"
+    },
+    {
+      "createdAt": "2026-09-14T06:05:56.376Z",
+      "balanceAfter": 0,
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be",
+      "type": "admin_adjustment",
+      "description": "অ্যাডমিন ব্যালেন্স সমন্বয়",
+      "id": "42387a87-c7a1-4cdc-8d01-91a51ba9ba2f",
+      "amount": -39
+    },
+    {
+      "createdAt": "2026-09-14T07:13:23.520Z",
+      "amount": 5,
+      "balanceAfter": 5,
+      "referenceId": "b03a7584-0ba9-43cd-9eb3-244664938201",
+      "type": "daily_checkin",
+      "description": "দৈনিক উপস্থিতি বোনাস গ্রহণ",
+      "id": "0cf3151f-f8d9-4a06-bc48-c87587e5bc5b",
+      "userId": "a4c7a3aa-cd88-4670-bd94-1e2dfd01d6be"
     }
   ],
   "social_jobs_config": [
     {
-      "service": "gmail",
-      "title": "Gmail Create & Sell",
-      "rate": 14,
+      "updatedAt": "2026-09-13T16:04:24.844Z",
       "dailyLimit": 1000,
       "reportTime": "15-30 hours",
-      "usernameTemplate": "sgw",
-      "todayPassword": "sgwteam1@21A",
-      "active": true,
+      "notes": "নতুন জিমেইল তৈরি করুন। রিকভারি ছাড়া পাসওয়ার্ড ern@21A দিন।",
+      "title": "Gmail Create & Sell",
+      "service": "gmail",
+      "todayPassword": "ern@21A",
       "tutorialUrl": "",
-      "notes": "নতুন জিমেইল তৈরি করুন। রিকভারি ছাড়া পাসওয়ার্ড sgwteam1@21A দিন।",
-      "updatedAt": "2026-09-13T08:19:41.172Z"
+      "usernameTemplate": "ern",
+      "rate": 14,
+      "active": true
     },
     {
-      "service": "facebook",
-      "title": "Facebook ID / Followers Sell",
       "rate": 4.5,
-      "dailyLimit": 1000,
-      "reportTime": "15/40 hours",
-      "todayPassword": "Earnnora@12",
-      "active": true,
-      "tutorialUrl": "https://youtube.com",
+      "title": "Facebook ID / Followers Sell",
       "notes": "ফেসবুক ইউআইডি ও পাসওয়ার্ড দিন। কুকিজ দিলে দ্রুত অনুমোদন।",
-      "updatedAt": "2026-09-13T03:04:26.544Z"
+      "tutorialUrl": "https://youtube.com",
+      "updatedAt": "2026-09-13T03:04:26.544Z",
+      "service": "facebook",
+      "todayPassword": "Earnnora@12",
+      "reportTime": "15/40 hours",
+      "dailyLimit": 1000,
+      "active": true
     },
     {
-      "service": "instagram",
-      "title": "Instagram Account Sell",
       "rate": 2.5,
+      "active": true,
+      "todayPassword": "Earnnora@12",
+      "title": "Instagram Account Sell",
+      "updatedAt": "2026-09-13T03:04:34.680Z",
+      "notes": "ইনস্টাগ্রাম ইউজারনেম ও পাসওয়ার্ড দিয়ে সাবমিট করুন।",
+      "tutorialUrl": "https://youtube.com",
       "dailyLimit": 1000,
       "reportTime": "10/20 hours",
-      "todayPassword": "Earnnora@12",
-      "active": true,
-      "tutorialUrl": "https://youtube.com",
-      "notes": "ইনস্টাগ্রাম ইউজারনেম ও পাসওয়ার্ড দিয়ে সাবমিট করুন।",
-      "updatedAt": "2026-09-13T03:04:34.680Z"
+      "service": "instagram"
     }
   ],
-  "social_tasks_queue": [],
-  "user_posted_jobs": []
+  "tasks": []
 }

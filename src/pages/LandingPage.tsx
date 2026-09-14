@@ -20,6 +20,8 @@ import {
   Heart,
   Sparkles,
   Bell,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { motion, type Variants } from 'motion/react';
 
@@ -83,7 +85,7 @@ const FeaturesIllustration: React.FC = () => (
 );
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
-  const { settings } = useApp();
+  const { settings, isDarkMode, toggleDarkMode } = useApp();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const [dismissedNotice, setDismissedNotice] = useState(false);
@@ -121,7 +123,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
   const heroDescription = settings?.heroSubtitle || 'একটি আধুনিক ও নির্ভরযোগ্য ডিজিটাল প্ল্যাটফর্ম যেখানে আপনি সহজে টাস্ক সম্পন্ন করে, রেফারেল প্রোগ্রামে অংশগ্রহণ করে এবং বিভিন্ন অনলাইন কার্যক্রমের মাধ্যমে অতিরিক্ত আয়ের সুযোগ পেতে পারেন। নিরাপদ লেনদেন, দ্রুত পেমেন্ট এবং স্বচ্ছ সিস্টেম আমাদের সেবার প্রধান বৈশিষ্ট্য।';
 
   return (
-    <div className="min-h-screen bg-[#060b18] text-slate-100 font-['Hind_Siliguri',sans-serif] selection:bg-sky-500 selection:text-white overflow-x-hidden">
+    <div className={`min-h-screen font-['Hind_Siliguri',sans-serif] selection:bg-sky-500 selection:text-white overflow-x-hidden transition-colors ${isDarkMode ? 'bg-[#060b18] text-slate-100' : 'bg-slate-100 text-slate-900'}`}>
       {/* Dynamic Popup Notice Alert Modal (controlled from Admin Panel) */}
       <SiteNoticeModal
         isOpen={Boolean(settings?.popupNotice?.enabled && !dismissedNotice)}
@@ -179,7 +181,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           </nav>
 
           {/* Right Action Buttons */}
-          <div className="hidden sm:flex items-center gap-4">
+          <div className="hidden sm:flex items-center gap-3">
+            <button
+              onClick={toggleDarkMode}
+              className="p-2.5 rounded-full bg-slate-800/60 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors border border-slate-700/50 cursor-pointer flex items-center justify-center"
+              title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-sky-600" />}
+            </button>
             <button
               onClick={() => onNavigate('login')}
               className="text-sm font-bold text-slate-300 hover:text-sky-400 px-3 py-2 transition-colors cursor-pointer"
@@ -198,6 +207,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
 
           {/* Mobile Menu Toggle */}
           <div className="flex sm:hidden items-center gap-2">
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 rounded-full bg-slate-800/60 text-slate-300 cursor-pointer flex items-center justify-center border border-slate-700/50"
+              title={isDarkMode ? 'Light Mode' : 'Dark Mode'}
+            >
+              {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-sky-600" />}
+            </button>
             <button
               onClick={() => onNavigate('login')}
               className="text-xs font-bold text-slate-300 px-2 py-1.5"

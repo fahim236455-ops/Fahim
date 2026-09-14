@@ -27,7 +27,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentRoute, onNavigate }
         <button
           onClick={() => onNavigate('tasks')}
           className={`flex-1 flex flex-col items-center justify-center py-1 transition-all cursor-pointer ${
-            currentRoute === 'tasks' || currentRoute === 'job-post'
+            currentRoute === 'tasks' || currentRoute === 'micro-jobs' || currentRoute === 'job-post'
               ? 'text-amber-400 font-bold'
               : 'text-slate-400 hover:text-slate-200 font-medium'
           }`}

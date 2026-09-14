@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { fetchApi } from '../lib/api';
@@ -62,6 +62,8 @@ import {
   AlertTriangle,
   CreditCard,
   Gift,
+  Paperclip,
+  Briefcase
 } from 'lucide-react';
 
 interface AdminPanelPageProps {
@@ -200,6 +202,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
   const [socialSales, setSocialSales] = useState<any[]>([]);
   const [socialJobs, setSocialJobs] = useState<SocialJobConfig[]>([]);
   const [socialTasksQueue, setSocialTasksQueue] = useState<any[]>([]);
+  const [pendingUserJobs, setPendingUserJobs] = useState<any[]>([]);
   const [generatingQueueService, setGeneratingQueueService] = useState<string | null>(null);
   const [withdrawals, setWithdrawals] = useState<EnrichedWithdrawal[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -268,11 +271,115 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
   const [replyTicketId, setReplyTicketId] = useState<string | null>(null);
   const [ticketReplyText, setTicketReplyText] = useState('');
   const [selectedChatTicketId, setSelectedChatTicketId] = useState<string | null>(null);
+  const [selectedChatUserId, setSelectedChatUserId] = useState<string | null>(null);
   const [adminChatText, setAdminChatText] = useState('');
   const [adminSendingChat, setAdminSendingChat] = useState(false);
+  const [adminAttachment, setAdminAttachment] = useState<string | null>(null);
+  const adminFileInputRef = useRef<HTMLInputElement>(null);
   const [ticketSearch, setTicketSearch] = useState('');
   const [ticketFilter, setTicketFilter] = useState<'all' | 'open' | 'answered' | 'closed'>('all');
   const chatMessagesEndRef = useRef<HTMLDivElement>(null);
+  const chatMessagesContainerRef = useRef<HTMLDivElement>(null);
+
+  // Group tickets by unique User (WhatsApp style)
+  const userGroups = useMemo(() => {
+    const map = new Map<string, {
+      userId: string;
+      userName: string;
+      userPhone: string;
+      userEmail: string;
+      userBalance: number;
+      latestTicketId: string;
+      latestTimestamp: string;
+      status: 'open' | 'answered' | 'closed';
+      hasOpen: boolean;
+      unreadCount: number;
+      messages: { id: string; sender: 'user' | 'agent'; text: string; attachmentUrl?: string; timestamp: string }[];
+      tickets: SupportTicket[];
+    }>();
+
+    tickets.forEach((t) => {
+      const key = t.userId || t.userPhone || t.userEmail || t.id;
+      if (!map.has(key)) {
+        map.set(key, {
+          userId: t.userId || key,
+          userName: t.userFullName || t.userName || 'গ্রাহক / ভিজিটর',
+          userPhone: t.userPhone || '',
+          userEmail: t.userEmail || '',
+          userBalance: t.userBalance ?? 0,
+          latestTicketId: t.id,
+          latestTimestamp: t.updatedAt || t.createdAt,
+          status: t.status,
+          hasOpen: t.status === 'open',
+          unreadCount: t.status === 'open' ? 1 : 0,
+          messages: [],
+          tickets: [t],
+        });
+      } else {
+        const g = map.get(key)!;
+        g.tickets.push(t);
+        if (t.userPhone && !g.userPhone) g.userPhone = t.userPhone;
+        if (t.userEmail && !g.userEmail) g.userEmail = t.userEmail;
+        if (t.userFullName && g.userName === 'গ্রাহক / ভিজিটর') g.userName = t.userFullName;
+        if (t.status === 'open') {
+          g.hasOpen = true;
+          g.unreadCount += 1;
+        }
+      }
+
+      const group = map.get(key)!;
+
+      // Collect thread messages
+      if (t.messages && t.messages.length > 0) {
+        t.messages.forEach((m) => {
+          if (!group.messages.some((existing) => existing.id === m.id)) {
+            group.messages.push(m);
+          }
+        });
+      } else {
+        if (t.message) {
+          const userMsgId = `init-${t.id}`;
+          if (!group.messages.some((m) => m.id === userMsgId)) {
+            group.messages.push({
+              id: userMsgId,
+              sender: 'user',
+              text: t.message,
+              timestamp: t.createdAt,
+            });
+          }
+        }
+        if (t.adminReply) {
+          const replyMsgId = `reply-${t.id}`;
+          if (!group.messages.some((m) => m.id === replyMsgId)) {
+            group.messages.push({
+              id: replyMsgId,
+              sender: 'agent',
+              text: t.adminReply,
+              timestamp: t.repliedAt || t.updatedAt,
+            });
+          }
+        }
+      }
+
+      const tTime = new Date(t.updatedAt || t.createdAt).getTime();
+      const gTime = new Date(group.latestTimestamp).getTime();
+      if (tTime >= gTime) {
+        group.latestTimestamp = t.updatedAt || t.createdAt;
+        group.latestTicketId = t.id;
+        group.status = t.status;
+      }
+    });
+
+    // Sort internal thread messages chronologically
+    map.forEach((g) => {
+      g.messages.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+    });
+
+    // Sort groups by latest activity time
+    return Array.from(map.values()).sort(
+      (a, b) => new Date(b.latestTimestamp).getTime() - new Date(a.latestTimestamp).getTime()
+    );
+  }, [tickets]);
 
   // Search state
   const [userSearch, setUserSearch] = useState('');
@@ -341,7 +448,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
-      const [statsData, subData, withData, taskData, usrData, tktData, settsData, logsData, socData, socJobsData, socTasksData, rolesData, syncData] =
+      const [statsData, subData, withData, taskData, usrData, tktData, settsData, logsData, socData, socJobsData, socTasksData, rolesData, syncData, userJobsData] =
         await Promise.all([
           fetchApi(`/admin/stats?t=${Date.now()}`).catch((e) => { console.error('Stats API:', e); return null; }),
           fetchApi(`/admin/submissions?t=${Date.now()}`).catch((e) => { console.error('Subs API:', e); return null; }),
@@ -355,7 +462,8 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
           fetchApi(`/admin/social-jobs?t=${Date.now()}`).catch((e) => { console.error('SocJobs API:', e); return null; }),
           fetchApi(`/admin/social-tasks?t=${Date.now()}`).catch((e) => { console.error('SocTasks API:', e); return null; }),
           fetchApi(`/admin/roles?t=${Date.now()}`).catch((e) => { console.error('Roles API:', e); return null; }),
-          fetchApi(`/admin/cloud-sync?t=${Date.now()}`).catch((e) => { console.error('CloudSync API:', e); return null; }),
+                    fetchApi(`/admin/user-jobs?t=${Date.now()}`).catch((e) => { console.error('UserJobs API:', e); return null; }),
+fetchApi(`/admin/cloud-sync?t=${Date.now()}`).catch((e) => { console.error('CloudSync API:', e); return null; }),
         ]);
 
       if (statsData) setStats(statsData);
@@ -368,6 +476,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
       if (Array.isArray(logsData)) setAuditLogs(logsData);
       if (Array.isArray(socData)) setSocialSales(socData);
       if (Array.isArray(socJobsData)) setSocialJobs(socJobsData);
+      if (Array.isArray(userJobsData)) setPendingUserJobs(userJobsData);
       if (Array.isArray(socTasksData)) setSocialTasksQueue(socTasksData);
       if (Array.isArray(rolesData)) setAdminRolesList(rolesData);
       if (syncData) setCloudSyncInfo(syncData);
@@ -898,26 +1007,56 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
     }
   }, [activeTab, tickets, selectedChatTicketId]);
 
-  // Scroll to bottom of admin chat when ticket or messages change
+  // Scroll to bottom of admin chat container when user selected or tab switched
   useEffect(() => {
-    if (selectedChatTicketId) {
-      chatMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (activeTab === 'support' && (selectedChatUserId || selectedChatTicketId) && chatMessagesContainerRef.current) {
+      chatMessagesContainerRef.current.scrollTop = chatMessagesContainerRef.current.scrollHeight;
     }
-  }, [selectedChatTicketId, tickets]);
+  }, [selectedChatUserId, selectedChatTicketId, activeTab]);
+
+  // Handle admin file attachment select
+  const handleAdminFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('ফাইলের সাইজ সর্বোচ্চ 5MB হতে পারবে।', 'error');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      if (dataUrl) {
+        setAdminAttachment(dataUrl);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Send admin chat message
   const handleSendAdminChatMessage = async (ticketId: string, textOverride?: string) => {
     const textToSend = (textOverride !== undefined ? textOverride : adminChatText).trim();
-    if (!textToSend || !ticketId) return;
+    const attachmentToSend = adminAttachment;
+
+    if (!textToSend && !attachmentToSend) return;
+    if (!ticketId) return;
 
     try {
       setAdminSendingChat(true);
       const res = await fetchApi<{ message: string; ticket: SupportTicket }>(`/admin/support/tickets/${ticketId}/reply`, {
         method: 'POST',
-        body: JSON.stringify({ reply: textToSend, status: 'answered' }),
+        body: JSON.stringify({
+          reply: textToSend || (attachmentToSend ? 'ছবি সংযুক্ত করা হয়েছে' : ''),
+          status: 'answered',
+          attachmentUrl: attachmentToSend || undefined,
+        }),
       });
 
       setAdminChatText('');
+      setAdminAttachment(null);
+      if (adminFileInputRef.current) adminFileInputRef.current.value = '';
+
       showToast(res.message || 'মেসেজ পাঠানো হয়েছে!', 'success');
 
       if (res.ticket) {
@@ -927,14 +1066,15 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
       }
 
       setTimeout(() => {
-        chatMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (chatMessagesContainerRef.current) {
+          chatMessagesContainerRef.current.scrollTop = chatMessagesContainerRef.current.scrollHeight;
+        }
       }, 100);
     } catch (err: any) {
       showToast(err.message || 'রিপ্লাই পাঠাতে ব্যর্থ হয়েছে।', 'error');
     } finally {
       setAdminSendingChat(false);
     }
-
   };
 
   // Change ticket status
@@ -1495,7 +1635,13 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
               icon: Share2,
               perm: 'canReviewSocialSubmissions'
             },
-            { id: 'tasks', label: `ম্যানুয়াল টাস্ক তৈরি ও লিস্ট (${tasks.length})`, icon: Plus, perm: 'canManageTasks' },
+                        {
+              id: 'user_jobs',
+              label: `ইউজার জব রিকোয়েস্ট (${pendingUserJobs.filter((j) => j.status === 'pending').length})`,
+              icon: Briefcase,
+              perm: 'canManageTasks'
+            },
+{ id: 'tasks', label: `ম্যানুয়াল টাস্ক তৈরি ও লিস্ট (${tasks.length})`, icon: Plus, perm: 'canManageTasks' },
             {
               id: 'submissions',
               label: `টাস্ক রিভিউ ও অনুমোদন (${submissions.filter((s) => s.status === 'pending').length})`,
@@ -1562,7 +1708,116 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
             transition={{ duration: 0.3 }}
             className="w-full"
           >
-            {/* ========================================================= */}
+            
+        {/* ========================================================= */}
+        {/* USER JOBS TAB */}
+        {/* ========================================================= */}
+        {activeTab === 'user_jobs' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-700">
+              <div>
+                <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                  <Briefcase className="w-4 h-4 text-emerald-400" />
+                  ইউজার জব রিকোয়েস্ট
+                </h2>
+                <p className="text-xs text-slate-400 mt-1">ইউজারদের পোস্ট করা মাইক্রো জবগুলো রিভিউ করুন।</p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              {pendingUserJobs.length === 0 ? (
+                <div className="text-center py-10 bg-slate-800/50 rounded-2xl border border-slate-700/50">
+                  <p className="text-slate-400 text-sm">কোনো জব রিকোয়েস্ট নেই।</p>
+                </div>
+              ) : (
+                pendingUserJobs.map((job) => (
+                  <div key={job.id} className="bg-slate-800 rounded-2xl p-4 border border-slate-700 space-y-3 shadow-sm">
+                    <div className="flex justify-between items-start gap-3">
+                      <div>
+                        <h3 className="text-sm font-bold text-white">{job.title}</h3>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          পোস্ট করেছেন: {job.userFullName} ({job.userEmail})
+                        </p>
+                      </div>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
+                        job.status === 'pending'
+                          ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                          : job.status === 'active'
+                          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                          : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                      }`}>
+                        {job.status === 'pending' ? 'পেন্ডিং' : job.status === 'active' ? 'অ্যাক্টিভ' : 'বাতিলকৃত'}
+                      </span>
+                    </div>
+
+                    <div className="bg-slate-900/50 rounded-xl p-3 border border-slate-700/50 space-y-2 text-xs">
+                      <div className="grid grid-cols-2 gap-2 text-slate-300">
+                        <p><span className="text-slate-500">ক্যাটাগরি:</span> {job.mainCategory} &gt; {job.subCategory}</p>
+                        <p><span className="text-slate-500">ওয়ার্কার:</span> {job.workersNeeded} জন</p>
+                        <p><span className="text-slate-500">ওয়ার্কার প্রতি খরচ:</span> ৳{job.costPerWorker.toFixed(2)}</p>
+                        <p><span className="text-slate-500">মোট চার্জ:</span> ৳{job.totalPayable.toFixed(2)}</p>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block mb-1">নির্দেশনা:</span>
+                        <p className="text-slate-300 whitespace-pre-wrap">{job.instructions}</p>
+                      </div>
+                      {job.targetUrl && (
+                        <div>
+                          <span className="text-slate-500 block mb-1">টার্গেট লিংক:</span>
+                          <a href={job.targetUrl} target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline break-all">
+                            {job.targetUrl}
+                          </a>
+                        </div>
+                      )}
+                    </div>
+
+                    {job.status === 'pending' && (
+                      <div className="flex items-center gap-2 pt-2">
+                        <button
+                          onClick={async () => {
+                            try {
+                              const res = await fetchApi(`/admin/user-jobs/${job.id}/review`, {
+                                method: 'POST',
+                                body: JSON.stringify({ status: 'active' }),
+                              });
+                              showToast(res.message, 'success');
+                              loadData();
+                            } catch (e: any) {
+                              showToast(e.message, 'error');
+                            }
+                          }}
+                          className="flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-xs py-2 rounded-xl border border-emerald-500/20 transition-colors"
+                        >
+                          অ্যাপ্রুভ করুন
+                        </button>
+                        <button
+                          onClick={() => {
+                            requireConfirmation('আপনি কি নিশ্চিত যে এই জবটি বাতিল করবেন? ইউজার তার ব্যালেন্স রিফান্ড পেয়ে যাবে।', async () => {
+                              try {
+                                const res = await fetchApi(`/admin/user-jobs/${job.id}/review`, {
+                                  method: 'POST',
+                                  body: JSON.stringify({ status: 'rejected' }),
+                                });
+                                showToast(res.message, 'success');
+                                loadData();
+                              } catch (e: any) {
+                                showToast(e.message, 'error');
+                              }
+                            });
+                          }}
+                          className="flex-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-bold text-xs py-2 rounded-xl border border-rose-500/20 transition-colors"
+                        >
+                          বাতিল ও রিফান্ড
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+{/* ========================================================= */}
             {/* 1. OVERVIEW TAB */}
             {/* ========================================================= */}
             {activeTab === 'overview' && (
@@ -4049,30 +4304,33 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
         )}
 
         {/* ========================================================= */}
-        {/* 6. SUPPORT & LIVE CHAT DESK (Real-Time Admin Messenger)    */}
+        {/* 6. SUPPORT & LIVE CHAT DESK (WhatsApp-Style Per-User Chat) */}
         {/* ========================================================= */}
         {activeTab === 'support' && (() => {
-          const openCount = tickets.filter((t) => t.status === 'open').length;
-          const answeredCount = tickets.filter((t) => t.status === 'answered').length;
-          const closedCount = tickets.filter((t) => t.status === 'closed').length;
+          const totalOpenUsers = userGroups.filter((g) => g.hasOpen).length;
+          const openCount = userGroups.filter((g) => g.hasOpen).length;
+          const answeredCount = userGroups.filter((g) => !g.hasOpen && g.status === 'answered').length;
+          const closedCount = userGroups.filter((g) => !g.hasOpen && g.status === 'closed').length;
 
-          const filteredTickets = tickets.filter((t) => {
-            if (ticketFilter === 'open' && t.status !== 'open') return false;
-            if (ticketFilter === 'answered' && t.status !== 'answered') return false;
-            if (ticketFilter === 'closed' && t.status !== 'closed') return false;
+          // Filter groups
+          const filteredGroups = userGroups.filter((g) => {
+            if (ticketFilter === 'open' && !g.hasOpen) return false;
+            if (ticketFilter === 'answered' && (g.hasOpen || g.status !== 'answered')) return false;
+            if (ticketFilter === 'closed' && (g.hasOpen || g.status !== 'closed')) return false;
+
             if (ticketSearch.trim()) {
               const q = ticketSearch.toLowerCase();
-              const matchName = (t.userFullName || '').toLowerCase().includes(q);
-              const matchPhone = (t.userPhone || '').toLowerCase().includes(q);
-              const matchEmail = (t.userEmail || '').toLowerCase().includes(q);
-              const matchSubj = (t.subject || '').toLowerCase().includes(q);
-              const matchMsg = (t.message || '').toLowerCase().includes(q);
-              return matchName || matchPhone || matchEmail || matchSubj || matchMsg;
+              const matchName = g.userName.toLowerCase().includes(q);
+              const matchPhone = g.userPhone.toLowerCase().includes(q);
+              const matchEmail = g.userEmail.toLowerCase().includes(q);
+              const matchMsg = g.messages.some((m) => m.text.toLowerCase().includes(q));
+              return matchName || matchPhone || matchEmail || matchMsg;
             }
             return true;
           });
 
-          const currentSelectedTicket = tickets.find((t) => t.id === selectedChatTicketId) || filteredTickets[0] || null;
+          // Currently selected user chat group
+          const currentGroup = userGroups.find((g) => g.userId === selectedChatUserId) || filteredGroups[0] || null;
 
           return (
             <div className="space-y-3">
@@ -4082,16 +4340,16 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                   <div className="flex items-center gap-2">
                     <h2 className="text-sm font-bold text-white flex items-center gap-1.5">
                       <Headphones className="w-4 h-4 text-emerald-400" />
-                      <span>সাপোর্ট ও লাইভ চ্যাট ডেস্ক</span>
+                      <span>সাপোর্ট ও হোয়াটসঅ্যাপ-স্টাইল চ্যাট ড্যাশবোর্ড</span>
                     </h2>
-                    {openCount > 0 && (
+                    {totalOpenUsers > 0 && (
                       <span className="bg-rose-500/20 text-rose-400 border border-rose-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
-                        ⏳ {openCount} টি নতুন বার্তা
+                        ⏳ {totalOpenUsers} জন গ্রাহকের উত্তর বাকি
                       </span>
                     )}
                   </div>
                   <p className="text-[11px] text-slate-400 mt-0.5">
-                    গ্রাহকদের সরাসরি লাইভ চ্যাটে রিয়েল-টাইম উত্তর দিন এবং সমস্যা সমাধান করুন
+                    প্রতিটি গ্রাহকের জন্য আলাদা চ্যাট বক্সে সরাসরি হোয়াটসঅ্যাপ স্টাইলে বার্তা আদান-প্রদান করুন
                   </p>
                 </div>
 
@@ -4105,7 +4363,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                         : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
                     }`}
                   >
-                    সকল ({tickets.length})
+                    সকল গ্রাহক ({userGroups.length})
                   </button>
                   <button
                     onClick={() => setTicketFilter('open')}
@@ -4140,7 +4398,7 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                 </div>
               </div>
 
-              {/* Quick WhatsApp & Telegram Info Card in Support Tab */}
+              {/* Quick WhatsApp & Telegram Settings Card */}
               <div className="bg-slate-800/90 border border-slate-700 rounded-xl p-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs shadow-xs">
                 <div className="flex flex-wrap items-center gap-2.5 text-slate-300">
                   <div className="flex items-center gap-1.5 bg-emerald-950/70 border border-emerald-800/70 px-2.5 py-1 rounded-lg text-emerald-300">
@@ -4172,101 +4430,108 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                   className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-transform active:scale-98 shrink-0 shadow-sm"
                 >
                   <Settings className="w-3.5 h-3.5" />
-                  <span>হোয়াটসঅ্যাপ ও টেলিগ্রাম পরিবর্তন করুন</span>
+                  <span>হোয়াটসঅ্যাপ ও টেলিগ্রাম সেটিংস</span>
                 </button>
               </div>
 
               {/* Main Two-Column Layout */}
-              {tickets.length === 0 ? (
+              {userGroups.length === 0 ? (
                 <div className="bg-slate-800 rounded-2xl p-8 text-center text-slate-400 text-xs border border-slate-700">
                   <CheckCircle2 className="w-8 h-8 mx-auto mb-2 text-emerald-400 opacity-60" />
-                  <p className="font-bold text-white">কোনো সাপোর্ট টিকিট বা মেসেজ নেই</p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">সবগুলো টিকিটের সমাধান করা হয়েছে।</p>
+                  <p className="font-bold text-white">কোনো চ্যাট বার্তা নেই</p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">সব গ্রাহকের বার্তার উত্তর প্রদান করা হয়েছে।</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 min-h-[560px]">
-                  {/* Left Column: Chat/Ticket Conversation List */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 min-h-[580px]">
+                  {/* Left Column: WhatsApp Style User Conversation List */}
                   <div className="lg:col-span-4 bg-slate-800 rounded-2xl border border-slate-700/80 flex flex-col overflow-hidden max-h-[620px]">
-                    {/* Search box */}
-                    <div className="p-2.5 border-b border-slate-700">
+                    {/* Search Box */}
+                    <div className="p-2.5 border-b border-slate-700 bg-slate-850">
                       <div className="relative">
                         <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
                         <input
                           type="text"
                           value={ticketSearch}
                           onChange={(e) => setTicketSearch(e.target.value)}
-                          placeholder="নাম, ফোন বা বিষয় খুঁজুন..."
+                          placeholder="গ্রাহকের নাম, ফোন বা মেসেজ খুঁজুন..."
                           className="w-full bg-slate-900 text-xs pl-8 pr-3 py-1.5 rounded-xl border border-slate-700 text-white outline-none focus:ring-1 focus:ring-amber-500"
                         />
                       </div>
                     </div>
 
-                    {/* Ticket Items List */}
+                    {/* Users List */}
                     <div className="flex-1 overflow-y-auto divide-y divide-slate-700/50">
-                      {filteredTickets.length === 0 ? (
+                      {filteredGroups.length === 0 ? (
                         <div className="p-6 text-center text-slate-400 text-xs">
-                          কোনো মেসেজ পাওয়া যায়নি
+                          কোনো গ্রাহকের চ্যাট পাওয়া যায়নি
                         </div>
                       ) : (
-                        filteredTickets.map((t) => {
-                          const isSelected = currentSelectedTicket?.id === t.id;
-                          const lastMsg = t.messages && t.messages.length > 0 ? t.messages[t.messages.length - 1] : null;
-                          const previewText = lastMsg ? lastMsg.text : t.message;
-                          const isPendingUserMsg = lastMsg ? lastMsg.sender === 'user' : t.status === 'open';
+                        filteredGroups.map((g) => {
+                          const isSelected = currentGroup?.userId === g.userId;
+                          const lastMsg = g.messages[g.messages.length - 1];
+                          const previewText = lastMsg
+                            ? lastMsg.text || (lastMsg.attachmentUrl ? '📷 ছবি সংযুক্ত' : 'মেসেজ')
+                            : 'কোনো মেসেজ নেই';
 
                           return (
                             <button
-                              key={t.id}
-                              onClick={() => setSelectedChatTicketId(t.id)}
+                              key={g.userId}
+                              onClick={() => setSelectedChatUserId(g.userId)}
                               className={`w-full text-left p-3 transition-colors flex items-start gap-2.5 ${
                                 isSelected
-                                  ? 'bg-amber-500/15 border-l-4 border-amber-500'
+                                  ? 'bg-emerald-500/15 border-l-4 border-emerald-500'
                                   : 'hover:bg-slate-750'
                               }`}
                             >
                               <div className="relative shrink-0">
-                                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-emerald-700 to-teal-500 flex items-center justify-center font-bold text-white text-xs shadow-xs">
-                                  {(t.userFullName || 'সদ')[0]}
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center font-bold text-white text-sm shadow-xs border border-emerald-400/30">
+                                  {g.userName[0]}
                                 </div>
-                                {isPendingUserMsg && (
-                                  <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-rose-500 rounded-full border-2 border-slate-800" />
+                                {g.hasOpen && (
+                                  <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-slate-800 flex items-center justify-center text-[9px] font-bold text-white animate-pulse">
+                                    !
+                                  </span>
                                 )}
                               </div>
 
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between gap-1">
                                   <span className="font-bold text-white text-xs truncate">
-                                    {t.userFullName || 'গ্রাহক / ভিজিটর'}
+                                    {g.userName}
                                   </span>
                                   <span className="text-[10px] text-slate-400 shrink-0 font-mono">
-                                    {new Date(t.updatedAt || t.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    {new Date(g.latestTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                   </span>
                                 </div>
 
-                                {t.userPhone && (
+                                {g.userPhone && (
                                   <span className="text-[11px] text-amber-300 font-mono block">
-                                    {t.userPhone}
+                                    📱 {g.userPhone}
                                   </span>
                                 )}
 
-                                <p className="text-slate-300 text-[11px] truncate mt-0.5">
-                                  {previewText}
+                                <p className="text-slate-300 text-[11px] truncate mt-0.5 flex items-center gap-1">
+                                  {lastMsg && lastMsg.sender === 'agent' && (
+                                    <span className="text-emerald-400 font-bold shrink-0">আপনি:</span>
+                                  )}
+                                  <span className="truncate">{previewText}</span>
                                 </p>
 
-                                <div className="flex items-center gap-1.5 mt-1.5">
+                                <div className="flex items-center justify-between mt-1.5">
                                   <span
                                     className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${
-                                      t.status === 'open'
+                                      g.hasOpen
                                         ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                                        : t.status === 'answered'
+                                        : g.status === 'answered'
                                         ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                                         : 'bg-slate-700 text-slate-300'
                                     }`}
                                   >
-                                    {t.status === 'open' ? 'অপেক্ষমান' : t.status === 'answered' ? 'উত্তর দেওয়া' : 'সম্পন্ন'}
+                                    {g.hasOpen ? '⏳ নতুন মেসেজ' : g.status === 'answered' ? '✓ উত্তর দেওয়া' : '🔒 সম্পন্ন'}
                                   </span>
-                                  <span className="text-[9px] bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded font-mono">
-                                    {t.category}
+
+                                  <span className="text-[9px] text-slate-400 bg-slate-900 px-1.5 py-0.5 rounded font-mono">
+                                    {g.messages.length} টি বার্তা
                                   </span>
                                 </div>
                               </div>
@@ -4277,47 +4542,58 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                     </div>
                   </div>
 
-                  {/* Right Column: Active Live Conversation Window */}
-                  {currentSelectedTicket ? (
+                  {/* Right Column: WhatsApp-Style Active Conversation Window */}
+                  {currentGroup ? (
                     <div className="lg:col-span-8 bg-slate-800 rounded-2xl border border-slate-700/80 flex flex-col overflow-hidden max-h-[620px]">
-                      {/* Chat Header */}
+                      {/* WhatsApp Chat Header */}
                       <div className="p-3 bg-slate-850 border-b border-slate-700 flex flex-wrap items-center justify-between gap-2.5">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-white text-sm shadow-xs">
-                            {(currentSelectedTicket.userFullName || 'গ্রা')[0]}
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center font-bold text-white text-sm shadow-xs">
+                            {currentGroup.userName[0]}
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
                               <h3 className="font-bold text-white text-sm">
-                                {currentSelectedTicket.userFullName || 'গ্রাহক / ভিজিটর'}
+                                {currentGroup.userName}
                               </h3>
                               <span className="text-[10px] bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded font-mono">
-                                ID: {currentSelectedTicket.userId.slice(0, 8)}
+                                ID: {currentGroup.userId.slice(0, 8)}
                               </span>
                             </div>
-                            <div className="flex items-center gap-2 text-[11px] text-slate-400">
-                              {currentSelectedTicket.userPhone && (
+                            <div className="flex items-center gap-2 text-[11px] text-slate-400 flex-wrap">
+                              {currentGroup.userPhone && (
                                 <a
-                                  href={`tel:${currentSelectedTicket.userPhone}`}
-                                  className="text-amber-400 font-mono hover:underline flex items-center gap-1"
+                                  href={`tel:${currentGroup.userPhone}`}
+                                  className="text-amber-400 font-mono hover:underline flex items-center gap-1 font-bold"
                                 >
                                   <Phone className="w-3 h-3" />
-                                  <span>{currentSelectedTicket.userPhone}</span>
+                                  <span>{currentGroup.userPhone}</span>
                                 </a>
                               )}
-                              {currentSelectedTicket.userEmail && (
-                                <span>• {currentSelectedTicket.userEmail}</span>
+                              {currentGroup.userEmail && (
+                                <span>• {currentGroup.userEmail}</span>
                               )}
-                              <span>• ব্যালেন্স: <strong className="text-emerald-400 font-mono">৳{(currentSelectedTicket.userBalance ?? 0).toFixed(2)}</strong></span>
+                              <span>• ব্যালেন্স: <strong className="text-emerald-400 font-mono">৳{currentGroup.userBalance.toFixed(2)}</strong></span>
                             </div>
                           </div>
                         </div>
 
-                        {/* Actions in Chat Header */}
+                        {/* Status dropdown & direct WhatsApp link */}
                         <div className="flex items-center gap-2">
+                          {currentGroup.userPhone && (
+                            <a
+                              href={`https://wa.me/88${currentGroup.userPhone.replace(/\D/g, '')}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow-xs"
+                            >
+                              <MessageSquare className="w-3.5 h-3.5" />
+                              <span className="hidden sm:inline">WhatsApp-এ খুলুন</span>
+                            </a>
+                          )}
                           <select
-                            value={currentSelectedTicket.status}
-                            onChange={(e) => handleChangeTicketStatus(currentSelectedTicket.id, e.target.value as any)}
+                            value={currentGroup.status}
+                            onChange={(e) => handleChangeTicketStatus(currentGroup.latestTicketId, e.target.value as any)}
                             className="bg-slate-900 text-slate-200 border border-slate-700 text-xs px-2 py-1.5 rounded-lg outline-none cursor-pointer"
                           >
                             <option value="open">⏳ অপেক্ষমান (Open)</option>
@@ -4327,162 +4603,174 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
                         </div>
                       </div>
 
-                      {/* Chat Messages Body */}
-                      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-900/60">
-                        {/* Initial ticket topic badge */}
+                      {/* WhatsApp Chat Messages Body */}
+                      <div ref={chatMessagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-900/70">
+                        {/* Conversation start badge */}
                         <div className="text-center my-1">
-                          <span className="bg-slate-800 border border-slate-700 text-slate-400 text-[10px] px-3 py-1 rounded-full">
-                            বিষয়: <strong>{currentSelectedTicket.subject}</strong> ({currentSelectedTicket.category})
+                          <span className="bg-slate-800 border border-slate-700 text-slate-400 text-[10px] px-3 py-1 rounded-full font-semibold">
+                            💬 {currentGroup.userName}-এর সাথে কথোপকথন (মোট {currentGroup.messages.length}টি বার্তা)
                           </span>
                         </div>
 
                         {/* Render thread */}
-                        {(() => {
-                          const thread = currentSelectedTicket.messages && currentSelectedTicket.messages.length > 0
-                            ? currentSelectedTicket.messages
-                            : [
-                                {
-                                  id: `init-${currentSelectedTicket.id}`,
-                                  sender: 'user' as const,
-                                  text: currentSelectedTicket.message,
-                                  timestamp: currentSelectedTicket.createdAt,
-                                },
-                                ...(currentSelectedTicket.adminReply ? [
-                                  {
-                                    id: `reply-${currentSelectedTicket.id}`,
-                                    sender: 'agent' as const,
-                                    text: currentSelectedTicket.adminReply,
-                                    timestamp: currentSelectedTicket.repliedAt || currentSelectedTicket.updatedAt,
-                                  }
-                                ] : [])
-                              ];
+                        {currentGroup.messages.map((msg) => {
+                          const isUser = msg.sender === 'user';
 
-                          return thread.map((msg) => {
-                            const isUser = msg.sender === 'user';
-
-                            return (
-                              <div
-                                key={msg.id}
-                                className={`flex flex-col ${isUser ? 'items-start' : 'items-end'}`}
-                              >
-                                <span className="text-[10px] text-slate-400 mb-1 px-1 flex items-center gap-1 font-semibold">
-                                  {isUser ? (
-                                    <span>{currentSelectedTicket.userFullName || 'গ্রাহক'}</span>
-                                  ) : (
-                                    <span className="text-emerald-400">🛡️ অ্যাডমিন সাপোর্ট</span>
-                                  )}
-                                  <span className="text-slate-400 font-normal">
-                                    {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                  </span>
+                          return (
+                            <div
+                              key={msg.id}
+                              className={`flex flex-col ${isUser ? 'items-start' : 'items-end'}`}
+                            >
+                              <span className="text-[10px] text-slate-400 mb-1 px-1 flex items-center gap-1 font-semibold">
+                                {isUser ? (
+                                  <span>👤 {currentGroup.userName}</span>
+                                ) : (
+                                  <span className="text-emerald-400">🛡️ অ্যাডমিন সাপোর্ট</span>
+                                )}
+                                <span className="text-slate-400 font-normal">
+                                  {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </span>
+                              </span>
 
-                                <div
-                                  className={`max-w-[85%] sm:max-w-[70%] p-3 rounded-2xl text-xs leading-relaxed space-y-1.5 shadow-sm ${
-                                    isUser
-                                      ? 'bg-slate-800 text-slate-100 border border-slate-700/80 rounded-tl-xs'
-                                      : 'bg-emerald-600 text-white rounded-tr-xs'
-                                  }`}
-                                >
-                                  <p className="whitespace-pre-wrap">{msg.text}</p>
+                              <div
+                                className={`max-w-[85%] sm:max-w-[70%] p-3 rounded-2xl text-xs leading-relaxed space-y-1.5 shadow-sm ${
+                                  isUser
+                                    ? 'bg-slate-800 text-slate-100 border border-slate-700/80 rounded-tl-xs'
+                                    : 'bg-emerald-600 text-white rounded-tr-xs'
+                                }`}
+                              >
+                                {msg.text && <p className="whitespace-pre-wrap">{msg.text}</p>}
 
-                                  {/* Attached Image if any */}
-                                  {msg.attachmentUrl && (
-                                    <div className="pt-1">
-                                      <button
-                                        type="button"
-                                        onClick={() => setSelectedScreenshotUrl(msg.attachmentUrl || null)}
-                                        className="block overflow-hidden rounded-xl border border-white/20 hover:opacity-90 transition-opacity"
-                                      >
-                                        <img
-                                          src={msg.attachmentUrl}
-                                          alt="Attachment"
-                                          className="max-h-48 rounded-lg object-contain bg-black/40"
-                                        />
-                                      </button>
-                                      <span className="text-[9px] opacity-75 mt-0.5 block">
-                                        (ছবি বড় করে দেখতে ক্লিক করুন)
-                                      </span>
-                                    </div>
-                                  )}
-                                </div>
+                                {/* Attached Image if any */}
+                                {msg.attachmentUrl && (
+                                  <div className="pt-1">
+                                    <button
+                                      type="button"
+                                      onClick={() => setSelectedScreenshotUrl(msg.attachmentUrl || null)}
+                                      className="block overflow-hidden rounded-xl border border-white/20 hover:opacity-90 transition-opacity"
+                                    >
+                                      <img
+                                        src={msg.attachmentUrl}
+                                        alt="Attachment"
+                                        className="max-h-48 rounded-lg object-contain bg-black/40"
+                                      />
+                                    </button>
+                                    <span className="text-[9px] opacity-75 mt-0.5 block">
+                                      (ছবি বড় করে দেখতে ক্লিক করুন)
+                                    </span>
+                                  </div>
+                                )}
                               </div>
-                            );
-                          });
-                        })()}
+                            </div>
+                          );
+                        })}
                         <div ref={chatMessagesEndRef} />
                       </div>
 
                       {/* Quick Canned Responses Bar */}
-                      <div className="bg-slate-850 px-3 py-2 border-t border-slate-700/80 flex items-center gap-1.5 overflow-x-auto text-[11px]">
+                      <div className="bg-slate-850 px-3 py-2 border-t border-slate-700/80 flex items-center gap-1.5 overflow-x-auto text-[11px] no-scrollbar">
                         <span className="text-slate-400 shrink-0 text-[10px] font-bold">কুইক রিপ্লাই:</span>
                         <button
                           type="button"
-                          onClick={() => handleSendAdminChatMessage(currentSelectedTicket.id, '✅ আপনার উইথড্র পেমেন্ট সফলভাবে পাঠানো হয়েছে। অনুগ্রহ করে একাউন্ট চেক করুন।')}
-                          className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors"
+                          onClick={() => handleSendAdminChatMessage(currentGroup.latestTicketId, '✅ আপনার উইথড্র পেমেন্ট সফলভাবে পাঠানো হয়েছে। অনুগ্রহ করে একাউন্ট চেক করুন।')}
+                          className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors shrink-0"
                         >
                           ✅ পেমেন্ট পাঠানো হয়েছে
                         </button>
                         <button
                           type="button"
-                          onClick={() => handleSendAdminChatMessage(currentSelectedTicket.id, '🔍 আপনার বিষয়টি খতিয়ে দেখা হচ্ছে। অনুগ্রহ করে ২ মিনিট অপেক্ষা করুন।')}
-                          className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors"
+                          onClick={() => handleSendAdminChatMessage(currentGroup.latestTicketId, '🔍 আপনার বিষয়টি খতিয়ে দেখা হচ্ছে। অনুগ্রহ করে ২ মিনিট অপেক্ষা করুন।')}
+                          className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors shrink-0"
                         >
                           🔍 চেক করা হচ্ছে
                         </button>
                         <button
                           type="button"
-                          onClick={() => handleSendAdminChatMessage(currentSelectedTicket.id, '📸 অনুগ্রহ করে আপনার ট্রানজেকশন বা সমস্যার স্পষ্ট স্ক্রিনশট পাঠান।')}
-                          className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors"
+                          onClick={() => handleSendAdminChatMessage(currentGroup.latestTicketId, '📸 অনুগ্রহ করে আপনার ট্রানজেকশন বা সমস্যার স্পষ্ট স্ক্রিনশট পাঠান।')}
+                          className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors shrink-0"
                         >
                           📸 স্ক্রিনশট দিন
                         </button>
                         <button
                           type="button"
-                          onClick={() => handleSendAdminChatMessage(currentSelectedTicket.id, '💰 আপনার ব্যালেন্সে টাকা যোগ করে দেওয়া হয়েছে। ধন্যবাদ।')}
-                          className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors"
+                          onClick={() => handleSendAdminChatMessage(currentGroup.latestTicketId, '💰 আপনার ব্যালেন্সে টাকা যোগ করে দেওয়া হয়েছে। ধন্যবাদ।')}
+                          className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors shrink-0"
                         >
                           💰 ব্যালেন্স যোগ হয়েছে
                         </button>
                         <button
                           type="button"
-                          onClick={() => handleSendAdminChatMessage(currentSelectedTicket.id, '👍 আপনার সমস্যার সমাধান সম্পন্ন হয়েছে। ভালো থাকবেন!')}
-                          className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors"
+                          onClick={() => handleSendAdminChatMessage(currentGroup.latestTicketId, '👍 আপনার সমস্যার সমাধান সম্পন্ন হয়েছে। ভালো থাকবেন!')}
+                          className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors shrink-0"
                         >
                           👍 সমাধান হয়েছে
                         </button>
                       </div>
 
-                      {/* Admin Message Send Input Form */}
+                      {/* Admin Message Send Input Form with Attachment Support */}
                       <form
                         onSubmit={(e) => {
                           e.preventDefault();
-                          handleSendAdminChatMessage(currentSelectedTicket.id);
+                          handleSendAdminChatMessage(currentGroup.latestTicketId);
                         }}
-                        className="p-3 bg-slate-900 border-t border-slate-700 flex items-center gap-2"
+                        className="p-3 bg-slate-900 border-t border-slate-700 flex flex-col gap-2"
                       >
-                        <input
-                          type="text"
-                          value={adminChatText}
-                          onChange={(e) => setAdminChatText(e.target.value)}
-                          placeholder="গ্রাহককে সরাসরি উত্তর / রিপ্লাই লিখুন... (Enter চাপুন)"
-                          disabled={adminSendingChat}
-                          className="flex-1 bg-slate-800 text-xs px-3.5 py-2.5 rounded-xl border border-slate-700 text-white outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
-                        />
-                        <button
-                          type="submit"
-                          disabled={adminSendingChat || !adminChatText.trim()}
-                          className="bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 disabled:opacity-50 text-white font-bold px-4 py-2.5 rounded-xl flex items-center gap-1.5 text-xs transition-all shadow-md active:scale-95"
-                        >
-                          <Send className="w-3.5 h-3.5" />
-                          <span>{adminSendingChat ? 'পাঠানো হচ্ছে...' : 'পাঠান'}</span>
-                        </button>
+                        {/* Selected Attachment Preview */}
+                        {adminAttachment && (
+                          <div className="flex items-center gap-2 bg-slate-800 p-2 rounded-xl border border-slate-700 self-start">
+                            <img src={adminAttachment} alt="Preview" className="w-10 h-10 object-cover rounded-lg" />
+                            <span className="text-[11px] text-emerald-400 font-semibold">ছবি সংযুক্ত করা হয়েছে</span>
+                            <button
+                              type="button"
+                              onClick={() => setAdminAttachment(null)}
+                              className="text-slate-400 hover:text-white p-1"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="file"
+                            ref={adminFileInputRef}
+                            onChange={handleAdminFileSelect}
+                            accept="image/*"
+                            className="hidden"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => adminFileInputRef.current?.click()}
+                            title="ছবি বা স্ক্রিনশট যুক্ত করুন"
+                            className="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 rounded-xl transition-colors shrink-0"
+                          >
+                            <Paperclip className="w-4 h-4 text-emerald-400" />
+                          </button>
+
+                          <input
+                            type="text"
+                            value={adminChatText}
+                            onChange={(e) => setAdminChatText(e.target.value)}
+                            placeholder="গ্রাহককে সরাসরি উত্তর / রিপ্লাই লিখুন... (Enter চাপুন)"
+                            disabled={adminSendingChat}
+                            className="flex-1 bg-slate-800 text-xs px-3.5 py-2.5 rounded-xl border border-slate-700 text-white outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                          />
+                          <button
+                            type="submit"
+                            disabled={adminSendingChat || (!adminChatText.trim() && !adminAttachment)}
+                            className="bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 disabled:opacity-50 text-white font-bold px-4 py-2.5 rounded-xl flex items-center gap-1.5 text-xs transition-all shadow-md active:scale-95 shrink-0"
+                          >
+                            <Send className="w-3.5 h-3.5" />
+                            <span>{adminSendingChat ? 'পাঠানো হচ্ছে...' : 'পাঠান'}</span>
+                          </button>
+                        </div>
                       </form>
                     </div>
                   ) : (
                     <div className="lg:col-span-8 bg-slate-800 rounded-2xl border border-slate-700 p-8 flex flex-col items-center justify-center text-slate-400 text-xs">
                       <Headphones className="w-12 h-12 text-slate-600 mb-2" />
-                      <p className="font-bold text-white text-sm">কোনো চ্যাট নির্বাচিত নেই</p>
-                      <p className="text-[11px] mt-0.5">বাম পাশের তালিকা থেকে যেকোনো কথোপকথন নির্বাচন করুন</p>
+                      <p className="font-bold text-white text-sm">কোনো গ্রাহকের চ্যাট নির্বাচিত নেই</p>
+                      <p className="text-[11px] mt-0.5">বাম পাশের তালিকা থেকে যেকোনো গ্রাহকের নাম সিলেক্ট করুন</p>
                     </div>
                   )}
                 </div>
@@ -6236,3 +6524,4 @@ export const AdminPanelPage: React.FC<AdminPanelPageProps> = ({ onNavigate }) =>
 </div>
   );
 };
+

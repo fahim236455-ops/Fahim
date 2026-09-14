@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { fetchApi } from '../lib/api';
 import { Task } from '../types';
 import confetti from 'canvas-confetti';
-import {
+import { 
   CheckSquare,
   Sparkles,
   ExternalLink,
@@ -29,20 +29,25 @@ import {
   RotateCcw,
   Award,
   SkipForward,
-} from 'lucide-react';
+  Briefcase,
+  User as UserIcon,
+  Link2,
+Inbox } from 'lucide-react';
 
 interface TasksPageProps {
   onNavigate: (route: string) => void;
+  pageMode?: 'tasks' | 'micro-jobs';
 }
 
-export const TasksPage: React.FC<TasksPageProps> = ({ onNavigate }) => {
-  const { refreshUser, showToast } = useApp();
+export const TasksPage: React.FC<TasksPageProps> = ({ onNavigate, pageMode = 'tasks' }) => {
+  const { user, refreshUser, showToast } = useApp();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [dailyCheckinLoading, setDailyCheckinLoading] = useState<boolean>(false);
   
-  // View mode: 'queue' (Auto-Next Mode) vs 'list' (All Tasks list)
-  const [viewMode, setViewMode] = useState<'queue' | 'list'>('queue');
+  // View mode: default to 'list' so all micro jobs are instantly visible
+  const [viewMode, setViewMode] = useState<'queue' | 'list'>('list');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [currentQueueIndex, setCurrentQueueIndex] = useState<number>(0);
 
   // Form states for the currently active queue task or modal
@@ -202,8 +207,19 @@ export const TasksPage: React.FC<TasksPageProps> = ({ onNavigate }) => {
   };
 
   // Filter tasks
-  const dailyTask = tasks.find((t) => t.category === 'daily_checkin');
-  const manualTasks = tasks.filter((t) => t.category !== 'daily_checkin');
+  const dailyTask = pageMode === 'tasks' ? tasks.find((t) => t.category === 'daily_checkin') : undefined;
+  const manualTasks = tasks.filter((t) => {
+    if (t.category === 'daily_checkin') return false;
+    if (pageMode === 'micro-jobs') {
+      return !!t.userJobId;
+    } else {
+      return !t.userJobId;
+    }
+  });
+  const filteredManualTasks = manualTasks.filter((t) => {
+    if (selectedCategory === 'all') return true;
+    return t.category === selectedCategory;
+  });
 
   // Active Queue: Tasks that the user hasn't completed or pending today
   const availableQueue = manualTasks.filter(
@@ -309,7 +325,7 @@ export const TasksPage: React.FC<TasksPageProps> = ({ onNavigate }) => {
         <div>
           <h1 className="text-lg font-bold text-white flex items-center gap-2">
             <CheckSquare className="w-5 h-5 text-amber-400" />
-            <span>টাস্ক সেন্টার (Task Center)</span>
+            <span>{pageMode === 'micro-jobs' ? 'মাইক্রো জবস (Micro Jobs)' : 'টাস্ক সেন্টার (Task Center)'}</span>
           </h1>
           <p className="text-xs text-slate-400 font-medium">কাজ শেষ করুন ও স্বয়ংক্রিয়ভাবে পরবর্তী কাজ পান</p>
         </div>
@@ -361,46 +377,105 @@ export const TasksPage: React.FC<TasksPageProps> = ({ onNavigate }) => {
         </div>
       )}
 
-      {/* Mode Switcher Tabs */}
-      <div className="flex items-center bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-bold">
-        <button
-          onClick={() => {
-            setViewMode('queue');
-            resetProofForm();
-          }}
-          className={`flex-1 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-            viewMode === 'queue'
-              ? 'bg-amber-500 text-slate-950 shadow-md font-black'
-              : 'text-slate-400 hover:text-white'
-          }`}
-        >
-          <Layers className="w-4 h-4" />
-          <span>অটো কিউ মোড ({availableQueue.length} টি বাকি)</span>
-        </button>
+      {/* Mode Switcher Tabs & Quick Post Button */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        {/* Mode Switcher Tabs */}
+        <div className="flex items-center bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-bold w-full sm:w-auto">
+          <button
+            onClick={() => {
+              setViewMode('list');
+              resetProofForm();
+            }}
+            className={`flex-1 sm:flex-initial px-4 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              viewMode === 'list'
+                ? 'bg-amber-500 text-slate-950 shadow-md font-black'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <List className="w-4 h-4" />
+            <span>সকল কাজ ({manualTasks.length})</span>
+          </button>
 
-        <button
-          onClick={() => {
-            setViewMode('list');
-            resetProofForm();
-          }}
-          className={`flex-1 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-            viewMode === 'list'
-              ? 'bg-amber-500 text-slate-950 shadow-md font-black'
-              : 'text-slate-400 hover:text-white'
-          }`}
-        >
-          <List className="w-4 h-4" />
-          <span>সকল কাজের তালিকা ({manualTasks.length})</span>
-        </button>
+          <button
+            onClick={() => {
+              setViewMode('queue');
+              resetProofForm();
+            }}
+            className={`flex-1 sm:flex-initial px-4 py-2 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              viewMode === 'queue'
+                ? 'bg-amber-500 text-slate-950 shadow-md font-black'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>অটো কিউ ({availableQueue.length})</span>
+          </button>
+        </div>
+
+        {/* Post Micro Job CTA */}
+        {pageMode === 'micro-jobs' && (
+          <button
+            onClick={() => onNavigate('job-post')}
+            className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-2 px-3.5 rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-indigo-600/20 active:scale-95 transition-all cursor-pointer"
+          >
+            <Briefcase className="w-3.5 h-3.5" />
+            <span>+ মাইক্রো জব পোস্ট করুন</span>
+          </button>
+        )}
       </div>
+
+      {/* Category Pills Filter (in list view) */}
+      {viewMode === 'list' && (
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
+          {[
+            { id: 'all', label: 'সকল ক্যাটাগরি' },
+            { id: 'youtube', label: 'YouTube' },
+            { id: 'facebook', label: 'Facebook' },
+            { id: 'telegram', label: 'Telegram' },
+            { id: 'website', label: 'Website' },
+            { id: 'app', label: 'App' },
+            { id: 'general', label: 'অন্যান্য' },
+          ].map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all cursor-pointer text-xs ${
+                selectedCategory === cat.id
+                  ? 'bg-amber-500 text-slate-950 shadow-xs font-black'
+                  : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800'
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Loading state */}
       {loading && (
-        <div className="space-y-3">
-          {[1, 2].map((i) => (
-            <div key={i} className="h-44 bg-slate-900 border border-slate-800 rounded-2xl animate-pulse" />
+        
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 animate-pulse space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-slate-800 rounded-xl" />
+                <div className="space-y-2 flex-1">
+                  <div className="h-4 bg-slate-800 rounded w-3/4" />
+                  <div className="h-3 bg-slate-800 rounded w-1/2" />
+                </div>
+              </div>
+              <div className="space-y-2 pt-2 border-t border-slate-800">
+                <div className="h-3 bg-slate-800 rounded w-full" />
+                <div className="h-3 bg-slate-800 rounded w-5/6" />
+              </div>
+              <div className="flex justify-between items-end pt-2">
+                <div className="h-6 w-20 bg-slate-800 rounded-lg" />
+                <div className="h-8 w-28 bg-slate-800 rounded-xl" />
+              </div>
+            </div>
           ))}
         </div>
+
       )}
 
       {/* ========================================================= */}
@@ -634,17 +709,33 @@ export const TasksPage: React.FC<TasksPageProps> = ({ onNavigate }) => {
       {!loading && viewMode === 'list' && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-200">উপলব্ধ সকল কাজ ({manualTasks.length})</h2>
+            <h2 className="text-sm font-bold text-slate-200">
+              উপলব্ধ কাজসমূহ ({filteredManualTasks.length} টি)
+            </h2>
             <span className="text-[11px] text-slate-400">যেকোনো কাজে ক্লিক করে শুরু করুন</span>
           </div>
 
-          {manualTasks.length === 0 ? (
-            <div className="bg-slate-900 rounded-xl p-8 text-center border border-slate-800 text-slate-400 text-sm">
-              আপাতত কোনো নতুন টাস্ক নেই। শীঘ্রই এডমিন প্যানেল থেকে নতুন টাস্ক যোগ করা হবে।
+          {filteredManualTasks.length === 0 ? (
+            
+            <div className="bg-slate-900/50 rounded-2xl p-10 text-center border border-slate-800 border-dashed flex flex-col items-center shadow-sm">
+              <div className="w-16 h-16 rounded-full bg-slate-800/80 flex items-center justify-center mb-3">
+                <Inbox className="w-8 h-8 text-slate-500" />
+              </div>
+              <h3 className="text-white font-bold text-sm mb-1">কোনো কাজ পাওয়া যায়নি</h3>
+              <p className="text-slate-400 text-xs max-w-[200px] leading-relaxed mb-3">
+                বর্তমানে এই ক্যাটাগরিতে কোনো কাজ নেই। কিছুক্ষণ পর আবার চেক করুন।
+              </p>
+              <button
+                onClick={() => setViewMode('queue')}
+                className="text-xs text-slate-950 bg-amber-500 font-bold px-4 py-2 rounded-lg shadow hover:bg-amber-400 transition-colors cursor-pointer"
+              >
+                অটো কিউ মোড দেখুন
+              </button>
             </div>
+
           ) : (
             <div className="space-y-2.5">
-              {manualTasks.map((task) => (
+              {filteredManualTasks.map((task) => (
                 <div
                   key={task.id}
                   className="bg-slate-900 rounded-xl p-4 border border-slate-800 shadow-md flex flex-col justify-between hover:border-amber-500/40 transition-colors"
@@ -655,6 +746,29 @@ export const TasksPage: React.FC<TasksPageProps> = ({ onNavigate }) => {
                         {getCategoryIcon(task.category)}
                       </div>
                       <div>
+                        {/* Badges / Metas */}
+                        <div className="flex items-center gap-1.5 flex-wrap mb-1">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700/60 uppercase">
+                            {task.category}
+                          </span>
+                          {task.createdByUserName && (
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 flex items-center gap-1">
+                              <UserIcon className="w-2.5 h-2.5" />
+                              <span>{task.createdByUserName}</span>
+                            </span>
+                          )}
+                          {task.totalSlots && (
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                              স্লট বাকি: {task.slotsRemaining ?? (task.totalSlots - (task.workersCompleted || 0))} / {task.totalSlots}
+                            </span>
+                          )}
+                          {task.createdByUserId === user?.id && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                              আপনার পোস্ট
+                            </span>
+                          )}
+                        </div>
+
                         <h3 className="text-sm font-bold text-white leading-snug">{task.title}</h3>
                         <p className="text-xs text-slate-400 line-clamp-2 mt-0.5">{task.description}</p>
                       </div>
@@ -666,10 +780,21 @@ export const TasksPage: React.FC<TasksPageProps> = ({ onNavigate }) => {
                     </div>
                   </div>
 
-                  <div className="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between">
-                    <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>দৈনিক সীমা: {task.dailyLimit} বার</span>
+                  <div className="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-center gap-2 text-[11px] text-slate-400 font-medium">
+                      <Clock className="w-3.5 h-3.5 text-slate-500" />
+                      <span>{task.dailyLimit === 1 ? '১ বার গ্রহণযোগ্য' : `দৈনিক সীমা: ${task.dailyLimit} বার`}</span>
+                      {task.targetUrl && (
+                        <a
+                          href={task.targetUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-indigo-400 hover:text-indigo-300 hover:underline flex items-center gap-1 font-semibold ml-1.5"
+                        >
+                          <Link2 className="w-3 h-3" />
+                          <span>কাজের লিংক</span>
+                        </a>
+                      )}
                     </div>
 
                     {task.submissionStatus === 'pending' ? (
@@ -713,9 +838,16 @@ export const TasksPage: React.FC<TasksPageProps> = ({ onNavigate }) => {
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-white">{activeTaskModal.title}</h3>
-                  <span className="text-xs font-bold text-amber-400">
-                    পুরস্কার: ৳{activeTaskModal.rewardAmount.toFixed(2)} টাকা
-                  </span>
+                  <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                    <span className="text-xs font-bold text-amber-400">
+                      পুরস্কার: ৳{activeTaskModal.rewardAmount.toFixed(2)} টাকা
+                    </span>
+                    {activeTaskModal.createdByUserName && (
+                      <span className="text-[10px] text-slate-400">
+                        পোস্ট করেছেন: <strong className="text-indigo-300">{activeTaskModal.createdByUserName}</strong>
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               <button

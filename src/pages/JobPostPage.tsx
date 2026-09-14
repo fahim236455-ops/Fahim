@@ -165,6 +165,7 @@ export const JobPostPage: React.FC<JobPostPageProps> = ({ onNavigate }) => {
   // Step 2: Details State
   const [jobTitle, setJobTitle] = useState<string>('');
   const [instructions, setInstructions] = useState<string>('');
+  const [targetUrl, setTargetUrl] = useState<string>('');
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
   const [proofRequirements, setProofRequirements] = useState<ProofRequirement[]>([
@@ -179,6 +180,7 @@ export const JobPostPage: React.FC<JobPostPageProps> = ({ onNavigate }) => {
   const [myJobs, setMyJobs] = useState<UserPostedJob[]>([]);
   const [loadingJobs, setLoadingJobs] = useState<boolean>(false);
   const [submitting, setSubmitting] = useState<boolean>(false);
+  const [successJob, setSuccessJob] = useState<UserPostedJob | null>(null);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -305,8 +307,13 @@ export const JobPostPage: React.FC<JobPostPageProps> = ({ onNavigate }) => {
       return;
     }
 
+    const isAdmin =
+      (user as any)?.roles?.includes('admin') ||
+      (user as any)?.roles?.includes('moderator') ||
+      user?.email === 'fahim236455@gmail.com';
+
     const currentBalance = user?.balance ?? 0;
-    if (currentBalance < totalPayable) {
+    if (!isAdmin && currentBalance < totalPayable) {
       showToast(
         `পর্যাপ্ত ব্যালেন্স নেই! মোট প্রয়োজন ৳${totalPayable.toFixed(2)}, আপনার ব্যালেন্স ৳${currentBalance.toFixed(2)}`,
         'error'
@@ -321,6 +328,7 @@ export const JobPostPage: React.FC<JobPostPageProps> = ({ onNavigate }) => {
         subCategory,
         title: jobTitle.trim(),
         instructions: instructions.trim(),
+        targetUrl: targetUrl.trim(),
         thumbnailUrl: thumbnailPreview || '',
         proofRequirements: proofRequirements.map((p) => ({
           id: p.id,
@@ -348,6 +356,7 @@ export const JobPostPage: React.FC<JobPostPageProps> = ({ onNavigate }) => {
       // Reset form
       setJobTitle('');
       setInstructions('');
+      setTargetUrl('');
       setThumbnailFile(null);
       setThumbnailPreview('');
       setWorkersNeeded(10);
@@ -355,12 +364,30 @@ export const JobPostPage: React.FC<JobPostPageProps> = ({ onNavigate }) => {
       setProofRequirements([{ id: '1', title: '', type: 'text' }]);
       setCurrentStep(1);
 
-      // Switch to manage view to see the published job
-      setActiveView('manage');
+      // Open success modal
+      setSuccessJob(res.job);
+      await loadMyJobs();
     } catch (err: any) {
       showToast(err.message || 'জব পোস্ট করতে সমস্যা হয়েছে', 'error');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  // Cancel / Delete Job
+  const handleCancelJob = async (jobId: string) => {
+    if (!window.confirm('আপনি কি নিশ্চিত এই জবটি বাতিল করতে চান? অবশিষ্ট স্লটের টাকা আপনার ওয়ালেটে ফেরত দেওয়া হবে।')) {
+      return;
+    }
+    try {
+      const res = await fetchApi<{ message: string; refundAmount: number }>(`/user-jobs/${jobId}`, {
+        method: 'DELETE',
+      });
+      showToast(res.message || 'জবটি বাতিল করা হয়েছে', 'success');
+      await refreshUser();
+      await loadMyJobs();
+    } catch (err: any) {
+      showToast(err.message || 'জব বাতিল করতে ব্যর্থ হয়েছে', 'error');
     }
   };
 
@@ -570,6 +597,29 @@ export const JobPostPage: React.FC<JobPostPageProps> = ({ onNavigate }) => {
                     placeholder="e.g. Subscribe to channel"
                     className="w-full bg-white border border-slate-300/90 rounded-xl px-4 py-3 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#4f46e5] focus:ring-1 focus:ring-[#4f46e5] shadow-xs"
                   />
+                </div>
+
+                {/* Target URL / Link */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                      <Link2 className="w-3.5 h-3.5 text-[#4f46e5]" />
+                      <span>কাজের মূল লিংক (Target URL / Link)</span>
+                    </label>
+                    <span className="text-[10px] text-indigo-600 bg-indigo-50 font-semibold px-2 py-0.5 rounded-full border border-indigo-100">
+                      সুপারিশকৃত
+                    </span>
+                  </div>
+                  <input
+                    type="url"
+                    value={targetUrl}
+                    onChange={(e) => setTargetUrl(e.target.value)}
+                    placeholder="যেমন: https://youtube.com/watch?v=... অথবা https://facebook.com/..."
+                    className="w-full bg-white border border-slate-300/90 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#4f46e5] focus:ring-1 focus:ring-[#4f46e5] shadow-xs"
+                  />
+                  <p className="text-[11px] text-slate-500">
+                    ওয়ার্কাররা মাইক্রো জব লিস্ট থেকে সরাসরি এই লিংকে গিয়ে আপনার কাজটি করতে পারবে।
+                  </p>
                 </div>
 
                 {/* Task Instructions with Rich Formatting Toolbar */}
@@ -832,6 +882,10 @@ export const JobPostPage: React.FC<JobPostPageProps> = ({ onNavigate }) => {
                     <span className="text-emerald-700 font-bold bg-emerald-100/80 px-2.5 py-1 rounded-full text-[10px] flex items-center gap-1">
                       <CheckCircle2 className="w-3 h-3 text-emerald-600" /> পর্যাপ্ত ব্যালেন্স
                     </span>
+                  ) : ((user as any)?.roles?.includes('admin') || user?.email === 'fahim236455@gmail.com') ? (
+                    <span className="text-indigo-700 font-bold bg-indigo-100 px-2.5 py-1 rounded-full text-[10px] flex items-center gap-1">
+                      <Sparkles className="w-3 h-3 text-indigo-600" /> অ্যাডমিন ফ্রি পোস্টিং সক্রিয়
+                    </span>
                   ) : (
                     <span className="text-rose-700 font-bold bg-rose-100/80 px-2.5 py-1 rounded-full text-[10px] flex items-center gap-1">
                       <AlertCircle className="w-3 h-3 text-rose-600" /> ব্যালেন্স অপর্যাপ্ত
@@ -976,36 +1030,120 @@ export const JobPostPage: React.FC<JobPostPageProps> = ({ onNavigate }) => {
                     </div>
 
                     {/* Footer / Actions */}
-                    <div className="flex items-center justify-between border-t border-slate-100 pt-2.5 text-[11px] text-slate-500">
-                      <div className="flex items-center gap-1 font-mono">
+                    <div className="flex items-center justify-between border-t border-slate-100 pt-2.5 text-[11px] text-slate-500 flex-wrap gap-2">
+                      <div className="flex items-center gap-2 font-mono">
                         <Clock className="w-3.5 h-3.5 text-slate-400" />
                         <span>{new Date(job.createdAt).toLocaleDateString('bn-BD')}</span>
+                        {job.targetUrl && (
+                          <a
+                            href={job.targetUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-indigo-600 hover:underline flex items-center gap-1 font-sans ml-2"
+                          >
+                            <Link2 className="w-3 h-3" />
+                            <span>লিংক</span>
+                          </a>
+                        )}
                       </div>
 
                       <div className="flex items-center gap-2">
                         <button
                           type="button"
-                          onClick={() => handleToggleStatus(job.id)}
-                          className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-colors flex items-center gap-1"
+                          onClick={() => onNavigate('tasks')}
+                          className="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold transition-colors flex items-center gap-1"
                         >
-                          {job.status === 'active' ? (
-                            <>
-                              <Pause className="w-3 h-3 text-amber-600" />
-                              <span>Pause</span>
-                            </>
-                          ) : (
-                            <>
-                              <Play className="w-3 h-3 text-emerald-600" />
-                              <span>Resume</span>
-                            </>
-                          )}
+                          <Briefcase className="w-3 h-3 text-indigo-600" />
+                          <span>মাইক্রো জবে দেখুন</span>
                         </button>
+
+                        {job.status !== 'cancelled' && job.status !== 'completed' && (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => handleToggleStatus(job.id)}
+                              className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-colors flex items-center gap-1"
+                            >
+                              {job.status === 'active' ? (
+                                <>
+                                  <Pause className="w-3 h-3 text-amber-600" />
+                                  <span>Pause</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Play className="w-3 h-3 text-emerald-600" />
+                                  <span>Resume</span>
+                                </>
+                              )}
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleCancelJob(job.id)}
+                              className="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold transition-colors flex items-center gap-1"
+                              title="জব বাতিল ও রিফান্ড"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              <span>বাতিল</span>
+                            </button>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Success Modal upon publishing */}
+        {successJob && (
+          <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl border border-indigo-100 animate-in fade-in zoom-in-95">
+              <div className="w-16 h-16 rounded-3xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto shadow-inner border border-emerald-100">
+                <CheckCircle2 className="w-8 h-8" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-slate-900">জব সফলভাবে লাইভ হয়েছে!</h3>
+                <p className="text-xs text-slate-500 mt-1">
+                  আপনার মাইক্রো জবটি তৈরি হয়েছে এবং সকল সাধারণ ইউজার ও ওয়ার্কারদের মাইক্রো জব লিস্টে যোগ করা হয়েছে।
+                </p>
+              </div>
+
+              <div className="bg-slate-50 rounded-2xl p-3.5 text-left text-xs space-y-1.5 border border-slate-200">
+                <div className="font-bold text-slate-800 line-clamp-1">{successJob.title}</div>
+                <div className="flex justify-between text-slate-600 text-[11px]">
+                  <span>মোট ওয়ার্কার: {successJob.workersNeeded} জন</span>
+                  <span className="font-bold text-indigo-600">৳{successJob.costPerWorker}/জন</span>
+                </div>
+              </div>
+
+              <div className="space-y-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSuccessJob(null);
+                    onNavigate('tasks');
+                  }}
+                  className="w-full bg-[#4f46e5] hover:bg-[#4338ca] text-white font-bold py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 shadow-md shadow-indigo-500/20 cursor-pointer"
+                >
+                  <Briefcase className="w-4 h-4" />
+                  <span>মাইক্রো জবে এখনই লাইভ দেখুন</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSuccessJob(null);
+                    setActiveView('manage');
+                  }}
+                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl text-xs transition-colors cursor-pointer"
+                >
+                  জব তালিকা ম্যানেজ করুন
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
