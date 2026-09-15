@@ -26,16 +26,17 @@ function handleStaticMockApi(endpoint: string, options: RequestInit = {}): any {
 
   const defaultAdminUser: UserProfile = {
     id: 'admin_1',
-    fullName: 'Fahim Admin',
-    email: 'admin@fahimpaybd.com',
+    fullName: 'Fahim Ahmed (Founder & Main Admin)',
+    email: 'fahim236455@gmail.com',
     phoneNumber: '01700000000',
     role: 'admin',
     isSuperAdmin: true,
-    balance: 5000,
-    totalEarned: 5000,
+    title: 'সুপার অ্যাডমিন (Founder & Main Admin)',
+    balance: 50000,
+    totalEarned: 50000,
     totalWithdrawn: 0,
     totalReferrals: 0,
-    referralCode: 'ADMIN123',
+    referralCode: 'FOUNDER1',
     status: 'active',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -195,6 +196,50 @@ function handleStaticMockApi(endpoint: string, options: RequestInit = {}): any {
     const storedSettings = localStorage.getItem('local_settings');
     const settings = storedSettings ? JSON.parse(storedSettings) : defaultSettings;
     return { user, settings };
+  }
+
+  // 6. Support Tickets
+  if (endpoint === '/support/tickets') {
+    const storedTickets = localStorage.getItem('local_support_tickets');
+    return storedTickets ? JSON.parse(storedTickets) : [];
+  }
+
+  if (endpoint === '/support/chat/send' && method === 'POST') {
+    const { text, attachmentUrl } = body;
+    const storedTickets = JSON.parse(localStorage.getItem('local_support_tickets') || '[]');
+    let currentTicket = storedTickets[0];
+
+    if (!currentTicket) {
+      currentTicket = {
+        id: 'tkt_' + Date.now(),
+        userId: 'usr_current',
+        userEmail: 'user@example.com',
+        userPhone: '01700000000',
+        subject: 'General Support',
+        category: 'General',
+        message: text || 'Attachment sent',
+        status: 'open',
+        adminReply: null,
+        repliedAt: null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        messages: [],
+      };
+      storedTickets.push(currentTicket);
+    }
+
+    if (!currentTicket.messages) currentTicket.messages = [];
+    currentTicket.messages.push({
+      id: 'msg_' + Date.now(),
+      sender: 'user',
+      text: text || '',
+      attachmentUrl: attachmentUrl || null,
+      timestamp: new Date().toISOString(),
+    });
+    currentTicket.updatedAt = new Date().toISOString();
+
+    localStorage.setItem('local_support_tickets', JSON.stringify(storedTickets));
+    return { success: true, ticket: currentTicket };
   }
 
   // Generic fallback for list endpoints

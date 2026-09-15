@@ -40,9 +40,10 @@ export const SupportPage: React.FC<SupportPageProps> = ({ onNavigate }) => {
   const loadTickets = async () => {
     try {
       const data = await fetchApi<SupportTicket[]>('/support/tickets');
-      setTickets(data);
+      setTickets(Array.isArray(data) ? data : []);
     } catch (err: any) {
       console.error(err);
+      setTickets([]);
     } finally {
       setLoadingTickets(false);
     }
