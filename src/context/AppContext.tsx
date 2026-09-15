@@ -199,7 +199,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  const isAdmin = Boolean(user && user.roles && user.roles.includes('admin'));
+  const isAdmin = Boolean(
+    user &&
+      (user.role === 'admin' ||
+        (user.roles && user.roles.includes('admin')) ||
+        user.isSuperAdmin)
+  );
 
   return (
     <AppContext.Provider

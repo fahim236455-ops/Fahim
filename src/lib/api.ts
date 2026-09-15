@@ -30,6 +30,7 @@ function handleStaticMockApi(endpoint: string, options: RequestInit = {}): any {
     email: 'fahim236455@gmail.com',
     phoneNumber: '01700000000',
     role: 'admin',
+    roles: ['admin', 'superadmin'],
     isSuperAdmin: true,
     title: 'সুপার অ্যাডমিন (Founder & Main Admin)',
     balance: 50000,
