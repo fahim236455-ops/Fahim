@@ -1015,17 +1015,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
               <h4 className="font-bold text-white text-sm tracking-wide">Legal</h4>
               <ul className="space-y-3 font-medium">
                 <li>
-                  <button onClick={() => onNavigate('dashboard')} className="hover:text-sky-400 transition-colors">
+                  <button onClick={() => onNavigate('terms-and-conditions')} className="hover:text-sky-400 transition-colors">
                     Terms of Service
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => onNavigate('dashboard')} className="hover:text-sky-400 transition-colors">
+                  <button onClick={() => onNavigate('privacy-policy')} className="hover:text-sky-400 transition-colors">
                     Privacy Policy
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => onNavigate('dashboard')} className="hover:text-sky-400 transition-colors">
+                  <button onClick={() => onNavigate('refund-policy')} className="hover:text-sky-400 transition-colors">
                     Refund Policy
                   </button>
                 </li>

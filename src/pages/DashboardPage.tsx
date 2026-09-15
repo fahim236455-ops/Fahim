@@ -316,14 +316,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         </h4>
         <div className="flex items-center justify-center gap-3 text-[10px] text-slate-500 font-medium">
           <button
-            onClick={() => onNavigate('support')}
+            onClick={() => onNavigate('privacy-policy')}
             className="hover:text-amber-400 transition-colors cursor-pointer underline underline-offset-2"
           >
             Privacy Policy
           </button>
           <span className="text-slate-700">|</span>
           <button
-            onClick={() => onNavigate('support')}
+            onClick={() => onNavigate('terms-and-conditions')}
             className="hover:text-amber-400 transition-colors cursor-pointer underline underline-offset-2"
           >
             Terms & Condition

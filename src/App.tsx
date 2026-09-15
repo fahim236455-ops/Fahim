@@ -11,6 +11,7 @@ import { IncomeHistoryPage } from './pages/IncomeHistoryPage';
 import { WithdrawHistoryPage } from './pages/WithdrawHistoryPage';
 import { PendingStatusPage } from './pages/PendingStatusPage';
 import { SupportPage } from './pages/SupportPage';
+import { PolicyPage } from './pages/PolicyPage';
 import { AccountPage } from './pages/AccountPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
@@ -55,6 +56,9 @@ function AppContent() {
     if (effective === 'instagram-sell') return 'instagram-sell';
     if (effective === 'system-closed') return 'system-closed';
     if (effective === 'support') return 'support';
+    if (effective === 'privacy-policy' || effective === 'privacy') return 'privacy-policy';
+    if (effective === 'terms-and-conditions' || effective === 'terms') return 'terms-and-conditions';
+    if (effective === 'refund-policy') return 'refund-policy';
     if (effective === 'account') return 'account';
     return 'dashboard';
   };
@@ -209,6 +213,9 @@ function AppContent() {
         {currentRoute === 'facebook-sell' && <FacebookSellPage onNavigate={navigate} />}
         {currentRoute === 'instagram-sell' && <InstagramSellPage onNavigate={navigate} />}
         {currentRoute === 'support' && <SupportPage onNavigate={navigate} />}
+        {currentRoute === 'privacy-policy' && <PolicyPage onNavigate={navigate} type="privacy" />}
+        {currentRoute === 'terms-and-conditions' && <PolicyPage onNavigate={navigate} type="terms" />}
+        {currentRoute === 'refund-policy' && <PolicyPage onNavigate={navigate} type="refund" />}
         {currentRoute === 'account' && <AccountPage onNavigate={navigate} />}
       </main>
 
